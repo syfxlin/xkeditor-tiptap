@@ -4,6 +4,48 @@ declare module "tiptap-commands" {
   import { InputRule } from "prosemirror-inputrules";
   import { MarkType, NodeType } from "prosemirror-model";
 
+  type GetAttrs = (() => { [key: string]: any }) | { [key: string]: any };
+
+  export {
+    chainCommands,
+    deleteSelection,
+    joinBackward,
+    selectNodeBackward,
+    joinForward,
+    selectNodeForward,
+    joinUp,
+    joinDown,
+    lift,
+    newlineInCode,
+    exitCode,
+    createParagraphNear,
+    liftEmptyBlock,
+    splitBlock,
+    splitBlockKeepMarks,
+    selectParentNode,
+    selectAll,
+    wrapIn,
+    setBlockType,
+    toggleMark,
+    autoJoin,
+    baseKeymap,
+    pcBaseKeymap,
+    macBaseKeymap
+  } from "prosemirror-commands";
+
+  export {
+    addListNodes,
+    wrapInList,
+    splitListItem,
+    liftListItem,
+    sinkListItem
+  } from "prosemirror-schema-list";
+
+  export {
+    wrappingInputRule,
+    textblockTypeInputRule
+  } from "prosemirror-inputrules";
+
   export interface DispatchFn {
     (tr: Transaction): boolean;
   }
@@ -20,23 +62,44 @@ declare module "tiptap-commands" {
     ): boolean;
   }
 
-  export function toggleWrap(type: NodeType): Command;
+  export function insertText(text: string): CommandFunction;
 
-  export function wrappingInputRule(
+  export function markInputRule(
     regexp: RegExp,
-    nodeType: NodeType,
-    getAttrs?: (arg: {} | string[]) => object | undefined,
-    joinPredicate?: (strs: string[], node: Node) => boolean
+    markType: MarkType,
+    getAttrs: Function
   ): InputRule;
 
-  export function toggleMark(
-    type: MarkType,
-    attrs?: { [key: string]: any }
-  ): Command;
+  export function markPasteRule(
+    regexp: RegExp,
+    type: MarkType | NodeType,
+    getAttrs: Function
+  ): Plugin;
+
+  export function nodeInputRule(
+    regexp: RegExp,
+    type: MarkType | NodeType,
+    getAttrs: GetAttrs
+  ): InputRule;
+
+  export function removeMark(type: MarkType | NodeType): CommandFunction;
+
+  export function toggleWrap(type: NodeType): Command;
 
   export function pasteRule(
     regexp: RegExp,
-    type: string,
-    getAttrs: (() => { [key: string]: any }) | { [key: string]: any }
+    type: MarkType | NodeType,
+    getAttrs: GetAttrs
   ): Plugin;
+
+  export function toggleBlockType(
+    type: MarkType | NodeType,
+    toggletype: MarkType | NodeType
+  ): CommandFunction;
+
+  export function toggleBlockType(
+    type: MarkType | NodeType,
+    toggletype: MarkType | NodeType,
+    attrs: { [key: string]: any }
+  ): CommandFunction;
 }

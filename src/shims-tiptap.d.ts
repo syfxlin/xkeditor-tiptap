@@ -8,7 +8,12 @@ declare module "tiptap" {
     ParseOptions,
     Schema
   } from "prosemirror-model";
-  import { EditorState, Plugin, Transaction } from "prosemirror-state";
+  import {
+    EditorState,
+    Plugin,
+    Selection,
+    Transaction
+  } from "prosemirror-state";
   import { Command, CommandFunction } from "tiptap-commands";
   import { EditorProps, EditorView } from "prosemirror-view";
   import { Component, VueConstructor } from "vue";
@@ -124,6 +129,7 @@ declare module "tiptap" {
     schema: Schema;
     state: EditorState;
     view: EditorView;
+    selection: Selection;
     activeMarks: { [markName: string]: () => boolean };
     activeNodes: { [nodeName: string]: () => boolean };
     activeMarkAttrs: { [markName: string]: { [attr: string]: any } };
@@ -192,7 +198,7 @@ declare module "tiptap" {
     /** Define a list of Prosemirror plugins. */
     plugins?: Plugin[];
     /** Called when options of extension are changed via editor.extensions.options */
-    update?: (view: EditorView) => any;
+    // update?: (view: EditorView) => any;
     /** Options for that are either passed in from the extension constructor or set by defaultOptions() */
     options?: Options;
 
@@ -217,6 +223,8 @@ declare module "tiptap" {
     inputRules?({ schema }: { schema: Schema }): any[];
 
     pasteRules?({ schema }: { schema: Schema }): Plugin[];
+
+    setSelection?(anchor: number, head: number, root: Document): void;
   }
 
   export class Node<V extends NodeView = any> extends Extension {

@@ -46,14 +46,17 @@ export default class IframeNode extends Node {
     return defineComponent({
       props: {
         node: ProsemirrorNode,
-        updateAttrs: {},
-        view: {}
+        updateAttrs: Function,
+        view: Object
       },
       setup(props) {
         const src = computed({
           get: () => props.node?.attrs.src,
-          // @ts-ignore
-          set: (src: string) => props.updateAttrs({ src })
+          set: (src: string) => {
+            if (props.updateAttrs !== undefined) {
+              props.updateAttrs({ src });
+            }
+          }
         });
 
         return { src };

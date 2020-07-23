@@ -1,5 +1,5 @@
 <template>
-  <div class="codemirror" ref="editor"></div>
+  <div class="codemirror" ref="editor" contenteditable="false"></div>
 </template>
 
 <script lang="ts">

@@ -101,8 +101,8 @@
 
           <button
             class="menubar__button"
-            :class="{ 'is-active': isActive.code_block() }"
-            @click="commands.code_block"
+            :class="{ 'is-active': isActive.code_mirror() }"
+            @click="commands.code_mirror"
           >
             <icon name="code" />
           </button>
@@ -214,8 +214,8 @@
 
           <button
             class="menubar__button"
-            :class="{ 'is-active': isActive.code_block() }"
-            @click="commands.code_block"
+            :class="{ 'is-active': isActive.code_mirror() }"
+            @click="commands.code_mirror"
           >
             <icon name="code" />
           </button>
@@ -247,7 +247,6 @@ import {
   Bold,
   BulletList,
   Code,
-  CodeBlock,
   Collaboration,
   Focus,
   HardBreak,
@@ -292,7 +291,7 @@ export default defineComponent({
           new IframeNode(),
           new CodeMirrorNode(),
           new Blockquote(),
-          new CodeBlock(),
+          // new CodeBlock(),
           new HardBreak(),
           new Heading({ levels: [1, 2, 3] }),
           new BulletList(),
@@ -326,7 +325,6 @@ export default defineComponent({
         content: `
           <h1>Yay Headlines!</h1>
           <p>All these <strong>cool tags</strong> are working now.</p>
-          <iframe src="https://ixk.me"></iframe>
           <pre>
           function max(a, b) {
             return a > b ? a : b
@@ -334,7 +332,6 @@ export default defineComponent({
         `
       })
     );
-    window.editor = editor;
     const keepInBounds = ref(true);
     onBeforeUnmount(() => {
       editor.destroy();
