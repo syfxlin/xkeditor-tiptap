@@ -17,7 +17,7 @@ declare module "tiptap" {
   import { Command, CommandFunction } from "tiptap-commands";
   import { EditorProps, EditorView } from "prosemirror-view";
   import { Component, VueConstructor } from "vue";
-  import { defineComponent } from "@vue/composition-api";
+  import { defineComponent } from "vue-demi";
   export type VueComponent = ReturnType<typeof defineComponent> | Component;
 
   export const EditorContent: VueConstructor;

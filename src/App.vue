@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "@vue/composition-api";
+import { defineComponent, ref } from "vue-demi";
 import TipTap from "@/components/TipTap.vue";
 import CodeMirror from "@/components/CodeMirror.vue";
 

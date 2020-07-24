@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue-demi";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 export default defineComponent({
@@ -49,13 +49,16 @@ export default defineComponent({
     width: 100%;
     height: 100%;
   }
+
   &:first-child {
     margin-left: 0;
   }
+
   &:last-child {
     margin-right: 0;
   }
 }
+
 // svg sprite
 body > svg,
 .icon use > svg,
@@ -67,6 +70,7 @@ symbol {
     fill: currentColor;
     stroke: none;
   }
+
   *[d="M0 0h24v24H0z"] {
     display: none;
   }

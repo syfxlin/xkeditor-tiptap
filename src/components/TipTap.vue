@@ -228,12 +228,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  onBeforeUnmount,
-  reactive,
-  ref
-} from "@vue/composition-api";
+import { defineComponent, onBeforeUnmount, reactive, ref } from "vue-demi";
 import Icon from "@/components/Icon.vue";
 import {
   Editor,

@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "@vue/composition-api";
+import { computed, defineComponent, ref } from "vue-demi";
 import { Node as ProsemirrorNode } from "prosemirror-model";
 import CodeMirrorVue from "@/components/CodeMirror.vue";
 import "codemirror/mode/javascript/javascript";
@@ -83,7 +83,7 @@ export default defineComponent({
         [`${mod}-Z`]: () => undo(view.state, view.dispatch),
         [`Shift-${mod}-Z`]: () => redo(view.state, view.dispatch),
         [`${mod}-Y`]: () => redo(view.state, view.dispatch),
-        "Ctrl-Enter": () => {
+        [`${mod}-Enter`]: () => {
           if (exitCode(view.state, view.dispatch)) view.focus();
         },
         Backspace: maybeDelete,

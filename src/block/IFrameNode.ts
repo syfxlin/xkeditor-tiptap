@@ -1,7 +1,7 @@
 import { Node } from "tiptap";
 import { CommandFunction } from "tiptap-commands";
 import { Node as ProsemirrorNode, NodeSpec } from "prosemirror-model";
-import { computed, defineComponent } from "@vue/composition-api";
+import { computed, defineComponent } from "vue-demi";
 
 export default class IframeNode extends Node {
   get name() {

@@ -3,13 +3,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  nextTick,
-  onMounted,
-  ref,
-  watch
-} from "@vue/composition-api";
+import { defineComponent, nextTick, onMounted, ref, watch } from "vue-demi";
 import CodeMirror, { Editor } from "codemirror";
 import "codemirror/lib/codemirror.css";
 
