@@ -1,26 +1,28 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
     <tip-tap />
-    <code-mirror :content.sync="value" :options="{ lineNumbers: true }" />
+    <div>
+      {{ count }}
+      <button @click="addCount">Add</button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue-demi";
+import { defineComponent } from "vue-demi";
 import TipTap from "@/components/TipTap.vue";
-import CodeMirror from "@/components/CodeMirror.vue";
+import { useAction, useState } from "@/store";
 
 export default defineComponent({
   name: "App",
   components: {
-    TipTap,
-    CodeMirror
+    TipTap
   },
   setup() {
-    const value = ref("value");
+    const count = useState<number>("count");
+    const addCount = useAction<Function>("addCount");
 
-    return { value };
+    return { count, addCount };
   }
 });
 </script>
