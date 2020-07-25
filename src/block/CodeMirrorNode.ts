@@ -1,17 +1,15 @@
 import { NodeSpec, NodeType, Schema } from "prosemirror-model";
 import { CommandGetter, Node } from "tiptap";
 import { Command } from "prosemirror-commands";
-import { EditorState, Selection } from "prosemirror-state";
+import { Plugin, Selection } from "prosemirror-state";
 import {
   CommandFunction,
-  DispatchFn,
   setBlockType,
   textblockTypeInputRule,
   toggleBlockType
 } from "tiptap-commands";
-import { EditorView } from "prosemirror-view";
 import CodeMirrorComponent from "@/block/CodeMirrorComponent.vue";
-import { cmRef, dirFocus, isCm } from "@/utils/codemirror";
+import { cmRef, codePasteRules, dirFocus, isCm } from "@/utils/codemirror";
 
 const arrowHandler = (
   dir: "left" | "right" | "down" | "up" | "backspace" | "delete"
@@ -47,7 +45,6 @@ export default class CodeMirrorNode extends Node {
   get schema(): NodeSpec {
     return {
       content: "text*",
-      marks: "",
       group: "block",
       code: true,
       defining: true,
@@ -55,16 +52,22 @@ export default class CodeMirrorNode extends Node {
       attrs: {
         cmRef: {
           default: undefined
+        },
+        language: {
+          default: null
         }
       },
       parseDOM: [
         {
           tag: "pre",
-          preserveWhitespace: "full"
+          preserveWhitespace: "full",
+          getAttrs: dom => ({
+            language: (dom as HTMLElement).getAttribute("data-language")
+          })
         }
       ],
       toDOM(node) {
-        return ["pre", 0];
+        return ["pre", { "data-language": node.attrs.language }, 0];
       }
     };
   }
@@ -82,19 +85,7 @@ export default class CodeMirrorNode extends Node {
     schema: NodeSpec;
     attrs: { [p: string]: string };
   }): CommandGetter {
-    return () => (
-      state: EditorState,
-      dispatch: DispatchFn | undefined,
-      view: EditorView
-    ) => {
-      const result = toggleBlockType(type, schema.nodes.paragraph)(
-        state,
-        dispatch,
-        view
-      );
-      // cursorToEnd(cmRef.value);
-      return result;
-    };
+    return () => toggleBlockType(type, schema.nodes.paragraph);
   }
 
   keys({
@@ -105,11 +96,7 @@ export default class CodeMirrorNode extends Node {
     schema: NodeSpec;
   }): { [p: string]: CommandFunction } {
     return {
-      "Shift-Ctrl-\\": (state, dispatch, view) => {
-        const result = setBlockType(type)(state, dispatch);
-        // cursorToEnd(cmRef.value);
-        return result;
-      },
+      "Shift-Ctrl-\\": setBlockType(type),
       ArrowLeft: arrowHandler("left"),
       ArrowRight: arrowHandler("right"),
       ArrowUp: arrowHandler("up"),
@@ -121,5 +108,9 @@ export default class CodeMirrorNode extends Node {
 
   inputRules({ type, schema }: { type: NodeType; schema: Schema }): any[] {
     return [textblockTypeInputRule(/^```$/, type)];
+  }
+
+  pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {
+    return [codePasteRules(type, schema)];
   }
 }

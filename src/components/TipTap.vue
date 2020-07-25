@@ -44,7 +44,7 @@ export default defineComponent({
         content: `
           <h1>Yay Headlines!</h1>
           <p>All these <strong>cool tags</strong> are working now.</p>
-          <pre>
+          <pre data-language="javascript">
           function max(a, b) {
             return a > b ? a : b
           }</pre>
