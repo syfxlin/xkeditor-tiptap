@@ -1,16 +1,17 @@
 import { NodeSpec, NodeType, Schema } from "prosemirror-model";
 import { CommandGetter, Node } from "tiptap";
-import CodeMirrorComponent from "@/block/CodeMirrorComponent.vue";
 import { Command } from "prosemirror-commands";
-import { Selection } from "prosemirror-state";
-import { keymap } from "prosemirror-keymap";
-import { Editor } from "codemirror";
+import { EditorState, Selection } from "prosemirror-state";
 import {
   CommandFunction,
+  DispatchFn,
   setBlockType,
   textblockTypeInputRule,
   toggleBlockType
 } from "tiptap-commands";
+import { EditorView } from "prosemirror-view";
+import CodeMirrorComponent from "@/block/CodeMirrorComponent.vue";
+import { cmRef, dirFocus, isCm } from "@/utils/codemirror";
 
 const arrowHandler = (
   dir: "left" | "right" | "down" | "up" | "backspace" | "delete"
@@ -29,35 +30,14 @@ const arrowHandler = (
         state.doc.resolve(side > 0 ? $head.after() : $head.before()),
         side
       );
-      if (nextPos.$head && nextPos.$head.parent.type.name == "code_mirror") {
-        if (cmRef.value) {
-          cmRef.value.focus();
-          if (side === 1) {
-            cmRef.value.setCursor(0);
-          } else {
-            cmRef.value.setCursor(
-              cmRef.value.lastLine(),
-              cmRef.value.getLine(cmRef.value.lastLine()).length
-            );
-          }
-          return true;
-        }
+      if (isCm(nextPos)) {
+        dirFocus(cmRef(nextPos), side);
+        return true;
       }
     }
     return false;
   };
 };
-
-const arrowHandlers = keymap({
-  ArrowLeft: arrowHandler("left"),
-  ArrowRight: arrowHandler("right"),
-  ArrowUp: arrowHandler("up"),
-  ArrowDown: arrowHandler("down"),
-  Backspace: arrowHandler("backspace"),
-  Delete: arrowHandler("delete")
-});
-
-export const cmRef: { value: null | Editor } = { value: null };
 
 export default class CodeMirrorNode extends Node {
   get name() {
@@ -72,6 +52,11 @@ export default class CodeMirrorNode extends Node {
       code: true,
       defining: true,
       isolating: true,
+      attrs: {
+        cmRef: {
+          default: undefined
+        }
+      },
       parseDOM: [
         {
           tag: "pre",
@@ -88,10 +73,6 @@ export default class CodeMirrorNode extends Node {
     return CodeMirrorComponent;
   }
 
-  get plugins() {
-    return [arrowHandlers];
-  }
-
   commands({
     type,
     schema,
@@ -101,7 +82,19 @@ export default class CodeMirrorNode extends Node {
     schema: NodeSpec;
     attrs: { [p: string]: string };
   }): CommandGetter {
-    return () => toggleBlockType(type, schema.nodes.paragraph);
+    return () => (
+      state: EditorState,
+      dispatch: DispatchFn | undefined,
+      view: EditorView
+    ) => {
+      const result = toggleBlockType(type, schema.nodes.paragraph)(
+        state,
+        dispatch,
+        view
+      );
+      // cursorToEnd(cmRef.value);
+      return result;
+    };
   }
 
   keys({
@@ -112,7 +105,17 @@ export default class CodeMirrorNode extends Node {
     schema: NodeSpec;
   }): { [p: string]: CommandFunction } {
     return {
-      "Shift-Ctrl-\\": setBlockType(type)
+      "Shift-Ctrl-\\": (state, dispatch, view) => {
+        const result = setBlockType(type)(state, dispatch);
+        // cursorToEnd(cmRef.value);
+        return result;
+      },
+      ArrowLeft: arrowHandler("left"),
+      ArrowRight: arrowHandler("right"),
+      ArrowUp: arrowHandler("up"),
+      ArrowDown: arrowHandler("down"),
+      Backspace: arrowHandler("backspace"),
+      Delete: arrowHandler("delete")
     };
   }
 
