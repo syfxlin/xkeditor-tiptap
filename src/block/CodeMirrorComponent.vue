@@ -1,11 +1,11 @@
 <template>
   <div>
     <code-mirror-vue
-      :content.sync="con"
+      :content.sync="code"
       :options.sync="options"
       :cm.sync="cm"
     />
-    <textarea ref="content" hidden></textarea>
+    <div ref="content" v-show="false" contenteditable="false"></div>
   </div>
 </template>
 
@@ -62,7 +62,7 @@ export default defineComponent({
 
     const maybeDelete = () => {
       const view = props.view as EditorView;
-      if (content.value === "") {
+      if (code.value === "") {
         view.dispatch(
           view.state.tr.delete(
             view.state.selection.from - 1,
@@ -93,11 +93,11 @@ export default defineComponent({
       });
     };
 
-    const content = computed({
+    const code = computed({
       get: () => props.node?.textContent,
       set: v => {
-        if (contentRef.value !== undefined) {
-          contentRef.value.textContent = v === undefined ? "" : v;
+        if (content.value !== undefined) {
+          content.value.textContent = v === undefined ? "" : v;
         }
       }
     });
@@ -106,7 +106,7 @@ export default defineComponent({
       extraKeys: codeMirrorKeymap()
     });
     const cm = ref<Editor>();
-    const contentRef = ref<HTMLTextAreaElement>();
+    const content = ref<HTMLTextAreaElement>();
 
     // 将 editor 实例变量设置到 tiptap node 实例中
     watch(cm, () => {
@@ -117,7 +117,7 @@ export default defineComponent({
       }
     });
 
-    return { options, cm, con: content, content: contentRef };
+    return { options, cm, code, content };
   }
 });
 </script>
