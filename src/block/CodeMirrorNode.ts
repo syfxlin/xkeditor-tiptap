@@ -1,25 +1,23 @@
-import {
-  Node as ProsemirrorNode,
-  NodeSpec,
-  NodeType,
-  Schema
-} from "prosemirror-model";
 import { CommandGetter, Editor as TipTapEditor, Node } from "tiptap";
-import { Command } from "prosemirror-commands";
-import { Plugin, Selection } from "prosemirror-state";
 import {
   CommandFunction,
   setBlockType,
   textblockTypeInputRule,
   toggleBlockType
 } from "tiptap-commands";
-import { cmRef, codePasteRules, dirFocus, isCm } from "@/utils/codemirror";
-// @ts-ignore
-import HighlightPlugin from "tiptap-extensions/src/plugins/Highlight";
-// @ts-ignore
-import "highlight.js/styles/solarized-dark.css";
-import CodeMirrorComponent from "@/block/CodeMirrorComponent.vue";
+import {
+  Node as ProsemirrorNode,
+  NodeSpec,
+  NodeType,
+  Schema
+} from "prosemirror-model";
+import { Command } from "prosemirror-commands";
+import { Plugin, Selection } from "prosemirror-state";
 import { defineComponent, ref } from "vue-demi";
+import { cmRef, codePasteRules, dirFocus, isCm } from "@/utils/codemirror";
+import CodeMirrorComponent from "@/block/CodeMirrorComponent.vue";
+import HighlightPlugin from "@/block/Highlight";
+import "prismjs/themes/prism-okaidia.css";
 
 const arrowHandler = (
   dir: "left" | "right" | "down" | "up" | "backspace" | "delete"
@@ -83,7 +81,6 @@ export default class CodeMirrorNode extends Node {
   }
 
   get view() {
-    // return CodeMirrorComponent;
     return defineComponent({
       components: {
         CodeMirrorComponent
@@ -119,7 +116,7 @@ export default class CodeMirrorNode extends Node {
               :selected="selected"
               :editor="editor"
               :get-pos="getPos"
-              decorations="decorations"
+              :decorations="decorations"
               :content-ref="content"
           />
           <pre v-show="!isEditor"><code ref="content"></code></pre>
