@@ -1,5 +1,10 @@
-import { NodeSpec, NodeType, Schema } from "prosemirror-model";
-import { CommandGetter, Node } from "tiptap";
+import {
+  Node as ProsemirrorNode,
+  NodeSpec,
+  NodeType,
+  Schema
+} from "prosemirror-model";
+import { CommandGetter, Editor as TipTapEditor, Node } from "tiptap";
 import { Command } from "prosemirror-commands";
 import { Plugin, Selection } from "prosemirror-state";
 import {
@@ -8,8 +13,13 @@ import {
   textblockTypeInputRule,
   toggleBlockType
 } from "tiptap-commands";
-import CodeMirrorComponent from "@/block/CodeMirrorComponent.vue";
 import { cmRef, codePasteRules, dirFocus, isCm } from "@/utils/codemirror";
+// @ts-ignore
+import HighlightPlugin from "tiptap-extensions/src/plugins/Highlight";
+// @ts-ignore
+import "highlight.js/styles/solarized-dark.css";
+import CodeMirrorComponent from "@/block/CodeMirrorComponent.vue";
+import { defineComponent, ref } from "vue-demi";
 
 const arrowHandler = (
   dir: "left" | "right" | "down" | "up" | "backspace" | "delete"
@@ -73,7 +83,49 @@ export default class CodeMirrorNode extends Node {
   }
 
   get view() {
-    return CodeMirrorComponent;
+    // return CodeMirrorComponent;
+    return defineComponent({
+      components: {
+        CodeMirrorComponent
+      },
+      props: {
+        node: ProsemirrorNode,
+        updateAttrs: Function,
+        view: Object,
+        options: Object,
+        selected: Boolean,
+        editor: TipTapEditor,
+        getPos: Function,
+        decorations: Array
+      },
+      setup() {
+        const isEditor = ref(true);
+        const content = ref<HTMLElement>();
+        const sw = () => {
+          isEditor.value = !isEditor.value;
+        };
+
+        return { isEditor, content, sw };
+      },
+      template: `
+        <div contenteditable="false">
+          <button @click="sw">Switch</button>
+          <code-mirror-component
+              v-show="isEditor"
+              :node="node"
+              :update-attrs="updateAttrs"
+              :view="view"
+              :options="options"
+              :selected="selected"
+              :editor="editor"
+              :get-pos="getPos"
+              decorations="decorations"
+              :content-ref="content"
+          />
+          <pre v-show="!isEditor"><code ref="content"></code></pre>
+        </div>
+      `
+    });
   }
 
   commands({
@@ -112,5 +164,9 @@ export default class CodeMirrorNode extends Node {
 
   pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {
     return [codePasteRules(type, schema)];
+  }
+
+  get plugins() {
+    return [HighlightPlugin({ name: this.name })];
   }
 }

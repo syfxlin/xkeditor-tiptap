@@ -6,7 +6,6 @@ import {
   BulletList,
   Code,
   CodeBlock,
-  CodeBlockHighlight,
   Collaboration,
   Focus,
   HardBreak,
@@ -32,6 +31,7 @@ import {
   Underline
 } from "tiptap-extensions";
 import { ExtensionOption } from "tiptap";
+import CodeBlockHighlight from "@/block/CodeBlockHighlight";
 
 const EXTENSIONS = {
   iframe: IframeNode,
@@ -74,6 +74,7 @@ const DEFAULT_EXTENSION_CONFIG: { [key in ExtensionNames]?: any } = {
 const DEFAULT_EXTENSIONS = [
   "iframe",
   "codeMirror",
+  // "codeBlockHighlight",
   "blockquote",
   "hardBreak",
   "heading",

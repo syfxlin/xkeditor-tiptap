@@ -5,7 +5,7 @@
       :options.sync="options"
       :cm.sync="cm"
     />
-    <div ref="content" v-show="false" contenteditable="false"></div>
+    <!--<div ref="content" v-show="false" contenteditable="false"></div>-->
   </div>
 </template>
 
@@ -32,7 +32,8 @@ export default defineComponent({
     view: Object,
     getPos: Function,
     updateAttrs: Function,
-    editor: TipTapEditor
+    editor: TipTapEditor,
+    contentRef: HTMLElement
   },
   setup(props) {
     const maybeEscape = (unit: string, dir: 1 | -1) => {
@@ -96,8 +97,8 @@ export default defineComponent({
     const code = computed({
       get: () => props.node?.textContent,
       set: v => {
-        if (content.value !== undefined) {
-          content.value.textContent = v === undefined ? "" : v;
+        if (props.contentRef !== undefined) {
+          props.contentRef.textContent = v === undefined ? "" : v;
         }
       }
     });
@@ -106,7 +107,6 @@ export default defineComponent({
       extraKeys: codeMirrorKeymap()
     });
     const cm = ref<Editor>();
-    const content = ref<HTMLTextAreaElement>();
 
     // 将 editor 实例变量设置到 tiptap node 实例中
     watch(cm, () => {
@@ -117,7 +117,7 @@ export default defineComponent({
       }
     });
 
-    return { options, cm, code, content };
+    return { options, cm, code };
   }
 });
 </script>
