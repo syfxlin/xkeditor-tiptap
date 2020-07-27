@@ -74,9 +74,32 @@ export default class CodeMirrorNode extends Node {
         {
           tag: "pre",
           preserveWhitespace: "full",
-          getAttrs: dom => ({
-            language: (dom as HTMLElement).getAttribute("data-language")
-          })
+          contentElement: node => {
+            const dom = node as HTMLPreElement;
+            if (
+              dom.children.length === 1 &&
+              dom.children[0].tagName.toLowerCase() === "code"
+            ) {
+              return dom.children[0];
+            }
+            return dom;
+          },
+          getAttrs: node => {
+            const dom = node as HTMLElement;
+            let language = dom.getAttribute("data-language");
+            if (language === null) {
+              language = dom.getAttribute("language");
+            }
+            if (language === null) {
+              const match = dom.className.match(/lang(uage|)[-_]([^ ]+)/);
+              if (match && match.length > 2) {
+                language = match[2];
+              }
+            }
+            return {
+              language
+            };
+          }
         }
       ],
       toDOM(node) {
@@ -102,10 +125,10 @@ export default class CodeMirrorNode extends Node {
       },
       setup(props) {
         const content = ref<HTMLElement>();
-        const sw = () => {
-          if (props.updateAttrs && props.node) {
+        const edit = () => {
+          if (props.updateAttrs) {
             props.updateAttrs({
-              isEditing: !props.node.attrs.idEditing
+              isEditing: true
             });
           }
         };
@@ -122,7 +145,7 @@ export default class CodeMirrorNode extends Node {
           () => props.node?.textContent.split("\n").length
         );
 
-        return { content, sw, blur, lines };
+        return { content, edit, blur, lines };
       },
       template: `
         <div contenteditable="false"><code-mirror-component
@@ -142,7 +165,7 @@ export default class CodeMirrorNode extends Node {
               <code ref="content"></code>
             </pre><div class="toolbar">
               <div class="toolbar-item"><span>{{node.attrs.language}}</span></div>
-              <div class="toolbar-item toolbar-action"><span @click="sw">Switch</span></div>
+              <div class="toolbar-item toolbar-action"><span @click="edit">Edit</span></div>
             </div></div></div>
       `
     });

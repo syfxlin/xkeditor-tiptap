@@ -40,7 +40,7 @@ function getDecorations({ doc, name }: { doc: Node; name: string }) {
     let startPos = block.pos + 1;
     const nodes = refractor.highlight(
       block.node.textContent,
-      block.node.attrs.language
+      block.node.attrs.language || "markup"
     );
 
     flatten(parseNodes(nodes))

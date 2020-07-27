@@ -26,7 +26,11 @@ export function cursorToEnd(cm: Editor | undefined | null) {
 }
 
 export function isCm(pos: Selection) {
-  return pos.$head && pos.$head.parent.type.name == "code_mirror";
+  return (
+    pos.$head &&
+    pos.$head.parent.type.name == "code_mirror" &&
+    pos.$head.parent.attrs.isEditing
+  );
 }
 
 export function cmRef(pos: Selection) {
