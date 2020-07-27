@@ -13,11 +13,13 @@ import {
 } from "prosemirror-model";
 import { Command } from "prosemirror-commands";
 import { Plugin, Selection } from "prosemirror-state";
-import { defineComponent, ref } from "vue-demi";
+import { computed, defineComponent, ref } from "vue-demi";
 import { cmRef, codePasteRules, dirFocus, isCm } from "@/utils/codemirror";
 import CodeMirrorComponent from "@/block/CodeMirrorComponent.vue";
 import HighlightPlugin from "@/block/Highlight";
 import "prismjs/themes/prism-okaidia.css";
+import "prismjs/plugins/toolbar/prism-toolbar.css";
+import "prismjs/plugins/line-numbers/prism-line-numbers.css";
 
 const arrowHandler = (
   dir: "left" | "right" | "down" | "up" | "backspace" | "delete"
@@ -63,6 +65,9 @@ export default class CodeMirrorNode extends Node {
         },
         language: {
           default: null
+        },
+        isEditing: {
+          default: true
         }
       },
       parseDOM: [
@@ -95,20 +100,33 @@ export default class CodeMirrorNode extends Node {
         getPos: Function,
         decorations: Array
       },
-      setup() {
-        const isEditor = ref(true);
+      setup(props) {
         const content = ref<HTMLElement>();
         const sw = () => {
-          isEditor.value = !isEditor.value;
+          if (props.updateAttrs && props.node) {
+            props.updateAttrs({
+              isEditing: !props.node.attrs.idEditing
+            });
+          }
         };
 
-        return { isEditor, content, sw };
+        const blur = () => {
+          if (props.updateAttrs) {
+            props.updateAttrs({
+              isEditing: false
+            });
+          }
+        };
+
+        const lines = computed(
+          () => props.node?.textContent.split("\n").length
+        );
+
+        return { content, sw, blur, lines };
       },
       template: `
-        <div contenteditable="false">
-          <button @click="sw">Switch</button>
-          <code-mirror-component
-              v-show="isEditor"
+        <div contenteditable="false"><code-mirror-component
+              v-show="node.attrs.isEditing"
               :node="node"
               :update-attrs="updateAttrs"
               :view="view"
@@ -118,9 +136,14 @@ export default class CodeMirrorNode extends Node {
               :get-pos="getPos"
               :decorations="decorations"
               :content-ref="content"
-          />
-          <pre v-show="!isEditor"><code ref="content"></code></pre>
-        </div>
+              @blur="blur"
+          /><div class="code-toolbar"><pre class="line-numbers" v-show="!node.attrs.isEditing">
+              <span aria-hidden="true" class="line-numbers-rows"><span v-for="n in lines"></span></span>
+              <code ref="content"></code>
+            </pre><div class="toolbar">
+              <div class="toolbar-item"><span>{{node.attrs.language}}</span></div>
+              <div class="toolbar-item toolbar-action"><span @click="sw">Switch</span></div>
+            </div></div></div>
       `
     });
   }

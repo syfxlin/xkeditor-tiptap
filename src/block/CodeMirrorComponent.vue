@@ -4,6 +4,7 @@
       :content.sync="code"
       :options.sync="options"
       :cm.sync="cm"
+      @blur="blur"
     />
     <!--<div ref="content" v-show="false" contenteditable="false"></div>-->
   </div>
@@ -35,7 +36,7 @@ export default defineComponent({
     editor: TipTapEditor,
     contentRef: HTMLElement
   },
-  setup(props) {
+  setup(props, ctx) {
     const maybeEscape = (unit: string, dir: 1 | -1) => {
       const view = props.view as EditorView;
       const codemirror = cm.value as Editor;
@@ -117,7 +118,11 @@ export default defineComponent({
       }
     });
 
-    return { options, cm, code };
+    const blur = () => {
+      ctx.emit("blur", cm.value);
+    };
+
+    return { options, cm, code, blur };
   }
 });
 </script>

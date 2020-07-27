@@ -19,6 +19,7 @@
       color: $color-white;
       font-size: 0.8rem;
       overflow-x: auto;
+      white-space: pre;
 
       code {
         display: block;
@@ -122,6 +123,35 @@
     .resize-cursor {
       cursor: ew-resize;
       cursor: col-resize;
+    }
+
+    .line-numbers {
+      display: flex;
+      padding-left: 0;
+
+      code {
+        padding-left: 1em;
+      }
+
+      .line-numbers-rows {
+        left: 0;
+        position: relative;
+
+        span {
+          width: 3em;
+        }
+      }
+    }
+
+    .toolbar {
+      .toolbar-item {
+        &:hover span {
+          color: #bbb;
+        }
+      }
+      .toolbar-action {
+        cursor: pointer;
+      }
     }
   }
 

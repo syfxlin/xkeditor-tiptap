@@ -19,7 +19,9 @@ function getDecorations({ doc, name }: { doc: Node; name: string }) {
     return nodes.map((node: any) => {
       const classes = [
         ...className,
-        ...(node.properties ? node.properties.className : [])
+        ...(node.properties && node.properties.className
+          ? node.properties.className
+          : [])
       ];
 
       if (node.children) {
