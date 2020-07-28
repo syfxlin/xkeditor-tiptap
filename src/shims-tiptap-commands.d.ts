@@ -64,6 +64,8 @@ declare module "tiptap-commands" {
 
   export function insertText(text: string): CommandFunction;
 
+  export function markInputRule(regexp: RegExp, markType: MarkType): InputRule;
+
   export function markInputRule(
     regexp: RegExp,
     markType: MarkType,
@@ -72,9 +74,19 @@ declare module "tiptap-commands" {
 
   export function markPasteRule(
     regexp: RegExp,
+    type: MarkType | NodeType
+  ): Plugin;
+
+  export function markPasteRule(
+    regexp: RegExp,
     type: MarkType | NodeType,
     getAttrs: Function
   ): Plugin;
+
+  export function nodeInputRule(
+    regexp: RegExp,
+    type: MarkType | NodeType
+  ): InputRule;
 
   export function nodeInputRule(
     regexp: RegExp,
@@ -85,6 +97,8 @@ declare module "tiptap-commands" {
   export function removeMark(type: MarkType | NodeType): CommandFunction;
 
   export function toggleWrap(type: NodeType): Command;
+
+  export function pasteRule(regexp: RegExp, type: MarkType | NodeType): Plugin;
 
   export function pasteRule(
     regexp: RegExp,

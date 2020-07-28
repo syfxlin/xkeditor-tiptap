@@ -1,5 +1,4 @@
 import { CommandGetter, Node } from "tiptap";
-import low from "lowlight";
 import {
   CommandFunction,
   setBlockType,
@@ -7,18 +6,10 @@ import {
   toggleBlockType
 } from "tiptap-commands";
 import { NodeSpec, NodeType, Schema } from "prosemirror-model";
-// @ts-ignore
-import HighlightPlugin from "tiptap-extensions/src/plugins/Highlight";
-// @ts-ignore
-import js from "highlight.js/lib/languages/javascript";
+import HighlightPlugin from "@/block/Highlight";
 import "highlight.js/styles/solarized-dark.css";
 
 export default class CodeBlockHighlight extends Node {
-  constructor() {
-    super();
-    low.registerLanguage(name, js);
-  }
-
   get name() {
     return "code_block";
   }

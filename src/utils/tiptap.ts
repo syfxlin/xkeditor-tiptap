@@ -32,10 +32,9 @@ import {
 } from "tiptap-extensions";
 import { ExtensionOption } from "tiptap";
 import CodeBlockHighlight from "@/block/CodeBlockHighlight";
+import ColorMark from "@/block/ColorMark";
 
 const EXTENSIONS = {
-  iframe: IframeNode,
-  codeMirror: CodeMirrorNode,
   blockquote: Blockquote,
   codeBlock: CodeBlock,
   hardBreak: HardBreak,
@@ -52,7 +51,6 @@ const EXTENSIONS = {
   strike: Strike,
   underline: Underline,
   history: History,
-  codeBlockHighlight: CodeBlockHighlight,
   collaboration: Collaboration,
   focus: Focus,
   image: Image,
@@ -64,7 +62,12 @@ const EXTENSIONS = {
   tableCell: TableCell,
   tableHeader: TableHeader,
   tableRow: TableRow,
-  trailing: TrailingNode
+  trailing: TrailingNode,
+
+  color: ColorMark,
+  iframe: IframeNode,
+  codeMirror: CodeMirrorNode,
+  codeBlockHighlight: CodeBlockHighlight
 };
 
 const DEFAULT_EXTENSION_CONFIG: { [key in ExtensionNames]?: any } = {
@@ -72,9 +75,6 @@ const DEFAULT_EXTENSION_CONFIG: { [key in ExtensionNames]?: any } = {
 };
 
 const DEFAULT_EXTENSIONS = [
-  "iframe",
-  "codeMirror",
-  // "codeBlockHighlight",
   "blockquote",
   "hardBreak",
   "heading",
@@ -101,7 +101,12 @@ const DEFAULT_EXTENSIONS = [
   "tableCell",
   "tableHeader",
   "tableRow",
-  "trailing"
+  "trailing",
+
+  "iframe",
+  "codeMirror",
+  // "codeBlockHighlight",
+  "color"
 ];
 
 type ExtensionNames = keyof typeof EXTENSIONS;

@@ -48,6 +48,7 @@ export default defineComponent({
           function max(a, b) {
             return a > b ? a : b
           }</pre>
+          <span style="color: #aaddff">color</span>
         `
       })
     );
