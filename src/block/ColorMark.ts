@@ -5,7 +5,9 @@ import { Plugin } from "prosemirror-state";
 import markInputRule from "@/utils/markInputRule";
 import markPasteRule from "@/utils/markPasteRule";
 
-const DEFAULT_COLORS = {
+const DEFAULT_FOREGROUND = "rgb(55, 53, 47)";
+
+const DEFAULT_BACKGROUND = {
   gray: "rgba(206, 205, 202, 0.5)",
   brown: "rgba(155, 154, 151, 0.4)",
   orange: "rgba(245, 93, 0, 0.2)",
@@ -26,11 +28,11 @@ const getColorAttrs = (match: string[]) => {
     };
   } else {
     // @ts-ignore
-    if (DEFAULT_COLORS[match[2]] !== undefined) {
+    if (DEFAULT_BACKGROUND[match[2]] !== undefined) {
       return {
-        color: "rgb(55, 53, 47)",
+        color: DEFAULT_FOREGROUND,
         // @ts-ignore
-        background: DEFAULT_COLORS[match[2]]
+        background: DEFAULT_BACKGROUND[match[2]]
       };
     } else {
       return {
@@ -88,7 +90,10 @@ export default class ColorMark extends Mark {
     schema: MarkSpec;
   }): { [p: string]: CommandFunction } {
     return {
-      "Mod-Shift-c": toggleMark(type)
+      "Mod-Shift-c": toggleMark(type, {
+        color: DEFAULT_FOREGROUND,
+        background: DEFAULT_BACKGROUND.blue
+      })
     };
   }
 
@@ -101,7 +106,11 @@ export default class ColorMark extends Mark {
     schema: MarkSpec;
     attrs: { [p: string]: string };
   }): CommandGetter {
-    return () => toggleMark(type);
+    return options =>
+      toggleMark(type, {
+        color: options.color || "",
+        background: options.background || ""
+      });
   }
 
   inputRules({ type, schema }: { type: MarkType; schema: Schema }): any[] {

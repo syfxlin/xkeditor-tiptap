@@ -35,6 +35,13 @@ export default defineComponent({
       {
         name: "italic",
         icon: "italic"
+      },
+      {
+        name: "color",
+        icon: "italic",
+        options: {
+          color: "blue"
+        }
       }
     ];
     const extensions = useExtensions();

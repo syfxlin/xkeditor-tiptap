@@ -24,7 +24,11 @@ export default function(
         const isLink = !!marks.filter(x => x.type.name === "link")[0];
 
         // eslint-disable-next-line
-        while (!isLink && text && (match = regexp.exec(text)) !== null) {
+        while (
+          !isLink &&
+          text &&
+          (match = regexp.exec(text.substring(pos))) !== null
+        ) {
           if (parent && parent.type.allowsMarkType(type) && match.length > 1) {
             const attrs =
               getAttrs instanceof Function ? getAttrs(match) : getAttrs;
@@ -54,10 +58,6 @@ export default function(
             );
 
             pos = end;
-          }
-          // fix endless loop
-          if (pos >= text.length) {
-            break;
           }
         }
 

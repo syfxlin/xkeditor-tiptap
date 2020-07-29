@@ -33,6 +33,8 @@ import {
 import { ExtensionOption } from "tiptap";
 import CodeBlockHighlight from "@/block/CodeBlockHighlight";
 import ColorMark from "@/block/ColorMark";
+import EmojiExtension from "@/block/EmojiExtension";
+import { Fragment } from "prosemirror-model";
 
 const EXTENSIONS = {
   blockquote: Blockquote,
@@ -67,7 +69,8 @@ const EXTENSIONS = {
   color: ColorMark,
   iframe: IframeNode,
   codeMirror: CodeMirrorNode,
-  codeBlockHighlight: CodeBlockHighlight
+  codeBlockHighlight: CodeBlockHighlight,
+  emoji: EmojiExtension
 };
 
 const DEFAULT_EXTENSION_CONFIG: { [key in ExtensionNames]?: any } = {
@@ -106,7 +109,8 @@ const DEFAULT_EXTENSIONS = [
   "iframe",
   "codeMirror",
   // "codeBlockHighlight",
-  "color"
+  "color",
+  "emoji"
 ];
 
 type ExtensionNames = keyof typeof EXTENSIONS;
@@ -146,4 +150,18 @@ export function useExtensions(
     extensions.push(new EXTENSIONS[configName](configs[configName]));
   }
   return extensions;
+}
+
+export function fragToContent(fragment: Fragment) {
+  let content = "";
+
+  fragment.forEach(child => {
+    if (child.isText) {
+      content += child.text;
+    } else {
+      content += fragToContent(child.content) + "\n";
+    }
+  });
+
+  return content;
 }
