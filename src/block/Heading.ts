@@ -5,7 +5,8 @@ import {
   textblockTypeInputRule,
   toggleBlockType
 } from "tiptap-commands";
-import { NodeSpec, NodeType, Schema } from "@/utils/prosemirror";
+import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
+import nodeInlinePasteRule from "@/utils/nodeInlinePasteRule";
 
 export default class Heading extends Node {
   get name() {
@@ -75,5 +76,14 @@ export default class Heading extends Node {
     );
   }
 
-  // pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {}
+  pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {
+    return this.options.levels.map((level: number) =>
+      nodeInlinePasteRule(
+        new RegExp(`^#{1,${level}}\\s(.*)`),
+        type,
+        match => match[1],
+        () => ({ level })
+      )
+    );
+  }
 }

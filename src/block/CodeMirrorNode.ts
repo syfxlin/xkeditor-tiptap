@@ -21,7 +21,7 @@ import HighlightPlugin from "@/block/Highlight";
 import "prismjs/themes/prism-okaidia.css";
 import "prismjs/plugins/toolbar/prism-toolbar.css";
 import "prismjs/plugins/line-numbers/prism-line-numbers.css";
-import { codePasteRule } from "@/utils/codePasteRule";
+import { nodePasteRule } from "@/utils/nodePasteRule";
 
 const arrowHandler = (
   dir: "left" | "right" | "down" | "up" | "backspace" | "delete"
@@ -208,7 +208,19 @@ export default class CodeMirrorNode extends Node {
   }
 
   pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {
-    return [codePasteRule(type, schema)];
+    return [
+      nodePasteRule(
+        /^```([a-zA-Z0-9]*)/,
+        /```$/,
+        type,
+        content => {
+          const match = content.match(/```([a-zA-Z0-9]*)\n([\w\W]*)\n```\n?/);
+          // @ts-ignore
+          return match[2];
+        },
+        (content, match) => ({ language: match[1] })
+      )
+    ];
   }
 
   get plugins() {
