@@ -1,16 +1,27 @@
-import {CommandGetter, Editor as TipTapEditor, Node} from "tiptap";
-import {CommandFunction, setBlockType, textblockTypeInputRule, toggleBlockType} from "tiptap-commands";
-import {Node as ProsemirrorNode, NodeSpec, NodeType, Schema} from "prosemirror-model";
-import {Command} from "prosemirror-commands";
-import {Plugin, Selection} from "prosemirror-state";
-import {computed, defineComponent, ref} from "vue-demi";
-import {cmRef, dirFocus, isCm} from "@/utils/codemirror";
+import { CommandGetter, Editor as TipTapEditor, Node } from "tiptap";
+import {
+  CommandFunction,
+  setBlockType,
+  textblockTypeInputRule,
+  toggleBlockType
+} from "tiptap-commands";
+import {
+  Command,
+  Node as ProsemirrorNode,
+  NodeSpec,
+  NodeType,
+  Plugin,
+  Schema,
+  Selection
+} from "@/utils/prosemirror";
+import { computed, defineComponent, ref } from "vue-demi";
+import { cmRef, dirFocus, isCm } from "@/utils/codemirror";
 import CodeMirrorComponent from "@/block/CodeMirrorComponent.vue";
 import HighlightPlugin from "@/block/Highlight";
 import "prismjs/themes/prism-okaidia.css";
 import "prismjs/plugins/toolbar/prism-toolbar.css";
 import "prismjs/plugins/line-numbers/prism-line-numbers.css";
-import {codePasteRule} from "@/utils/codePasteRule";
+import { codePasteRule } from "@/utils/codePasteRule";
 
 const arrowHandler = (
   dir: "left" | "right" | "down" | "up" | "backspace" | "delete"

@@ -1,5 +1,4 @@
-import { Fragment, NodeType, Schema, Slice } from "prosemirror-model";
-import { Plugin } from "prosemirror-state";
+import { Fragment, NodeType, Plugin, Schema, Slice } from "@/utils/prosemirror";
 import { fragToContent } from "@/utils/tiptap";
 
 export function codePasteRule(type: NodeType, schema: Schema) {

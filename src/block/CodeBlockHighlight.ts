@@ -5,7 +5,7 @@ import {
   textblockTypeInputRule,
   toggleBlockType
 } from "tiptap-commands";
-import { NodeSpec, NodeType, Schema } from "prosemirror-model";
+import { NodeSpec, NodeType, Schema } from "@/utils/prosemirror";
 import HighlightPlugin from "@/block/Highlight";
 import "highlight.js/styles/solarized-dark.css";
 

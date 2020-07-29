@@ -1,7 +1,6 @@
 import { CommandGetter, Mark } from "tiptap";
-import { MarkSpec, MarkType, Schema } from "prosemirror-model";
+import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
 import { CommandFunction, toggleMark } from "tiptap-commands";
-import { Plugin } from "prosemirror-state";
 import markInputRule from "@/utils/markInputRule";
 import markPasteRule from "@/utils/markPasteRule";
 

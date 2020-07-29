@@ -1,5 +1,5 @@
 import { Editor } from "codemirror";
-import { Selection } from "prosemirror-state";
+import { Selection } from "@/utils/prosemirror";
 
 export function focus(cm: Editor | undefined | null) {
   if (cm === undefined || cm === null) {

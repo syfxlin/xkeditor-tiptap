@@ -1,5 +1,4 @@
-import { NodeType } from "prosemirror-model";
-import { InputRule } from "prosemirror-inputrules";
+import { InputRule, NodeType } from "@/utils/prosemirror";
 
 export default function(
   regexp: RegExp,

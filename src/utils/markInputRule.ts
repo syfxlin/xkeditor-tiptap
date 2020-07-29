@@ -1,5 +1,4 @@
-import { InputRule } from "prosemirror-inputrules";
-import { MarkType } from "prosemirror-model";
+import { InputRule, MarkType } from "@/utils/prosemirror";
 
 export default function(
   regexp: RegExp,

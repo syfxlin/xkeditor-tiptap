@@ -9,7 +9,6 @@ import {
   Collaboration,
   Focus,
   HardBreak,
-  Heading,
   History,
   HorizontalRule,
   Image,
@@ -34,13 +33,13 @@ import { ExtensionOption } from "tiptap";
 import CodeBlockHighlight from "@/block/CodeBlockHighlight";
 import ColorMark from "@/block/ColorMark";
 import EmojiExtension from "@/block/EmojiExtension";
-import { Fragment } from "prosemirror-model";
+import { Fragment } from "@/utils/prosemirror";
+import Heading from "@/block/Heading";
 
 const EXTENSIONS = {
   blockquote: Blockquote,
   codeBlock: CodeBlock,
   hardBreak: HardBreak,
-  heading: Heading,
   bulletList: BulletList,
   orderedList: OrderedList,
   listItem: ListItem,
@@ -66,6 +65,10 @@ const EXTENSIONS = {
   tableRow: TableRow,
   trailing: TrailingNode,
 
+  // change
+  heading: Heading,
+
+  // custom
   color: ColorMark,
   iframe: IframeNode,
   codeMirror: CodeMirrorNode,

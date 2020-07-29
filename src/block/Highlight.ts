@@ -1,7 +1,10 @@
-import { Node } from "prosemirror-model";
-import { Plugin } from "prosemirror-state";
-import { Decoration, DecorationSet } from "prosemirror-view";
-import { findBlockNodes } from "prosemirror-utils";
+import {
+  Decoration,
+  DecorationSet,
+  findBlockNodes,
+  Node,
+  Plugin
+} from "@/utils/prosemirror";
 import refractor from "refractor";
 
 function getDecorations({ doc, name }: { doc: Node; name: string }) {

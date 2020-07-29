@@ -12,14 +12,17 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from "vue-demi";
-import { Node as ProsemirrorNode } from "prosemirror-model";
+import {
+  EditorView,
+  exitCode,
+  Node as ProsemirrorNode,
+  redo,
+  Selection,
+  undo
+} from "@/utils/prosemirror";
 import CodeMirrorVue from "@/components/CodeMirror.vue";
 import "codemirror/mode/javascript/javascript";
 import CodeMirror, { Editor } from "codemirror";
-import { EditorView } from "prosemirror-view";
-import { Selection } from "prosemirror-state";
-import { redo, undo } from "prosemirror-history";
-import { exitCode } from "prosemirror-commands";
 import { Editor as TipTapEditor } from "tiptap";
 import { cmRef, dirFocus, isCm } from "@/utils/codemirror";
 

@@ -1,5 +1,4 @@
-import { Plugin } from "prosemirror-state";
-import { Fragment, MarkType, Node, Slice } from "prosemirror-model";
+import { Fragment, MarkType, Node, Plugin, Slice } from "@/utils/prosemirror";
 
 export default function(
   regexp: RegExp,

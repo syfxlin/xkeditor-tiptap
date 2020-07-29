@@ -1,8 +1,13 @@
 import { Extension } from "tiptap";
-import { Plugin } from "prosemirror-state";
-import { Fragment, Node, Schema, Slice } from "prosemirror-model";
+import {
+  Fragment,
+  InputRule,
+  Node,
+  Plugin,
+  Schema,
+  Slice
+} from "@/utils/prosemirror";
 import { EmojiConvertor } from "emoji-js";
-import { InputRule } from "prosemirror-inputrules";
 
 const emojiConverter = new EmojiConvertor();
 // eslint-disable-next-line
