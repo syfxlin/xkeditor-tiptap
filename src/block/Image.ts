@@ -17,8 +17,7 @@ import inlineNodePasteRule from "@/utils/inlineNodePasteRule";
  * ![](image.jpg "Ipsum") -> [, "", "image.jpg", "Ipsum"]
  * ![Lorem](image.jpg "Ipsum") -> [, "Lorem", "image.jpg", "Ipsum"]
  */
-// @ts-ignore TODO: title
-const IMAGE_INPUT_REGEX = /!\[([^\]]*)]\(([^)]*)\)/;
+const IMAGE_INPUT_REGEX = /!\[([^\]]*)]\(([^)"]*)(?:(?:\s+)["'](\S+)["'])?\)/;
 
 export default class Image extends Node {
   get name() {
