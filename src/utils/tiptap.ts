@@ -9,7 +9,6 @@ import {
   Focus,
   HardBreak,
   History,
-  HorizontalRule,
   Italic,
   Link,
   ListItem,
@@ -35,6 +34,7 @@ import { Fragment } from "@/utils/prosemirror";
 import Heading from "@/block/Heading";
 import Blockquote from "@/block/Blockquote";
 import Image from "@/block/Image";
+import HorizontalRule from "@/block/HorizontalRule";
 
 const EXTENSIONS = {
   codeBlock: CodeBlock,
@@ -82,6 +82,7 @@ const DEFAULT_EXTENSION_CONFIG: { [key in ExtensionNames]?: any } = {
 
 const DEFAULT_EXTENSIONS = [
   // TODO: 预先定义加载顺序
+  "horizontalRule",
   "iframe",
   "codeMirror",
   // "codeBlockHighlight",
@@ -106,7 +107,6 @@ const DEFAULT_EXTENSIONS = [
   "history",
   "collaboration",
   "focus",
-  "horizontalRule",
   "mention",
   "placeholder",
   "search",

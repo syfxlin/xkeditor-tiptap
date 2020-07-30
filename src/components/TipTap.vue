@@ -62,6 +62,9 @@ export default defineComponent({
     onBeforeUnmount(() => {
       editor.destroy();
     });
+    // TODO: remove
+    // @ts-ignore
+    window.editor = editor;
     return { editor, menus };
   }
 });

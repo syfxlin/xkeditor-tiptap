@@ -214,9 +214,9 @@ export default class CodeMirrorNode extends Node {
         /```$/,
         type,
         content => {
-          const match = content.match(/```([a-zA-Z0-9]*)\n([\w\W]*)\n```\n?/);
+          const match = content.match(/```([a-zA-Z0-9]*)\n?([\w\W]*)\n```\n?/);
           // @ts-ignore
-          return match[2];
+          return match[2] === "" ? null : match[2];
         },
         (content, match) => ({ language: match[1] })
       )

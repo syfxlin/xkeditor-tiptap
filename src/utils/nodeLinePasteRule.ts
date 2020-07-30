@@ -59,6 +59,11 @@ export default function(
         nodes.push(child);
       }
     });
+
+    if (nodes.length !== 0 && nodes[nodes.length - 1].isAtom) {
+      nodes.push(type.schema.node("paragraph"));
+    }
+
     return Fragment.fromArray(
       nodes.map(node =>
         node.isInline || node.isText
