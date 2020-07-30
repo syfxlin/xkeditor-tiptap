@@ -4,7 +4,9 @@ declare module "tiptap-commands" {
   import { InputRule } from "prosemirror-inputrules";
   import { MarkType, NodeType } from "prosemirror-model";
 
-  type GetAttrs = (() => { [key: string]: any }) | { [key: string]: any };
+  type GetAttrs =
+    | ((match: string[]) => { [key: string]: any })
+    | { [key: string]: any };
 
   export {
     chainCommands,
@@ -96,7 +98,12 @@ declare module "tiptap-commands" {
 
   export function removeMark(type: MarkType | NodeType): CommandFunction;
 
-  export function toggleWrap(type: NodeType): Command;
+  export function toggleWrap(type: NodeType | MarkType): CommandFunction;
+
+  export function toggleWrap(
+    type: NodeType | MarkType,
+    toggletype: MarkType | NodeType
+  ): CommandFunction;
 
   export function pasteRule(regexp: RegExp, type: MarkType | NodeType): Plugin;
 

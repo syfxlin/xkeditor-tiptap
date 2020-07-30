@@ -1,7 +1,6 @@
 import IframeNode from "@/block/IFrameNode";
 import CodeMirrorNode from "@/block/CodeMirrorNode";
 import {
-  Blockquote,
   Bold,
   BulletList,
   Code,
@@ -11,7 +10,6 @@ import {
   HardBreak,
   History,
   HorizontalRule,
-  Image,
   Italic,
   Link,
   ListItem,
@@ -35,9 +33,10 @@ import ColorMark from "@/block/ColorMark";
 import EmojiExtension from "@/block/EmojiExtension";
 import { Fragment } from "@/utils/prosemirror";
 import Heading from "@/block/Heading";
+import Blockquote from "@/block/Blockquote";
+import Image from "@/block/Image";
 
 const EXTENSIONS = {
-  blockquote: Blockquote,
   codeBlock: CodeBlock,
   hardBreak: HardBreak,
   bulletList: BulletList,
@@ -73,7 +72,8 @@ const EXTENSIONS = {
   iframe: IframeNode,
   codeMirror: CodeMirrorNode,
   codeBlockHighlight: CodeBlockHighlight,
-  emoji: EmojiExtension
+  emoji: EmojiExtension,
+  blockquote: Blockquote
 };
 
 const DEFAULT_EXTENSION_CONFIG: { [key in ExtensionNames]?: any } = {
@@ -81,7 +81,16 @@ const DEFAULT_EXTENSION_CONFIG: { [key in ExtensionNames]?: any } = {
 };
 
 const DEFAULT_EXTENSIONS = [
-  "blockquote",
+  // TODO: 预先定义加载顺序
+  "iframe",
+  "codeMirror",
+  // "codeBlockHighlight",
+  "color",
+  "emoji",
+  "blockquote", // 在 blockquote 中使用 heading，heading 就必须先解析
+  "heading",
+  "image",
+
   "hardBreak",
   "bulletList",
   "orderedList",
@@ -97,7 +106,6 @@ const DEFAULT_EXTENSIONS = [
   "history",
   "collaboration",
   "focus",
-  "image",
   "horizontalRule",
   "mention",
   "placeholder",
@@ -106,14 +114,7 @@ const DEFAULT_EXTENSIONS = [
   "tableCell",
   "tableHeader",
   "tableRow",
-  "trailing",
-
-  "iframe",
-  "codeMirror",
-  "heading",
-  // "codeBlockHighlight",
-  "color",
-  "emoji"
+  "trailing"
 ];
 
 type ExtensionNames = keyof typeof EXTENSIONS;

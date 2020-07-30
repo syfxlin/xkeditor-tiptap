@@ -1,5 +1,4 @@
-import { Fragment, Node, Plugin, Slice } from "@/utils/prosemirror";
-import { NodeType } from "prosemirror-model";
+import { Fragment, Node, NodeType, Plugin, Slice } from "@/utils/prosemirror";
 
 export function nodePasteRule(
   startRegExp: RegExp,
@@ -10,9 +9,11 @@ export function nodePasteRule(
         content: string,
         startMatch: string[],
         endMatch: string[],
+        attrs: { [attr: string]: any },
         childNodes: Node[]
-      ) => string | Node)
+      ) => string | Node | null)
     | string
+    | null
     | number = 0,
   getAttrs:
     | ((
@@ -55,20 +56,35 @@ export function nodePasteRule(
             getAttrs instanceof Function
               ? getAttrs(fragContent, startMatch, match, childNodes)
               : getAttrs;
-          let content: Node | string;
+          let content: Node | string | undefined | null;
           if (getContent instanceof Function) {
-            content = getContent(fragContent, startMatch, match, childNodes);
+            content = getContent(
+              fragContent,
+              startMatch,
+              match,
+              attrs,
+              childNodes
+            );
           } else if (typeof getContent === "string") {
             content = getContent;
-          } else {
+          } else if (typeof getContent === "number") {
             content = match[getContent];
+          } else {
+            content = getContent;
+          }
+          if (content === null) {
+            content = type.create(attrs);
           }
           if (typeof content === "string") {
-            content = type.schema.text(content);
+            content = type.create(
+              attrs,
+              type.schema.text(content),
+              child.marks
+            );
           }
 
           // @ts-ignore
-          nodes.push(type.create(attrs, content, child.marks));
+          nodes.push(content);
 
           nodes.push(child.cut(endIndex));
 
@@ -84,7 +100,13 @@ export function nodePasteRule(
       nodes.push(...childNodes);
     }
 
-    return Fragment.fromArray(nodes);
+    return Fragment.fromArray(
+      nodes.map(node =>
+        node.isInline || node.isText
+          ? type.schema.node("paragraph", {}, node)
+          : node
+      )
+    );
   };
 
   return new Plugin({

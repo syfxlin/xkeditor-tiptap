@@ -20,7 +20,7 @@ export default class EmojiExtension extends Extension {
 
   inputRules({ schema }: { schema: Schema }): any[] {
     return [
-      new InputRule(/(:[^:]+:)/, (state, match, start, end) => {
+      new InputRule(/(:[a-zA-Z0-9]+:)/, (state, match, start, end) => {
         const { tr, schema } = state;
         tr.replaceWith(
           start,
@@ -33,7 +33,7 @@ export default class EmojiExtension extends Extension {
   }
 
   pasteRules({ schema }: { schema: Schema }): Plugin[] {
-    const regexp = new RegExp(/(:[^:]+:)/);
+    const regexp = new RegExp(/(:[a-zA-Z0-9]+:)/);
     const handler = (fragment: Fragment) => {
       const nodes: Node[] = [];
 

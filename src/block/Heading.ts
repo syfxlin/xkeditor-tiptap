@@ -2,11 +2,11 @@ import { CommandGetter, Node } from "tiptap";
 import {
   CommandFunction,
   setBlockType,
-  textblockTypeInputRule,
-  toggleBlockType
+  toggleBlockType,
+  wrappingInputRule
 } from "tiptap-commands";
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
-import nodeInlinePasteRule from "@/utils/nodeInlinePasteRule";
+import nodeLinePasteRule from "@/utils/nodeLinePasteRule";
 
 export default class Heading extends Node {
   get name() {
@@ -26,7 +26,8 @@ export default class Heading extends Node {
           default: 1
         }
       },
-      content: "inline*",
+      // fix parse
+      content: "block*",
       group: "block",
       defining: true,
       draggable: false,
@@ -70,7 +71,7 @@ export default class Heading extends Node {
 
   inputRules({ type, schema }: { type: NodeType; schema: Schema }): any[] {
     return this.options.levels.map((level: number) =>
-      textblockTypeInputRule(new RegExp(`^(#{1,${level}})\\s$`), type, () => ({
+      wrappingInputRule(new RegExp(`^(#{1,${level}})\\s$`), type, () => ({
         level
       }))
     );
@@ -78,10 +79,12 @@ export default class Heading extends Node {
 
   pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {
     return this.options.levels.map((level: number) =>
-      nodeInlinePasteRule(
+      nodeLinePasteRule(
         new RegExp(`^#{1,${level}}\\s(.*)`),
         type,
-        match => match[1],
+        (match, attrs, childNode) => {
+          return type.create(attrs, childNode.cut(level + 1));
+        },
         () => ({ level })
       )
     );
