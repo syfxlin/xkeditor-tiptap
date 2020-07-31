@@ -20,7 +20,6 @@ import {
   TableHeader,
   TableRow,
   TodoItem,
-  TodoList,
   TrailingNode,
   Underline
 } from "tiptap-extensions";
@@ -35,6 +34,7 @@ import Image from "@/block/Image";
 import HorizontalRule from "@/block/HorizontalRule";
 import BulletList from "@/block/BulletList";
 import OrderedList from "@/block/OrderedList";
+import TodoList from "@/block/TodoList";
 
 const EXTENSIONS = {
   codeBlock: CodeBlock,
@@ -77,7 +77,8 @@ const EXTENSIONS = {
 };
 
 const DEFAULT_EXTENSION_CONFIG: { [key in ExtensionNames]?: any } = {
-  heading: { levels: [1, 2, 3] }
+  heading: { levels: [1, 2, 3] },
+  todoItem: { nested: true }
 };
 
 const DEFAULT_EXTENSIONS = [
@@ -93,11 +94,11 @@ const DEFAULT_EXTENSIONS = [
   "image",
   "bulletList",
   "orderedList",
+  "todoList",
 
   "hardBreak",
   "listItem",
   "todoItem",
-  "todoList",
   "bold",
   "code",
   "italic",

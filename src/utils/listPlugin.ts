@@ -5,17 +5,30 @@ export default function(
   r1: RegExp,
   r2: RegExp,
   type: NodeType,
-  schema: Schema
+  schema: Schema,
+  itemInfo = {
+    name: "list_item",
+    ceil: 2,
+    cut: 2
+  },
+  getItemAttrs:
+    | ((content: string, node: ProsemirrorNode) => { [attr: string]: any })
+    | { [attr: string]: any } = {}
 ) {
   let lists:
     | {
         node: ProsemirrorNode;
         level: number;
+        attrs: { [attr: string]: any };
       }[]
     | undefined;
 
   const makeList = (
-    lists: { node: ProsemirrorNode; level: number }[],
+    lists: {
+      node: ProsemirrorNode;
+      level: number;
+      attrs: { [attr: string]: any };
+    }[],
     index: { value: number }
   ): ProsemirrorNode => {
     const nodes: ProsemirrorNode[] = [];
@@ -24,12 +37,15 @@ export default function(
       const next = index.value >= lists.length ? current : lists[index.value];
       if (current.level < next.level) {
         nodes.push(
-          schema.node("list_item", {}, [current.node, makeList(lists, index)])
+          schema.node(itemInfo.name, current.attrs, [
+            current.node,
+            makeList(lists, index)
+          ])
         );
       } else if (current.level === next.level) {
-        nodes.push(schema.node("list_item", {}, current.node));
+        nodes.push(schema.node(itemInfo.name, current.attrs, current.node));
       } else {
-        nodes.push(schema.node("list_item", {}, current.node));
+        nodes.push(schema.node(itemInfo.name, current.attrs, current.node));
         return type.create({}, nodes);
       }
     }
@@ -43,8 +59,12 @@ export default function(
       (content, node) => {
         const index = content.search(r2);
         lists?.push({
-          level: Math.ceil(index / 2),
-          node: node.cut(index + 2)
+          level: Math.ceil(index / itemInfo.ceil),
+          node: node.cut(index + itemInfo.cut),
+          attrs:
+            getItemAttrs instanceof Function
+              ? getItemAttrs(content, node)
+              : getItemAttrs
         });
         return false;
       },

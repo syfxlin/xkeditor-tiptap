@@ -50,6 +50,6 @@ export default class BulletList extends Node {
   }
 
   pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {
-    return listPlugin(/^\s*([-+*])\s/, /([-+*])\s/, type, schema);
+    return listPlugin(/^\s*([-+*])\s[^[]/, /([-+*])\s[^[]/, type, schema);
   }
 }
