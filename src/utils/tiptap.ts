@@ -12,7 +12,6 @@ import {
   Link,
   ListItem,
   Mention,
-  OrderedList,
   Placeholder,
   Search,
   Strike,
@@ -35,6 +34,7 @@ import Blockquote from "@/block/Blockquote";
 import Image from "@/block/Image";
 import HorizontalRule from "@/block/HorizontalRule";
 import BulletList from "@/block/BulletList";
+import OrderedList from "@/block/OrderedList";
 
 const EXTENSIONS = {
   codeBlock: CodeBlock,
@@ -92,9 +92,9 @@ const DEFAULT_EXTENSIONS = [
   "heading",
   "image",
   "bulletList",
+  "orderedList",
 
   "hardBreak",
-  "orderedList",
   "listItem",
   "todoItem",
   "todoList",
