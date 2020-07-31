@@ -3,9 +3,9 @@ import { Fragment, MarkType, Node, Plugin, Slice } from "@/utils/prosemirror";
 export default function(
   regexp: RegExp,
   type: MarkType,
-  getContent: ((match: string[]) => string) | string | number = 1,
+  getContent: ((match: RegExpExecArray) => string) | string | number = 1,
   getAttrs:
-    | ((match: string[]) => { [attr: string]: any })
+    | ((match: RegExpExecArray) => { [attr: string]: any })
     | { [attr: string]: any } = {}
 ) {
   const handler = (

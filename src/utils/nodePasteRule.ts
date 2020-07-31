@@ -103,7 +103,7 @@ export function nodePasteRule(
     return Fragment.fromArray(
       nodes.map(node =>
         node.isInline || node.isText
-          ? type.schema.node("paragraph", {}, node)
+          ? type.schema.node("paragraph", null, node)
           : node
       )
     );

@@ -2,7 +2,6 @@ import IframeNode from "@/block/IFrameNode";
 import CodeMirrorNode from "@/block/CodeMirrorNode";
 import {
   Bold,
-  BulletList,
   Code,
   CodeBlock,
   Collaboration,
@@ -35,6 +34,7 @@ import Heading from "@/block/Heading";
 import Blockquote from "@/block/Blockquote";
 import Image from "@/block/Image";
 import HorizontalRule from "@/block/HorizontalRule";
+import BulletList from "@/block/BulletList";
 
 const EXTENSIONS = {
   codeBlock: CodeBlock,
@@ -91,9 +91,9 @@ const DEFAULT_EXTENSIONS = [
   "blockquote", // 在 blockquote 中使用 heading，heading 就必须先解析
   "heading",
   "image",
+  "bulletList",
 
   "hardBreak",
-  "bulletList",
   "orderedList",
   "listItem",
   "todoItem",
@@ -114,6 +114,7 @@ const DEFAULT_EXTENSIONS = [
   "tableCell",
   "tableHeader",
   "tableRow",
+
   "trailing"
 ];
 

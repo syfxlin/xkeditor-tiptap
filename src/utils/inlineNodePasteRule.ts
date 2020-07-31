@@ -5,7 +5,7 @@ export default function(
   type: NodeType,
   getContent:
     | ((
-        match: string[],
+        match: RegExpExecArray,
         attrs: { [attr: string]: any },
         childNode: Node
       ) => string | Node | null)
@@ -14,7 +14,7 @@ export default function(
     | null
     | number = 0,
   getAttrs:
-    | ((match: string[], childNode: Node) => { [attr: string]: any })
+    | ((match: RegExpExecArray, childNode: Node) => { [attr: string]: any })
     | { [attr: string]: any } = {}
 ) {
   regexp = new RegExp(regexp, "g");

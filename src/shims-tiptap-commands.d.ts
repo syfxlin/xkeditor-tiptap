@@ -5,7 +5,7 @@ declare module "tiptap-commands" {
   import { MarkType, NodeType } from "prosemirror-model";
 
   type GetAttrs =
-    | ((match: string[]) => { [key: string]: any })
+    | ((match: RegExpExecArray) => { [key: string]: any })
     | { [key: string]: any };
 
   export {
@@ -122,5 +122,10 @@ declare module "tiptap-commands" {
     type: MarkType | NodeType,
     toggletype: MarkType | NodeType,
     attrs: { [key: string]: any }
+  ): CommandFunction;
+
+  export function toggleList(
+    listType: MarkType | NodeType,
+    itemType: MarkType | NodeType
   ): CommandFunction;
 }

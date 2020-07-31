@@ -16,6 +16,7 @@ import { useExtensions } from "@/utils/tiptap";
 import TMenuBar from "@/components/TMenuBar.vue";
 import TMenuBubble from "@/components/TMenuBubble.vue";
 import TFloatMenu from "@/components/TFloatMenu.vue";
+import applyDevTools from "prosemirror-dev-tools";
 
 export default defineComponent({
   name: "TipTap",
@@ -65,6 +66,7 @@ export default defineComponent({
     // TODO: remove
     // @ts-ignore
     window.editor = editor;
+    applyDevTools(editor.view);
     return { editor, menus };
   }
 });

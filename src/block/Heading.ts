@@ -82,9 +82,8 @@ export default class Heading extends Node {
       nodeLinePasteRule(
         new RegExp(`^#{1,${level}}\\s(.*)`),
         type,
-        (match, attrs, childNode) => {
-          return type.create(attrs, childNode.cut(level + 1));
-        },
+        (match, attrs, childNode) =>
+          type.create(attrs, childNode.cut(level + 1)),
         () => ({ level })
       )
     );
