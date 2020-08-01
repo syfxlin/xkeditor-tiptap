@@ -1,6 +1,10 @@
 import { CommandGetter, Mark } from "tiptap";
 import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
 import { CommandFunction, toggleMark } from "tiptap-commands";
+// @ts-ignore
+import addPx from "add-px-to-style";
+// @ts-ignore
+import hyphenate from "hyphenate-style-name";
 import markInputRule from "@/utils/markInputRule";
 import markPasteRule from "@/utils/markPasteRule";
 
@@ -16,6 +20,25 @@ const DEFAULT_BACKGROUND = {
   purple: "rgba(103, 36, 222, 0.2)",
   pink: "rgba(221, 0, 129, 0.2)",
   red: "rgba(255, 0, 26, 0.2)"
+};
+
+const DEFAULT_SPAN_STYLE = document.createElement("span").style;
+const DEFAULT_STYLE_ATTRS: { [key: string]: { default: any } } = {};
+for (const [key, value] of Object.entries(DEFAULT_SPAN_STYLE)) {
+  DEFAULT_STYLE_ATTRS[key] = {
+    default: value
+  };
+}
+
+const convertCssObjToStr = (style: { [key: string]: any }) => {
+  let result = "";
+  for (const [key, value] of Object.entries(style)) {
+    if (value === "") {
+      continue;
+    }
+    result += hyphenate(key) + ":" + addPx(key, value) + ";";
+  }
+  return result;
 };
 
 const getColorAttrs = (match: string[]) => {
@@ -41,42 +64,28 @@ const getColorAttrs = (match: string[]) => {
   }
 };
 
-export default class ColorMark extends Mark {
+export default class StyleMark extends Mark {
   get name() {
-    return "color";
+    return "style";
   }
 
   get schema(): MarkSpec {
     return {
-      attrs: {
-        color: {
-          default: ""
-        },
-        background: {
-          default: ""
-        }
-      },
+      attrs: DEFAULT_STYLE_ATTRS,
       parseDOM: [
         {
           tag: "span[style]",
           getAttrs: mark => {
             const dom = mark as HTMLElement;
             return {
-              color: dom.style.color,
-              background: dom.style.background
+              ...dom.style
             };
           }
         }
       ],
       toDOM: mark => {
-        let style = "";
-        if (mark.attrs.color !== "") {
-          style += `color: ${mark.attrs.color};`;
-        }
-        if (mark.attrs.background !== "") {
-          style += `background: ${mark.attrs.background};`;
-        }
-        return style !== "" ? ["span", { style }, 0] : ["span", 0];
+        const style = convertCssObjToStr(mark.attrs);
+        return ["span", { style }, 0];
       }
     };
   }

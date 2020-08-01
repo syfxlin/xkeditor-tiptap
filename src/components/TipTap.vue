@@ -38,7 +38,7 @@ export default defineComponent({
         icon: "italic"
       },
       {
-        name: "color",
+        name: "style",
         icon: "italic",
         options: {
           color: "blue"
@@ -56,7 +56,7 @@ export default defineComponent({
           function max(a, b) {
             return a > b ? a : b
           }</pre>
-          <span style="color: #aaddff">color</span>
+          <span style="color: #aaddff;font-size: 22px">color</span>
         `
       })
     );
