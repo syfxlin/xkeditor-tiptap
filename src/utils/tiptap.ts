@@ -34,6 +34,7 @@ import HorizontalRule from "@/block/HorizontalRule";
 import BulletList from "@/block/BulletList";
 import OrderedList from "@/block/OrderedList";
 import TodoList from "@/block/TodoList";
+import Katex from "@/block/Katex";
 
 const EXTENSIONS = {
   codeBlock: CodeBlock,
@@ -62,8 +63,6 @@ const EXTENSIONS = {
   tableHeader: TableHeader,
   tableRow: TableRow,
   trailing: TrailingNode,
-
-  // change
   heading: Heading,
 
   // custom
@@ -71,7 +70,8 @@ const EXTENSIONS = {
   iframe: Iframe,
   codeBlockHighlight: CodeBlockHighlight,
   emoji: Emoji,
-  blockquote: Blockquote
+  blockquote: Blockquote,
+  katex: Katex
 };
 
 const DEFAULT_EXTENSION_CONFIG: { [key in ExtensionNames]?: any } = {
@@ -92,6 +92,7 @@ const DEFAULT_EXTENSIONS = [
   "bulletList",
   "orderedList",
   "todoList",
+  "katex",
 
   "hardBreak",
   "listItem",

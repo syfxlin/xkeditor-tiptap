@@ -10,7 +10,7 @@ export default function(
 ) {
   return new InputRule(regexp, (state, match, start, end) => {
     const { tr } = state;
-    let markStart = start;
+    const markStart = start;
     let markEnd = end;
 
     const attrs = getAttrs instanceof Function ? getAttrs(match) : getAttrs;
@@ -29,12 +29,12 @@ export default function(
 
       if (textEnd < markEnd) {
         tr.delete(textEnd, markEnd);
+        markEnd = textEnd;
       }
       if (textStart > markStart) {
         tr.delete(markStart, textStart);
+        markEnd -= textStart - markStart;
       }
-      markStart = textStart - 1;
-      markEnd = textEnd;
     }
 
     tr.addMark(markStart, markEnd, markType.create(attrs));
