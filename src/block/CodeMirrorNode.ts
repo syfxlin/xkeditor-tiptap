@@ -21,7 +21,7 @@ import HighlightPlugin from "@/block/Highlight";
 import "prismjs/themes/prism-okaidia.css";
 import "prismjs/plugins/toolbar/prism-toolbar.css";
 import "prismjs/plugins/line-numbers/prism-line-numbers.css";
-import { nodePasteRule } from "@/utils/nodePasteRule";
+import nodeListPasteRule, { Matched } from "@/utils/nodeListPasteRule";
 
 const arrowHandler = (
   dir: "left" | "right" | "down" | "up" | "backspace" | "delete"
@@ -208,17 +208,34 @@ export default class CodeMirrorNode extends Node {
   }
 
   pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {
+    let language = "";
+    let code = "";
     return [
-      nodePasteRule(
-        /^```([a-zA-Z0-9]*)/,
-        /```$/,
-        type,
+      nodeListPasteRule(
         content => {
-          const match = content.match(/```([a-zA-Z0-9]*)\n?([\w\W]*)\n```\n?/);
-          // @ts-ignore
-          return match[2] === "" ? null : match[2];
+          const match = /^```([a-zA-Z0-9]*)/.exec(content);
+          if (match) {
+            language = match[1];
+            return Matched.CONTAIN_SKIP;
+          }
+          return Matched.NOT;
         },
-        (content, match) => ({ language: match[1] })
+        content => (/```$/.test(content) ? Matched.NOT_SKIP : Matched.CONTAIN),
+        content => {
+          code += content + "\n";
+          return false;
+        },
+        () => {
+          if (language === "") {
+            language = "markup";
+          }
+          code = "";
+        },
+        (content, node, nodes) => {
+          nodes.push(type.create({ language }, schema.text(code || "")));
+          language = "";
+          code = "";
+        }
       )
     ];
   }
