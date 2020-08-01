@@ -13,7 +13,7 @@ const emojiConverter = new EmojiConvertor();
 // eslint-disable-next-line
 emojiConverter.replace_mode = "unified";
 
-export default class EmojiExtension extends Extension {
+export default class Emoji extends Extension {
   get name() {
     return "emoji";
   }

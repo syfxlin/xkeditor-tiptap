@@ -64,7 +64,7 @@ const getColorAttrs = (match: string[]) => {
   }
 };
 
-export default class StyleMark extends Mark {
+export default class Style extends Mark {
   get name() {
     return "style";
   }

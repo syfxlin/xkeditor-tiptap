@@ -1,23 +1,29 @@
-import { CommandGetter, Node } from "tiptap";
+import { CommandGetter, Editor as TipTapEditor, Node } from "tiptap";
 import {
   CommandFunction,
   setBlockType,
   textblockTypeInputRule,
   toggleBlockType
 } from "tiptap-commands";
-import { NodeSpec, NodeType, Schema } from "@/utils/prosemirror";
+import {
+  Node as ProsemirrorNode,
+  NodeSpec,
+  NodeType,
+  Plugin,
+  Schema
+} from "@/utils/prosemirror";
+import { computed, defineComponent, nextTick, ref } from "vue-demi";
+import { dirFocus, nodeKeys } from "@/utils/codemirror";
+import CodeMirrorComponent from "@/block/CodeMirrorComponent.vue";
 import HighlightPlugin from "@/block/Highlight";
-import "highlight.js/styles/solarized-dark.css";
+import "prismjs/themes/prism-okaidia.css";
+import "prismjs/plugins/toolbar/prism-toolbar.css";
+import "prismjs/plugins/line-numbers/prism-line-numbers.css";
+import nodeListPasteRule, { Matched } from "@/utils/nodeListPasteRule";
 
 export default class CodeBlockHighlight extends Node {
   get name() {
     return "code_block";
-  }
-
-  get defaultOptions() {
-    return {
-      languages: {}
-    };
   }
 
   get schema(): NodeSpec {
@@ -26,18 +32,121 @@ export default class CodeBlockHighlight extends Node {
       group: "block",
       code: true,
       defining: true,
-      draggable: false,
-      parseDOM: [{ tag: "pre", preserveWhitespace: "full" }],
-      toDOM: () => ["pre", ["code", 0]]
+      isolating: true,
+      cm: true,
+      attrs: {
+        cmRef: {
+          default: undefined
+        },
+        language: {
+          default: null
+        },
+        isEditing: {
+          default: true
+        }
+      },
+      parseDOM: [
+        {
+          tag: "pre",
+          preserveWhitespace: "full",
+          contentElement: node => {
+            const dom = node as HTMLPreElement;
+            if (
+              dom.children.length === 1 &&
+              dom.children[0].tagName.toLowerCase() === "code"
+            ) {
+              return dom.children[0];
+            }
+            return dom;
+          },
+          getAttrs: node => {
+            const dom = node as HTMLElement;
+            let language = dom.getAttribute("data-language");
+            if (language === null) {
+              language = dom.getAttribute("language");
+            }
+            if (language === null) {
+              const match = dom.className.match(/lang(uage|)[-_]([^ ]+)/);
+              if (match && match.length > 2) {
+                language = match[2];
+              }
+            }
+            return {
+              language
+            };
+          }
+        }
+      ],
+      toDOM(node) {
+        return ["pre", { "data-language": node.attrs.language }, 0];
+      }
     };
   }
 
   get view() {
-    return {
+    return defineComponent({
+      components: {
+        CodeMirrorComponent
+      },
+      props: {
+        node: ProsemirrorNode,
+        updateAttrs: Function,
+        view: Object,
+        options: Object,
+        selected: Boolean,
+        editor: TipTapEditor,
+        getPos: Function,
+        decorations: Array
+      },
+      setup(props) {
+        const content = ref<HTMLElement>();
+        const edit = () => {
+          if (props.updateAttrs) {
+            props.updateAttrs({
+              isEditing: true
+            });
+            nextTick(() => {
+              dirFocus(props.node?.attrs.cmRef, 1);
+            });
+          }
+        };
+
+        const blur = () => {
+          if (props.updateAttrs) {
+            props.updateAttrs({
+              isEditing: false
+            });
+          }
+        };
+
+        const lines = computed(
+          () => props.node?.textContent.split("\n").length
+        );
+
+        return { content, edit, blur, lines };
+      },
       template: `
-      <template><pre><code ref="content"></code></pre></template>
+        <div contenteditable="false"><code-mirror-component
+              v-show="node.attrs.isEditing"
+              :node="node"
+              :update-attrs="updateAttrs"
+              :view="view"
+              :options="options"
+              :selected="selected"
+              :editor="editor"
+              :get-pos="getPos"
+              :decorations="decorations"
+              :content-ref="content"
+              @blur="blur"
+          /><div class="code-toolbar"><pre class="line-numbers" v-show="!node.attrs.isEditing">
+              <span aria-hidden="true" class="line-numbers-rows"><span v-for="n in lines"></span></span>
+              <code ref="content"></code>
+            </pre><div class="toolbar">
+              <div class="toolbar-item"><span>{{node.attrs.language}}</span></div>
+              <div class="toolbar-item toolbar-action"><span @click="edit">Edit</span></div>
+            </div></div></div>
       `
-    };
+    });
   }
 
   commands({
@@ -60,12 +169,49 @@ export default class CodeBlockHighlight extends Node {
     schema: NodeSpec;
   }): { [p: string]: CommandFunction } {
     return {
-      "Shift-Ctrl-\\": setBlockType(type)
+      "Shift-Ctrl-\\": setBlockType(type),
+      ...nodeKeys(
+        node => node.type.name === "code_block",
+        (cm, node) => (node.attrs.isEditing = true)
+      )
     };
   }
 
   inputRules({ type, schema }: { type: NodeType; schema: Schema }): any[] {
     return [textblockTypeInputRule(/^```$/, type)];
+  }
+
+  pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {
+    let language = "";
+    let code = "";
+    return [
+      nodeListPasteRule(
+        content => {
+          const match = /^```([a-zA-Z0-9]*)/.exec(content);
+          if (match) {
+            language = match[1];
+            return Matched.CONTAIN_SKIP;
+          }
+          return Matched.NOT;
+        },
+        content => (/```$/.test(content) ? Matched.NOT_SKIP : Matched.CONTAIN),
+        content => {
+          code += content + "\n";
+          return false;
+        },
+        () => {
+          if (language === "") {
+            language = "markup";
+          }
+          code = "";
+        },
+        (content, node, nodes) => {
+          nodes.push(type.create({ language }, schema.text(code || "")));
+          language = "";
+          code = "";
+        }
+      )
+    ];
   }
 
   get plugins() {

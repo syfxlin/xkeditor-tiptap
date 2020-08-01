@@ -1,5 +1,4 @@
-import IframeNode from "@/block/IFrameNode";
-import CodeMirrorNode from "@/block/CodeMirrorNode";
+import Iframe from "@/block/Iframe";
 import {
   Bold,
   Code,
@@ -25,8 +24,8 @@ import {
 } from "tiptap-extensions";
 import { ExtensionOption } from "tiptap";
 import CodeBlockHighlight from "@/block/CodeBlockHighlight";
-import StyleMark from "@/block/StyleMark";
-import EmojiExtension from "@/block/EmojiExtension";
+import Style from "@/block/Style";
+import Emoji from "@/block/Emoji";
 import { Fragment } from "@/utils/prosemirror";
 import Heading from "@/block/Heading";
 import Blockquote from "@/block/Blockquote";
@@ -68,11 +67,10 @@ const EXTENSIONS = {
   heading: Heading,
 
   // custom
-  style: StyleMark,
-  iframe: IframeNode,
-  codeMirror: CodeMirrorNode,
+  style: Style,
+  iframe: Iframe,
   codeBlockHighlight: CodeBlockHighlight,
-  emoji: EmojiExtension,
+  emoji: Emoji,
   blockquote: Blockquote
 };
 
@@ -85,8 +83,7 @@ const DEFAULT_EXTENSIONS = [
   // TODO: 预先定义加载顺序
   "horizontalRule",
   "iframe",
-  "codeMirror",
-  // "codeBlockHighlight",
+  "codeBlockHighlight",
   "style",
   "emoji",
   "blockquote", // 在 blockquote 中使用 heading，heading 就必须先解析
