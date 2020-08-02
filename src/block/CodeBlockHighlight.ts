@@ -13,7 +13,7 @@ import {
   Schema
 } from "@/utils/prosemirror";
 import { computed, defineComponent, nextTick, ref } from "vue-demi";
-import { dirFocus, nodeKeys } from "@/utils/codemirror";
+import { dirFocus, mergeNodeSpec, nodeKeys } from "@/utils/codemirror";
 import CodeMirrorComponent from "@/block/CodeMirrorComponent.vue";
 import HighlightPlugin from "@/block/Highlight";
 import "prismjs/themes/prism-okaidia.css";
@@ -27,17 +27,8 @@ export default class CodeBlockHighlight extends Node {
   }
 
   get schema(): NodeSpec {
-    return {
-      content: "text*",
-      group: "block",
-      code: true,
-      defining: true,
-      isolating: true,
-      cm: true,
+    return mergeNodeSpec({
       attrs: {
-        cmRef: {
-          default: undefined
-        },
         language: {
           default: null
         },
@@ -77,10 +68,12 @@ export default class CodeBlockHighlight extends Node {
           }
         }
       ],
-      toDOM(node) {
-        return ["pre", { "data-language": node.attrs.language }, 0];
-      }
-    };
+      toDOM: node => [
+        "pre",
+        { "data-language": node.attrs.language },
+        ["code", 0]
+      ]
+    });
   }
 
   get view() {
@@ -127,26 +120,35 @@ export default class CodeBlockHighlight extends Node {
         return { content, edit, blur, lines };
       },
       template: `
-        <div contenteditable="false"><code-mirror-component
+        <div contenteditable="false">
+          <code-mirror-component
               v-show="node.attrs.isEditing"
               :node="node"
               :update-attrs="updateAttrs"
               :view="view"
-              :options="options"
-              :selected="selected"
               :editor="editor"
               :get-pos="getPos"
-              :decorations="decorations"
               :content-ref="content"
               @blur="blur"
-          /><div class="code-toolbar"><pre class="line-numbers" v-show="!node.attrs.isEditing">
-              <span aria-hidden="true" class="line-numbers-rows"><span v-for="n in lines"></span></span>
+          />
+          <div class="code-toolbar">
+            <pre class="line-numbers" v-show="!node.attrs.isEditing">
+              <span aria-hidden="true" class="line-numbers-rows">
+                <span v-for="n in lines"></span>
+              </span>
               <code ref="content"></code>
-            </pre><div class="toolbar">
-              <div class="toolbar-item"><span>{{node.attrs.language}}</span></div>
-              <div class="toolbar-item toolbar-action"><span @click="edit">Edit</span></div>
-            </div></div></div>
-      `
+            </pre>
+            <div class="toolbar">
+              <div class="toolbar-item">
+                <span>{{node.attrs.language}}</span>
+              </div>
+              <div class="toolbar-item toolbar-action">
+                <span @click="edit">Edit</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `.replace(/>\s+</g, "><")
     });
   }
 

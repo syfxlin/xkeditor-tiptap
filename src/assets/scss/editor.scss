@@ -197,6 +197,14 @@
     li[data-done="false"] {
       text-decoration: none;
     }
+
+    .sep-col-codemirror {
+      display: flex;
+    }
+
+    .sep-col-codemirror > div {
+      width: 50%;
+    }
   }
 
   &__floating-menu {

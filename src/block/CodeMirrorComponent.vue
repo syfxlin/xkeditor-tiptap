@@ -1,13 +1,10 @@
 <template>
-  <div>
-    <code-mirror-vue
-      :content.sync="code"
-      :options.sync="options"
-      :cm.sync="cm"
-      @blur="blur"
-    />
-    <!--<div ref="content" v-show="false" contenteditable="false"></div>-->
-  </div>
+  <code-mirror-vue
+    :content.sync="code"
+    :options.sync="options"
+    :cm.sync="cm"
+    @blur="blur"
+  />
 </template>
 
 <script lang="ts">

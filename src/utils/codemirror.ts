@@ -1,7 +1,22 @@
 import { Editor } from "codemirror";
-import { Command, Node, Selection } from "@/utils/prosemirror";
+import {
+  Command,
+  Node,
+  Node as ProsemirrorNode,
+  NodeSpec,
+  Selection
+} from "@/utils/prosemirror";
 import { CommandFunction } from "tiptap-commands";
-import { nextTick } from "vue-demi";
+import {
+  defineComponent,
+  nextTick,
+  onMounted,
+  Ref,
+  ref,
+  watch
+} from "vue-demi";
+import { Editor as TipTapEditor } from "tiptap";
+import CodeMirrorComponent from "@/block/CodeMirrorComponent.vue";
 
 export function focus(cm: Editor | undefined | null) {
   if (cm === undefined || cm === null) {
@@ -94,4 +109,92 @@ export function nodeKeys(
     Backspace: arrowHandler("backspace", ifIn, beforeIn, afterIn),
     Delete: arrowHandler("delete", ifIn, beforeIn, afterIn)
   };
+}
+
+export function mergeNodeSpec(spec: NodeSpec): NodeSpec {
+  spec.attrs = {
+    ...spec.attrs,
+    cmRef: {
+      default: undefined
+    }
+  };
+  return {
+    content: "text*",
+    group: "block",
+    code: true,
+    defining: true,
+    isolating: true,
+    cm: true,
+    ...spec
+  };
+}
+
+export function sepColCodeMirror(
+  name: string,
+  codeToView: (code: string, htmlView: Ref<string>, id: string) => void,
+  viewAttrs?: {
+    class: string;
+  },
+  setup?: (props: any) => { [key: string]: any }
+) {
+  return defineComponent({
+    name,
+    components: {
+      CodeMirrorComponent
+    },
+    props: {
+      node: ProsemirrorNode,
+      updateAttrs: Function,
+      view: Object,
+      options: Object,
+      selected: Boolean,
+      editor: TipTapEditor,
+      getPos: Function,
+      decorations: Array
+    },
+    setup(props) {
+      const id =
+        name +
+        "-" +
+        Math.random()
+          .toString(36)
+          .slice(-8);
+      const content = ref<HTMLElement>();
+      const htmlView = ref<string>("");
+
+      watch(
+        () => props.node?.textContent || "",
+        val => {
+          codeToView(val, htmlView, id);
+        }
+      );
+
+      let result = {};
+      if (setup) {
+        result = setup(props);
+      }
+
+      onMounted(() => {
+        nextTick(() => {
+          dirFocus(props.node?.attrs.cmRef, 1);
+        });
+      });
+
+      return { content, htmlView, ...result, attrs: viewAttrs || {}, id };
+    },
+    template: `
+      <div class="sep-col-codemirror" contenteditable="false">
+        <code-mirror-component
+          :node="node"
+          :update-attrs="updateAttrs"
+          :view="view"
+          :editor="editor"
+          :get-pos="getPos"
+          :content-ref="content"
+        />
+        <div :class="attrs.class" :id="id" v-html="htmlView"></div>
+        <textarea hidden ref="content" />
+      </div>
+    `.replace(/>\s+</g, "><")
+  });
 }

@@ -35,6 +35,7 @@ import BulletList from "@/block/BulletList";
 import OrderedList from "@/block/OrderedList";
 import TodoList from "@/block/TodoList";
 import Katex from "@/block/Katex";
+import Mermaid from "@/block/Mermaid";
 
 const EXTENSIONS = {
   codeBlock: CodeBlock,
@@ -71,7 +72,8 @@ const EXTENSIONS = {
   codeBlockHighlight: CodeBlockHighlight,
   emoji: Emoji,
   blockquote: Blockquote,
-  katex: Katex
+  katex: Katex,
+  mermaid: Mermaid
 };
 
 const DEFAULT_EXTENSION_CONFIG: { [key in ExtensionNames]?: any } = {
@@ -93,6 +95,7 @@ const DEFAULT_EXTENSIONS = [
   "orderedList",
   "todoList",
   "katex",
+  "mermaid",
 
   "hardBreak",
   "listItem",
