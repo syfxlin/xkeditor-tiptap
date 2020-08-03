@@ -36,6 +36,7 @@ import OrderedList from "@/block/OrderedList";
 import TodoList from "@/block/TodoList";
 import Katex from "@/block/Katex";
 import Mermaid from "@/block/Mermaid";
+import Toc from "@/block/Toc";
 
 const EXTENSIONS = {
   codeBlock: CodeBlock,
@@ -73,7 +74,8 @@ const EXTENSIONS = {
   emoji: Emoji,
   blockquote: Blockquote,
   katex: Katex,
-  mermaid: Mermaid
+  mermaid: Mermaid,
+  toc: Toc
 };
 
 const DEFAULT_EXTENSION_CONFIG: { [key in ExtensionNames]?: any } = {
@@ -83,19 +85,20 @@ const DEFAULT_EXTENSION_CONFIG: { [key in ExtensionNames]?: any } = {
 
 const DEFAULT_EXTENSIONS = [
   // TODO: 预先定义加载顺序
+  "heading",
   "horizontalRule",
   "iframe",
   "codeBlockHighlight",
   "style",
   "emoji",
   "blockquote", // 在 blockquote 中使用 heading，heading 就必须先解析
-  "heading",
   "image",
   "bulletList",
   "orderedList",
   "todoList",
   "katex",
   "mermaid",
+  "toc",
 
   "hardBreak",
   "listItem",

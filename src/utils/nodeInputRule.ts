@@ -20,7 +20,7 @@ export default function(
 
     if (match && match.length > 0) {
       if (getContent === null || getContent === undefined) {
-        tr.replaceWith(start, end, nodeType.create(attrs));
+        tr.replaceWith(start - 1, end, nodeType.create(attrs));
         return tr;
       }
 

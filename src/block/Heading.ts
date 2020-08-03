@@ -26,8 +26,7 @@ export default class Heading extends Node {
           default: 1
         }
       },
-      // fix parse
-      content: "block*",
+      content: "inline*",
       group: "block",
       defining: true,
       draggable: false,
@@ -35,7 +34,11 @@ export default class Heading extends Node {
         tag: `h${level}`,
         attrs: { level }
       })),
-      toDOM: node => [`h${node.attrs.level}`, 0]
+      toDOM: node => [
+        `h${node.attrs.level}`,
+        { id: encodeURI(node.textContent) },
+        0
+      ]
     };
   }
 
@@ -79,13 +82,9 @@ export default class Heading extends Node {
 
   pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {
     return this.options.levels.map((level: number) =>
-      nodeLinePasteRule(
-        new RegExp(`^#{1,${level}}\\s(.*)`),
-        type,
-        (match, attrs, childNode) =>
-          type.create(attrs, childNode.cut(level + 1)),
-        () => ({ level })
-      )
+      nodeLinePasteRule(new RegExp(`^#{1,${level}}\\s(.*)`), type, 1, () => ({
+        level
+      }))
     );
   }
 }
