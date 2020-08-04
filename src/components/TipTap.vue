@@ -62,10 +62,36 @@ export default defineComponent({
     onBeforeUnmount(() => {
       editor.destroy();
     });
+
+    // TODO: 分页 Demo，解决节点过多导致卡顿问题
+    // const index = ref<number>(0);
+    // const tempNodes = ref<Node[]>([]);
+    //
+    // watch(
+    //   () => editor.state.doc.childCount,
+    //   val => {
+    //     if (val > 20) {
+    //       let size = 0;
+    //       for (let i = 0; i < 10; i++) {
+    //         const node = editor.state.doc.child(i);
+    //         size += node.nodeSize;
+    //         tempNodes.value.push(node);
+    //       }
+    //       editor.dispatchTransaction(editor.state.tr.delete(0, size + 1));
+    //       index.value += size;
+    //     } else if (val === 1) {
+    //       const nodes = tempNodes.value.splice(tempNodes.value.length - 10, 10);
+    //       editor.dispatchTransaction(editor.state.tr.insert(0, nodes));
+    //     }
+    //     console.log(val);
+    //   }
+    // );
+
     // TODO: remove
     // @ts-ignore
     window.editor = editor;
     // applyDevTools(editor.view);
+
     return { editor, menus };
   }
 });

@@ -188,6 +188,8 @@ declare module "tiptap" {
     off(event: string, callbackFn: (params: any) => void): void;
 
     getMarkAttrs(markName: string): { [attributeName: string]: any };
+
+    dispatchTransaction(tr: Transaction): void;
   }
 
   export class Extension<Options = any> {
