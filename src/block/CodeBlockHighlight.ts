@@ -15,7 +15,7 @@ import {
 import { computed, defineComponent, nextTick, ref } from "vue-demi";
 import { dirFocus, mergeNodeSpec, nodeKeys } from "@/utils/codemirror";
 import CodeMirrorComponent from "@/block/CodeMirrorComponent.vue";
-import HighlightPlugin from "@/block/HighlightPlugin";
+import HighlightComponent from "@/block/HighlightComponent.vue";
 import "prismjs/themes/prism-okaidia.css";
 import "prismjs/plugins/toolbar/prism-toolbar.css";
 import "prismjs/plugins/line-numbers/prism-line-numbers.css";
@@ -33,7 +33,7 @@ export default class CodeBlockHighlight extends Node {
           default: null
         },
         isEditing: {
-          default: true
+          default: false
         }
       },
       parseDOM: [
@@ -80,7 +80,8 @@ export default class CodeBlockHighlight extends Node {
     return defineComponent({
       name: "code_block",
       components: {
-        CodeMirrorComponent
+        CodeMirrorComponent,
+        HighlightComponent
       },
       props: {
         node: ProsemirrorNode,
@@ -122,7 +123,7 @@ export default class CodeBlockHighlight extends Node {
       template: `
         <div contenteditable="false">
           <code-mirror-component
-              v-show="node.attrs.isEditing"
+              v-if="node.attrs.isEditing"
               :node="node"
               :update-attrs="updateAttrs"
               :view="view"
@@ -136,7 +137,8 @@ export default class CodeBlockHighlight extends Node {
               <span aria-hidden="true" class="line-numbers-rows">
                 <span v-for="n in lines"></span>
               </span>
-              <code ref="content"></code>
+              <highlight-component :code-ref="content" :language="node.attrs.language" />
+              <code ref="content" v-show="false"></code>
             </pre>
             <div class="toolbar">
               <div class="toolbar-item">
@@ -215,9 +217,5 @@ export default class CodeBlockHighlight extends Node {
         }
       )
     ];
-  }
-
-  get plugins() {
-    return [HighlightPlugin({ name: this.name })];
   }
 }
