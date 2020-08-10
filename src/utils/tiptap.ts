@@ -98,7 +98,7 @@ const DEFAULT_EXTENSIONS = [
   "todoList",
   "katex",
   "mermaid",
-  // "toc",
+  "toc",
 
   "hardBreak",
   "listItem",

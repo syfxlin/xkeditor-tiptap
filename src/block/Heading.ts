@@ -2,8 +2,8 @@ import { CommandGetter, Node } from "tiptap";
 import {
   CommandFunction,
   setBlockType,
-  toggleBlockType,
-  wrappingInputRule
+  textblockTypeInputRule,
+  toggleBlockType
 } from "tiptap-commands";
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import nodeLinePasteRule from "@/utils/nodeLinePasteRule";
@@ -74,7 +74,7 @@ export default class Heading extends Node {
 
   inputRules({ type, schema }: { type: NodeType; schema: Schema }): any[] {
     return this.options.levels.map((level: number) =>
-      wrappingInputRule(new RegExp(`^(#{1,${level}})\\s$`), type, () => ({
+      textblockTypeInputRule(new RegExp(`^(#{1,${level}})\\s$`), type, () => ({
         level
       }))
     );
