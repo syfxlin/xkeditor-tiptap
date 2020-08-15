@@ -37,6 +37,7 @@ import TodoList from "@/block/TodoList";
 import Katex from "@/block/Katex";
 import Mermaid from "@/block/Mermaid";
 import Toc from "@/block/Toc";
+import Details from "@/block/Details";
 
 const EXTENSIONS = {
   codeBlock: CodeBlock,
@@ -75,7 +76,8 @@ const EXTENSIONS = {
   blockquote: Blockquote,
   katex: Katex,
   mermaid: Mermaid,
-  toc: Toc
+  toc: Toc,
+  details: Details
 };
 
 const DEFAULT_EXTENSION_CONFIG: { [key in ExtensionNames]?: any } = {
@@ -99,6 +101,7 @@ const DEFAULT_EXTENSIONS = [
   "katex",
   "mermaid",
   "toc",
+  "details",
 
   "hardBreak",
   "listItem",
