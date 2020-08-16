@@ -61,7 +61,7 @@ export default class Image extends Node {
     attrs
   }: {
     type: NodeType;
-    schema: NodeSpec;
+    schema: Schema;
     attrs: { [p: string]: string };
   }): CommandGetter {
     return attrs => (state, dispatch) => {

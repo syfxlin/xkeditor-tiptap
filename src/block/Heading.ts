@@ -48,7 +48,7 @@ export default class Heading extends Node {
     attrs
   }: {
     type: NodeType;
-    schema: NodeSpec;
+    schema: Schema;
     attrs: { [p: string]: string };
   }): CommandGetter {
     return attrs => toggleBlockType(type, schema.nodes.paragraph, attrs);
@@ -59,7 +59,7 @@ export default class Heading extends Node {
     schema
   }: {
     type: NodeType;
-    schema: NodeSpec;
+    schema: Schema;
   }): { [p: string]: CommandFunction } {
     return this.options.levels.reduce(
       (items: number[], level: number) => ({

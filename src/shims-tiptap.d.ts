@@ -242,7 +242,7 @@ declare module "tiptap" {
       attrs
     }: {
       type: NodeType;
-      schema: NodeSpec;
+      schema: Schema;
       attrs: { [key: string]: string };
     }): CommandGetter;
 
@@ -251,7 +251,7 @@ declare module "tiptap" {
       schema
     }: {
       type: NodeType;
-      schema: NodeSpec;
+      schema: Schema;
     }): { [keyCombo: string]: CommandFunction };
 
     inputRules?({ type, schema }: { type: NodeType; schema: Schema }): any[];

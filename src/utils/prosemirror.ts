@@ -8,3 +8,4 @@ export * from "prosemirror-keymap";
 export * from "prosemirror-schema-list";
 export * from "prosemirror-transform";
 export * from "prosemirror-utils";
+export * from "prosemirror-tables";

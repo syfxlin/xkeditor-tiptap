@@ -160,7 +160,7 @@ export default class CodeBlockHighlight extends Node {
     attrs
   }: {
     type: NodeType;
-    schema: NodeSpec;
+    schema: Schema;
     attrs: { [p: string]: string };
   }): CommandGetter {
     return () => toggleBlockType(type, schema.nodes.paragraph);
@@ -171,7 +171,7 @@ export default class CodeBlockHighlight extends Node {
     schema
   }: {
     type: NodeType;
-    schema: NodeSpec;
+    schema: Schema;
   }): { [p: string]: CommandFunction } {
     return {
       "Shift-Ctrl-\\": setBlockType(type),

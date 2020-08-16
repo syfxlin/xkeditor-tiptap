@@ -14,7 +14,6 @@ import {
   Placeholder,
   Search,
   Strike,
-  Table,
   TableCell,
   TableHeader,
   TableRow,
@@ -38,6 +37,7 @@ import Katex from "@/block/Katex";
 import Mermaid from "@/block/Mermaid";
 import Toc from "@/block/Toc";
 import Details from "@/block/Details";
+import Table from "@/block/Table";
 
 const EXTENSIONS = {
   codeBlock: CodeBlock,

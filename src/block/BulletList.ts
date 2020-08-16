@@ -27,7 +27,7 @@ export default class BulletList extends Node {
     attrs
   }: {
     type: NodeType;
-    schema: NodeSpec;
+    schema: Schema;
     attrs: { [p: string]: string };
   }): CommandGetter {
     return () => toggleList(type, schema.nodes.list_item);
@@ -38,7 +38,7 @@ export default class BulletList extends Node {
     schema
   }: {
     type: NodeType;
-    schema: NodeSpec;
+    schema: Schema;
   }): { [p: string]: CommandFunction } {
     return {
       "Shift-Ctrl-8": toggleList(type, schema.nodes.list_item)

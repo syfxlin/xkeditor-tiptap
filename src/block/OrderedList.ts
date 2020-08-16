@@ -46,7 +46,7 @@ export default class OrderedList extends Node {
     attrs
   }: {
     type: NodeType;
-    schema: NodeSpec;
+    schema: Schema;
     attrs: { [p: string]: string };
   }): CommandGetter {
     return () => toggleList(type, schema.nodes.list_item);
@@ -57,7 +57,7 @@ export default class OrderedList extends Node {
     schema
   }: {
     type: NodeType;
-    schema: NodeSpec;
+    schema: Schema;
   }): { [p: string]: CommandFunction } {
     return {
       "Shift-Ctrl-9": toggleList(type, schema.nodes.list_item)

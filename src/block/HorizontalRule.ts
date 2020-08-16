@@ -22,7 +22,7 @@ export default class HorizontalRule extends Node {
     attrs
   }: {
     type: NodeType;
-    schema: NodeSpec;
+    schema: Schema;
     attrs: { [p: string]: string };
   }): CommandGetter {
     const command: CommandFunction = (state, dispatch) => {

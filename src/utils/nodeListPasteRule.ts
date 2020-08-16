@@ -1,9 +1,13 @@
 import { Fragment, Node, Plugin, Slice } from "@/utils/prosemirror";
 
 export enum Matched {
+  // 进入匹配状态，但是跳过该行
   CONTAIN_SKIP,
+  // 进入匹配状态
   CONTAIN,
+  // 退出匹配状态
   NOT,
+  // 退出匹配状态，同时跳过该行
   NOT_SKIP
 }
 

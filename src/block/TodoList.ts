@@ -28,7 +28,7 @@ export default class TodoList extends Node {
     attrs
   }: {
     type: NodeType;
-    schema: NodeSpec;
+    schema: Schema;
     attrs: { [p: string]: string };
   }): CommandGetter {
     return () => toggleList(type, schema.nodes.todo_item);

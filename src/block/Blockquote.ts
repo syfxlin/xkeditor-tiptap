@@ -29,7 +29,7 @@ export default class Blockquote extends Node {
     attrs
   }: {
     type: NodeType;
-    schema: NodeSpec;
+    schema: Schema;
     attrs: { [p: string]: string };
   }): CommandGetter {
     return () => toggleWrap(type, schema.nodes.paragraph);
@@ -40,7 +40,7 @@ export default class Blockquote extends Node {
     schema
   }: {
     type: NodeType;
-    schema: NodeSpec;
+    schema: Schema;
   }): { [p: string]: CommandFunction } {
     return {
       "Mod->": toggleWrap(type)

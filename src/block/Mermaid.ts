@@ -59,7 +59,7 @@ export default class Mermaid extends Node {
     schema
   }: {
     type: NodeType;
-    schema: NodeSpec;
+    schema: Schema;
   }): { [p: string]: CommandFunction } {
     return {
       ...nodeKeys(node => node.type.name === this.name)
