@@ -8,7 +8,6 @@ import {
   HardBreak,
   History,
   Italic,
-  Link,
   ListItem,
   Mention,
   Placeholder,
@@ -41,6 +40,8 @@ import Table from "@/block/Table";
 import Sup from "@/block/Sup";
 import Sub from "@/block/Sub";
 import ExitMark from "@/block/ExitMark";
+import Link from "@/block/Link";
+import CardLink from "@/block/CardLink";
 
 const EXTENSIONS = {
   codeBlock: CodeBlock,
@@ -83,7 +84,8 @@ const EXTENSIONS = {
   details: Details,
   sup: Sup,
   sub: Sub,
-  exitMark: ExitMark
+  exitMark: ExitMark,
+  cardLink: CardLink
 };
 
 const DEFAULT_EXTENSION_CONFIG: { [key in ExtensionNames]?: any } = {
@@ -111,6 +113,8 @@ const DEFAULT_EXTENSIONS = [
   "sup",
   "sub",
   "exitMark",
+  "link",
+  "cardLink",
 
   "hardBreak",
   "listItem",
@@ -118,7 +122,6 @@ const DEFAULT_EXTENSIONS = [
   "bold",
   "code",
   "italic",
-  "link",
   "strike",
   "underline",
   "history",

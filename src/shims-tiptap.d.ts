@@ -210,7 +210,7 @@ declare module "tiptap" {
     keys?({
       schema
     }: {
-      schema: Schema | NodeSpec | MarkSpec;
+      schema: Schema;
     }): { [keyCombo: string]: CommandFunction };
 
     /** Define commands. */
@@ -218,7 +218,7 @@ declare module "tiptap" {
       schema,
       attrs
     }: {
-      schema: Schema | NodeSpec | MarkSpec;
+      schema: Schema;
       attrs: { [key: string]: string };
     }): CommandGetter;
 
@@ -272,7 +272,7 @@ declare module "tiptap" {
       attrs
     }: {
       type: MarkType;
-      schema: MarkSpec;
+      schema: Schema;
       attrs: { [key: string]: string };
     }): CommandGetter;
 
@@ -281,7 +281,7 @@ declare module "tiptap" {
       schema
     }: {
       type: MarkType;
-      schema: MarkSpec;
+      schema: Schema;
     }): { [keyCombo: string]: CommandFunction };
 
     inputRules?({ type, schema }: { type: MarkType; schema: Schema }): any[];

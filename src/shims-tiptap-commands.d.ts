@@ -98,6 +98,11 @@ declare module "tiptap-commands" {
 
   export function removeMark(type: MarkType | NodeType): CommandFunction;
 
+  export function updateMark(
+    type: MarkType | NodeType,
+    attrs: { [key: string]: string }
+  ): CommandFunction;
+
   export function toggleWrap(type: NodeType | MarkType): CommandFunction;
 
   export function toggleWrap(
