@@ -67,6 +67,6 @@ export default class Mermaid extends Node {
   }
 
   inputRules({ type, schema }: { type: NodeType; schema: Schema }): any[] {
-    return [textblockTypeInputRule(/^;;;$/, type)];
+    return [textblockTypeInputRule(/^(:::|;;;)\s?mer$/, type)];
   }
 }

@@ -73,8 +73,8 @@ export default class Details extends Node {
 
   inputRules({ type, schema }: { type: NodeType; schema: Schema }): any[] {
     return [
-      wrappingInputRule(/^\[det :?([^\]]*)\]$/, type, match => ({
-        summary: match[1]
+      wrappingInputRule(/^(:::|;;;)\s?det\s?([^:;]*)[:;]$/, type, match => ({
+        summary: match[2]
       }))
     ];
   }
@@ -85,21 +85,22 @@ export default class Details extends Node {
     return [
       nodeListPasteRule(
         content => {
-          const match = /\[det :?([^\]]*)\]/.exec(content);
+          const match = /^(:::|;;;)\s?det\s?(.*)$/.exec(content);
           if (match) {
-            summary = match[1];
+            summary = match[2];
             return Matched.CONTAIN_SKIP;
           }
           return Matched.NOT;
         },
-        content => (content === "[/det]" ? Matched.NOT_SKIP : Matched.CONTAIN),
+        content =>
+          /^(:::|;;;)$/.test(content) ? Matched.NOT_SKIP : Matched.CONTAIN,
         (content, node) => {
           contents.push(node);
           return false;
         },
         undefined,
         (content, node, nodes) => {
-          nodes.push(type.create({ summary }, contents));
+          nodes.push(type.create({ summary: summary || "详细信息" }, contents));
           summary = null;
           contents = [];
         }
