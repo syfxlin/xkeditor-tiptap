@@ -16,6 +16,7 @@ import { useExtensions } from "@/utils/tiptap";
 import TMenuBar from "@/components/TMenuBar.vue";
 import TMenuBubble from "@/components/TMenuBubble.vue";
 import TFloatMenu from "@/components/TFloatMenu.vue";
+import { MarkdownParser } from "@/block/MdSpec";
 
 export default defineComponent({
   name: "TipTap",
@@ -90,6 +91,8 @@ export default defineComponent({
     // TODO: remove
     // @ts-ignore
     window.editor = editor;
+    // @ts-ignore
+    window.parser = new MarkdownParser(editor.schema);
     // applyDevTools(editor.view);
 
     return { editor, menus };

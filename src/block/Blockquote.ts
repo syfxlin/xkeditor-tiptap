@@ -6,20 +6,32 @@ import {
 } from "tiptap-commands";
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import nodeLinePasteRule from "@/utils/nodeLinePasteRule";
+import { MdSpec } from "@/block/MdSpec";
+import { Token } from "marked";
 
 export default class Blockquote extends Node {
   get name() {
     return "blockquote";
   }
 
-  get schema(): NodeSpec {
+  get schema(): NodeSpec & MdSpec {
     return {
       content: "block*",
       group: "block",
       defining: true,
       draggable: false,
       parseDOM: [{ tag: "blockquote" }],
-      toDOM: () => ["blockquote", 0]
+      toDOM: () => ["blockquote", 0],
+      parseMarkdown: [
+        {
+          type: "blockquote",
+          getContent: (token, s, parser) => {
+            return "tokens" in token
+              ? parser(token.tokens as Token[])
+              : undefined;
+          }
+        }
+      ]
     };
   }
 

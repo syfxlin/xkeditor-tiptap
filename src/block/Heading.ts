@@ -7,6 +7,8 @@ import {
 } from "tiptap-commands";
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import nodeLinePasteRule from "@/utils/nodeLinePasteRule";
+import { MdSpec } from "@/block/MdSpec";
+import { Token, Tokens } from "marked";
 
 export default class Heading extends Node {
   get name() {
@@ -19,7 +21,7 @@ export default class Heading extends Node {
     };
   }
 
-  get schema(): NodeSpec {
+  get schema(): NodeSpec & MdSpec {
     return {
       attrs: {
         level: {
@@ -38,6 +40,19 @@ export default class Heading extends Node {
         `h${node.attrs.level}`,
         { id: encodeURI(node.textContent) },
         0
+      ],
+      parseMarkdown: [
+        {
+          type: "heading",
+          getAttrs: token => ({
+            level: (token as Tokens.Heading).depth
+          }),
+          getContent: (token, s, parser) => {
+            return "tokens" in token
+              ? parser(token.tokens as Token[])
+              : undefined;
+          }
+        }
       ]
     };
   }
