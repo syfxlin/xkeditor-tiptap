@@ -3,6 +3,8 @@ import { pasteRule, removeMark, updateMark } from "tiptap-commands";
 import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
 import markInputRule from "@/utils/markInputRule";
 import LinkPlugin from "@/block/LinkPlugin";
+import { MdSpec } from "@/block/MdSpec";
+import { Tokens } from "marked";
 
 export default class Link extends Mark {
   get name() {
@@ -16,7 +18,7 @@ export default class Link extends Mark {
     };
   }
 
-  get schema(): MarkSpec {
+  get schema(): MarkSpec & MdSpec {
     return {
       attrs: {
         href: {
@@ -51,6 +53,21 @@ export default class Link extends Mark {
           target: this.options.target
         },
         0
+      ],
+      parseMarkdown: [
+        {
+          type: "link",
+          getAttrs: t => {
+            const token = t as Tokens.Link;
+            return {
+              href: token.href,
+              title: token.title
+            };
+          },
+          getContent: token => {
+            return (token as Tokens.Link).text;
+          }
+        }
       ]
     };
   }

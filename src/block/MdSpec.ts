@@ -62,7 +62,7 @@ export class MarkdownParser {
     }
   }
 
-  parseToken(token: Token): Node {
+  parseToken(token: Token): Node | Fragment | Node[] {
     if (!("type" in token)) {
       return this.schema.text(token.raw);
     }
@@ -81,16 +81,33 @@ export class MarkdownParser {
       const parser = blocks[i];
       if (blocks.length === 1 || (parser.matcher && parser.matcher(token))) {
         const attrs = parser.getAttrs ? parser.getAttrs(token) : undefined;
+        const marks = parser.getMarks
+          ? parser.getMarks(token, this.schema, this.parseTokens.bind(this))
+          : undefined;
+        let content = parser.getContent
+          ? parser.getContent(token, this.schema, this.parseTokens.bind(this))
+          : undefined;
         if (parser.block instanceof MarkType) {
-          // TODO: 修复 MarkType
-          // return parser.block.create(attrs);
+          const marks = [parser.block.create(attrs)];
+          if (content instanceof Node) {
+            content = content.mark(marks);
+          }
+          if (content instanceof Array) {
+            content = content.map(item => item.mark(marks));
+          }
+          if (content instanceof Fragment) {
+            const nodes: Node[] = [];
+            content.forEach(item => nodes.push(item.mark(marks)));
+            content = nodes;
+          }
+          if (typeof content === "string") {
+            content = this.schema.text(content, marks);
+          }
+          if (content === undefined) {
+            content = this.schema.node("paragraph", marks);
+          }
+          return content;
         } else {
-          const marks = parser.getMarks
-            ? parser.getMarks(token, this.schema, this.parseTokens.bind(this))
-            : undefined;
-          let content = parser.getContent
-            ? parser.getContent(token, this.schema, this.parseTokens.bind(this))
-            : undefined;
           if (typeof content === "string") {
             content = this.schema.text(content);
           }
@@ -103,7 +120,20 @@ export class MarkdownParser {
 
   parseTokens(tokens: Token[]): Node[] {
     const parser = this.parseToken.bind(this);
-    return tokens.map(token => parser(token));
+    const result: Node[] = [];
+    for (const token of tokens) {
+      const fragment = parser(token);
+      if (fragment instanceof Node) {
+        result.push(fragment);
+      }
+      if (fragment instanceof Array) {
+        result.push(...fragment);
+      }
+      if (fragment instanceof Fragment) {
+        fragment.forEach(item => result.push(item));
+      }
+    }
+    return result;
   }
 
   parse(markdown: string) {

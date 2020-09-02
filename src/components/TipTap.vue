@@ -17,6 +17,7 @@ import TMenuBar from "@/components/TMenuBar.vue";
 import TMenuBubble from "@/components/TMenuBubble.vue";
 import TFloatMenu from "@/components/TFloatMenu.vue";
 import { MarkdownParser } from "@/block/MdSpec";
+import marked from "marked";
 
 export default defineComponent({
   name: "TipTap",
@@ -93,6 +94,8 @@ export default defineComponent({
     window.editor = editor;
     // @ts-ignore
     window.parser = new MarkdownParser(editor.schema);
+    // @ts-ignore
+    window.marked = marked;
     // applyDevTools(editor.view);
 
     return { editor, menus };
