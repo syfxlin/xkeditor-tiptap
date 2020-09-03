@@ -6,13 +6,15 @@ import {
 } from "tiptap-commands";
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import listPlugin from "@/utils/listPlugin";
+import { Token } from "marked";
+import { MdSpec } from "@/block/MdSpec";
 
 export default class OrderedList extends Node {
   get name() {
     return "ordered_list";
   }
 
-  get schema(): NodeSpec {
+  get schema(): NodeSpec & MdSpec {
     return {
       attrs: {
         order: {
@@ -36,7 +38,19 @@ export default class OrderedList extends Node {
       toDOM: node =>
         node.attrs.order === 1
           ? ["ol", 0]
-          : ["ol", { start: node.attrs.order }, 0]
+          : ["ol", { start: node.attrs.order }, 0],
+      parseMarkdown: [
+        {
+          type: "list",
+          matcher: token => "ordered" in token && token.ordered,
+          getContent: (token, s, parser) => {
+            if (!("items" in token)) {
+              return undefined;
+            }
+            return parser(token.items as Token[]);
+          }
+        }
+      ]
     };
   }
 

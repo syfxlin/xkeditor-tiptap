@@ -8,7 +8,6 @@ import {
   HardBreak,
   History,
   Italic,
-  ListItem,
   Mention,
   Placeholder,
   Search,
@@ -42,6 +41,7 @@ import Sub from "@/block/Sub";
 import ExitMark from "@/block/ExitMark";
 import Link from "@/block/Link";
 import CardLink from "@/block/CardLink";
+import ListItem from "@/block/ListItem";
 
 const EXTENSIONS = {
   codeBlock: CodeBlock,
@@ -115,9 +115,9 @@ const DEFAULT_EXTENSIONS = [
   "exitMark",
   "link",
   "cardLink",
+  "listItem",
 
   "hardBreak",
-  "listItem",
   "todoItem",
   "bold",
   "code",

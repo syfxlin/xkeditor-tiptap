@@ -66,12 +66,25 @@ export class MarkdownParser {
     if (!("type" in token)) {
       return this.schema.text(token.raw);
     }
+    // paragraph
     if (token.type === "paragraph") {
       return this.schema.node(
         "paragraph",
         undefined,
         this.parseTokens((token as any).tokens)
       );
+    }
+    // text
+    if (token.type === "text") {
+      if ((token as any).tokens !== undefined) {
+        return this.schema.node(
+          "paragraph",
+          undefined,
+          this.parseTokens((token as any).tokens)
+        );
+      } else {
+        return this.schema.text(token.raw);
+      }
     }
     const blocks = this.blocks[token.type];
     if (!blocks || blocks.length === 0) {

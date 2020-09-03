@@ -6,18 +6,32 @@ import {
 } from "tiptap-commands";
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import listPlugin from "@/utils/listPlugin";
+import { MdSpec } from "@/block/MdSpec";
+import { Token } from "marked";
 
 export default class BulletList extends Node {
   get name() {
     return "bullet_list";
   }
 
-  get schema(): NodeSpec {
+  get schema(): NodeSpec & MdSpec {
     return {
       content: "list_item+",
       group: "block",
       parseDOM: [{ tag: "ul" }],
-      toDOM: () => ["ul", 0]
+      toDOM: () => ["ul", 0],
+      parseMarkdown: [
+        {
+          type: "list",
+          matcher: token => "ordered" in token && !token.ordered,
+          getContent: (token, s, parser) => {
+            if (!("items" in token)) {
+              return undefined;
+            }
+            return parser(token.items as Token[]);
+          }
+        }
+      ]
     };
   }
 
