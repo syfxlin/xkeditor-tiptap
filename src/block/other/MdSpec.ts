@@ -103,14 +103,17 @@ export class MarkdownParser {
         if (parser.block instanceof MarkType) {
           const marks = [parser.block.create(attrs)];
           if (content instanceof Node) {
-            content = content.mark(marks);
+            content.marks.push(...marks);
           }
           if (content instanceof Array) {
-            content = content.map(item => item.mark(marks));
+            content.map(item => item.marks.push(...marks));
           }
           if (content instanceof Fragment) {
             const nodes: Node[] = [];
-            content.forEach(item => nodes.push(item.mark(marks)));
+            content.forEach(item => {
+              item.marks.push(...marks);
+              nodes.push(item);
+            });
             content = nodes;
           }
           if (typeof content === "string") {

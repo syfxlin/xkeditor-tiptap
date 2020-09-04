@@ -6,13 +6,15 @@ import {
   toggleMark
 } from "tiptap-commands";
 import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
+import { MdSpec } from "@/block/other/MdSpec";
+import { Token } from "marked";
 
 export default class Bold extends Mark {
   get name() {
     return "bold";
   }
 
-  get schema(): MarkSpec {
+  get schema(): MarkSpec & MdSpec {
     return {
       parseDOM: [
         {
@@ -29,7 +31,18 @@ export default class Bold extends Mark {
             /^(bold(er)?|[5-9]\d{2,})$/.test(value as string) && null
         }
       ],
-      toDOM: () => ["strong", 0]
+      toDOM: () => ["strong", 0],
+      parseMarkdown: [
+        {
+          type: "strong",
+          getContent: (token, s, parser) => {
+            if (!("tokens" in token)) {
+              return undefined;
+            }
+            return parser(token.tokens as Token[]);
+          }
+        }
+      ]
     };
   }
 
