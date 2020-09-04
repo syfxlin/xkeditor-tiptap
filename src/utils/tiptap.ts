@@ -1,23 +1,9 @@
 import Iframe from "@/block/nodes/Iframe";
 import {
-  Bold,
-  Code,
-  CodeBlock,
   Collaboration,
-  Focus,
-  HardBreak,
   History,
-  Italic,
-  Mention,
-  Placeholder,
   Search,
-  Strike,
-  TableCell,
-  TableHeader,
-  TableRow,
-  TodoItem,
-  TrailingNode,
-  Underline
+  TrailingNode
 } from "tiptap-extensions";
 import { ExtensionOption } from "tiptap";
 import CodeBlockHighlight from "@/block/nodes/CodeBlockHighlight";
@@ -42,9 +28,18 @@ import ExitMark from "@/block/extensions/ExitMark";
 import Link from "@/block/marks/Link";
 import CardLink from "@/block/marks/CardLink";
 import ListItem from "@/block/nodes/ListItem";
+import Bold from "@/block/marks/Bold";
+import Code from "@/block/marks/Code";
+import Italic from "@/block/marks/Italic";
+import Strike from "@/block/marks/Strike";
+import Underline from "@/block/marks/Underline";
+import HardBreak from "@/block/nodes/HardBreak";
+import TableCell from "@/block/nodes/TableCell";
+import TableHeader from "@/block/nodes/TableHeader";
+import TableRow from "@/block/nodes/TableRow";
+import TodoItem from "@/block/nodes/TodoItem";
 
 const EXTENSIONS = {
-  codeBlock: CodeBlock,
   hardBreak: HardBreak,
   bulletList: BulletList,
   orderedList: OrderedList,
@@ -59,11 +54,8 @@ const EXTENSIONS = {
   underline: Underline,
   history: History,
   collaboration: Collaboration,
-  focus: Focus,
   image: Image,
   horizontalRule: HorizontalRule,
-  mention: Mention,
-  placeholder: Placeholder,
   search: Search,
   table: Table,
   tableCell: TableCell,
@@ -126,9 +118,6 @@ const DEFAULT_EXTENSIONS = [
   "underline",
   "history",
   "collaboration",
-  // "focus",
-  // "mention",
-  // "placeholder",
   "search",
   "table",
   "tableCell",

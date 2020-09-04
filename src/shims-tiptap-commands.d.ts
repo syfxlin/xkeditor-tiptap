@@ -133,4 +133,8 @@ declare module "tiptap-commands" {
     listType: MarkType | NodeType,
     itemType: MarkType | NodeType
   ): CommandFunction;
+
+  export function splitToDefaultListItem(
+    type: MarkType | NodeType
+  ): CommandFunction;
 }
