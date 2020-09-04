@@ -1,6 +1,6 @@
 import { Mark } from "tiptap";
 import { MarkSpec, MarkType, Schema } from "@/utils/prosemirror";
-import LinkPlugin from "@/block/LinkPlugin";
+import LinkPlugin from "@/block/plugins/LinkPlugin";
 import markInputRule from "@/utils/markInputRule";
 
 export default class CardLink extends Mark {

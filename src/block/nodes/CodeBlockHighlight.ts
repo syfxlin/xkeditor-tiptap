@@ -14,8 +14,8 @@ import {
 } from "@/utils/prosemirror";
 import { computed, defineComponent, nextTick, ref } from "vue-demi";
 import { dirFocus, mergeNodeSpec, nodeKeys } from "@/utils/codemirror";
-import CodeMirrorComponent from "@/block/CodeMirrorComponent.vue";
-import HighlightComponent from "@/block/HighlightComponent.vue";
+import CodeMirrorComponent from "@/block/other/CodeMirrorComponent.vue";
+import HighlightComponent from "@/block/other/HighlightComponent.vue";
 import "prismjs/themes/prism-okaidia.css";
 import "prismjs/plugins/toolbar/prism-toolbar.css";
 import "prismjs/plugins/line-numbers/prism-line-numbers.css";

@@ -7,7 +7,7 @@ import {
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import listPlugin from "@/utils/listPlugin";
 import { Token } from "marked";
-import { MdSpec } from "@/block/MdSpec";
+import { MdSpec } from "@/block/other/MdSpec";
 
 export default class OrderedList extends Node {
   get name() {

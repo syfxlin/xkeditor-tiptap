@@ -16,7 +16,7 @@ import {
   watch
 } from "vue-demi";
 import { Editor as TipTapEditor } from "tiptap";
-import CodeMirrorComponent from "@/block/CodeMirrorComponent.vue";
+import CodeMirrorComponent from "@/block/other/CodeMirrorComponent.vue";
 
 export function focus(cm: Editor | undefined | null) {
   if (cm === undefined || cm === null) {

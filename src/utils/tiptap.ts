@@ -1,4 +1,4 @@
-import Iframe from "@/block/Iframe";
+import Iframe from "@/block/nodes/Iframe";
 import {
   Bold,
   Code,
@@ -20,28 +20,28 @@ import {
   Underline
 } from "tiptap-extensions";
 import { ExtensionOption } from "tiptap";
-import CodeBlockHighlight from "@/block/CodeBlockHighlight";
-import Style from "@/block/Style";
-import Emoji from "@/block/Emoji";
+import CodeBlockHighlight from "@/block/nodes/CodeBlockHighlight";
+import Style from "@/block/marks/Style";
+import Emoji from "@/block/extensions/Emoji";
 import { Fragment } from "@/utils/prosemirror";
-import Heading from "@/block/Heading";
-import Blockquote from "@/block/Blockquote";
-import Image from "@/block/Image";
-import HorizontalRule from "@/block/HorizontalRule";
-import BulletList from "@/block/BulletList";
-import OrderedList from "@/block/OrderedList";
-import TodoList from "@/block/TodoList";
-import Katex from "@/block/Katex";
-import Mermaid from "@/block/Mermaid";
-import Toc from "@/block/Toc";
-import Details from "@/block/Details";
-import Table from "@/block/Table";
-import Sup from "@/block/Sup";
-import Sub from "@/block/Sub";
-import ExitMark from "@/block/ExitMark";
-import Link from "@/block/Link";
-import CardLink from "@/block/CardLink";
-import ListItem from "@/block/ListItem";
+import Heading from "@/block/nodes/Heading";
+import Blockquote from "@/block/nodes/Blockquote";
+import Image from "@/block/nodes/Image";
+import HorizontalRule from "@/block/nodes/HorizontalRule";
+import BulletList from "@/block/nodes/BulletList";
+import OrderedList from "@/block/nodes/OrderedList";
+import TodoList from "@/block/nodes/TodoList";
+import Katex from "@/block/nodes/Katex";
+import Mermaid from "@/block/nodes/Mermaid";
+import Toc from "@/block/nodes/Toc";
+import Details from "@/block/nodes/Details";
+import Table from "@/block/nodes/Table";
+import Sup from "@/block/marks/Sup";
+import Sub from "@/block/marks/Sub";
+import ExitMark from "@/block/extensions/ExitMark";
+import Link from "@/block/marks/Link";
+import CardLink from "@/block/marks/CardLink";
+import ListItem from "@/block/nodes/ListItem";
 
 const EXTENSIONS = {
   codeBlock: CodeBlock,

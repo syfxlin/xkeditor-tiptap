@@ -2,8 +2,8 @@ import { CommandGetter, Mark } from "tiptap";
 import { pasteRule, removeMark, updateMark } from "tiptap-commands";
 import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
 import markInputRule from "@/utils/markInputRule";
-import LinkPlugin from "@/block/LinkPlugin";
-import { MdSpec } from "@/block/MdSpec";
+import LinkPlugin from "@/block/plugins/LinkPlugin";
+import { MdSpec } from "@/block/other/MdSpec";
 import { Tokens } from "marked";
 
 export default class Link extends Mark {

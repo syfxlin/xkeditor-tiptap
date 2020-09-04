@@ -6,7 +6,7 @@ import {
 } from "tiptap-commands";
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import nodeLinePasteRule from "@/utils/nodeLinePasteRule";
-import { MdSpec } from "@/block/MdSpec";
+import { MdSpec } from "@/block/other/MdSpec";
 import { Token } from "marked";
 
 export default class Blockquote extends Node {

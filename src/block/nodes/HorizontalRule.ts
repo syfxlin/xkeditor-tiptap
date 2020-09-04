@@ -1,7 +1,7 @@
 import { CommandGetter, Node } from "tiptap";
 import { CommandFunction, nodeInputRule } from "tiptap-commands";
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
-import nodeLinePasteRule from "../utils/nodeLinePasteRule";
+import nodeLinePasteRule from "@/utils/nodeLinePasteRule";
 
 export default class HorizontalRule extends Node {
   get name() {

@@ -25,7 +25,7 @@ import {
   toggleHeaderColumn,
   toggleHeaderRow
 } from "@/utils/prosemirror";
-import TableNodes from "@/block/TableNodes";
+import TableNodes from "@/block/other/TableNodes";
 import { DispatchFn, wrappingInputRule } from "tiptap-commands";
 import nodeListPasteRule from "@/utils/nodeListPasteRule";
 

@@ -2,7 +2,7 @@ import { Node } from "tiptap";
 import { NodeSpec } from "@/utils/prosemirror";
 import { NodeType, Schema } from "prosemirror-model";
 import nodeInputRule from "@/utils/nodeInputRule";
-import TocPlugin, { toc } from "@/block/TocPlugin";
+import TocPlugin, { toc } from "@/block/plugins/TocPlugin";
 import { defineComponent } from "vue-demi";
 
 export default class Toc extends Node {

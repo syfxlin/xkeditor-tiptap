@@ -16,7 +16,7 @@ import { useExtensions } from "@/utils/tiptap";
 import TMenuBar from "@/components/TMenuBar.vue";
 import TMenuBubble from "@/components/TMenuBubble.vue";
 import TFloatMenu from "@/components/TFloatMenu.vue";
-import { MarkdownParser } from "@/block/MdSpec";
+import { MarkdownParser } from "@/block/other/MdSpec";
 import marked from "marked";
 
 export default defineComponent({
