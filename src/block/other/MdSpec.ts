@@ -1,5 +1,5 @@
 // TODO: 未完成
-import { lexer, MarkedOptions, Token } from "marked";
+import { lexer, MarkedOptions, Token, Tokenizer, Tokens } from "marked";
 import {
   Fragment,
   Mark,
@@ -30,6 +30,21 @@ export interface MdSpec {
   // toMarkdown?: ((node: Node, serializeFunction) => string);
   // : return `[[${serializeFunction(node.content)}]]`
   parseMarkdown?: MdParseRule[];
+}
+
+class MarkdownTokenizer extends Tokenizer {
+  codespan(src: string): Tokens.Codespan {
+    const match = src.match(/\$+([^$\n]+?)\$+/);
+    if (match) {
+      return {
+        // @ts-ignore
+        type: "katex",
+        raw: match[0],
+        text: match[1].trim()
+      };
+    }
+    return super.codespan(src);
+  }
 }
 
 export class MarkdownParser {
@@ -153,6 +168,11 @@ export class MarkdownParser {
   }
 
   parse(markdown: string) {
-    return this.parseTokens(lexer(markdown, this.options));
+    return this.parseTokens(
+      lexer(markdown, {
+        tokenizer: new MarkdownTokenizer(),
+        ...this.options
+      })
+    );
   }
 }
