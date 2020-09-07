@@ -93,10 +93,40 @@ export default defineComponent({
     // @ts-ignore
     window.editor = editor;
     // @ts-ignore
-    window.parser = new MarkdownParser(editor.schema);
+    window.parser = new MarkdownParser(editor.schema, [
+      {
+        inline: true,
+        matcher: src => /\$+([^$\n]+?)\$+/.exec(src),
+        tokenizer: match => ({
+          type: "tex",
+          raw: match[0],
+          tex: match[1].trim()
+        })
+      },
+      {
+        inline: true,
+        matcher: src => /\[\[([^\]]+)]]/.exec(src),
+        tokenizer: match => {
+          const split = match[1].split(/\|| "|"/);
+          let title = null;
+          if (split.length === 4) {
+            title = split[2];
+          } else if (split.length === 3) {
+            title = split[1];
+          }
+          return {
+            type: "card_link",
+            raw: match[0],
+            text:
+              split.length === 4 || split.length === 2 ? split[1] : split[0],
+            href: split[0],
+            title
+          };
+        }
+      }
+    ]);
     // @ts-ignore
     window.marked = marked;
-    // applyDevTools(editor.view);
 
     return { editor, menus };
   }

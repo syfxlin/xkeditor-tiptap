@@ -6,16 +6,24 @@ import {
   toggleMark
 } from "tiptap-commands";
 import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class Italic extends Mark {
   get name() {
     return "italic";
   }
 
-  get schema(): MarkSpec {
+  get schema(): MarkSpec & MdSpec {
     return {
       parseDOM: [{ tag: "i" }, { tag: "em" }, { style: "font-style=italic" }],
-      toDOM: () => ["em", 0]
+      toDOM: () => ["em", 0],
+      // TODO: 不能成功插入
+      parseMarkdown: [
+        {
+          type: "em",
+          getContent: (token, s, parser) => parser((token as Tokens.Em).tokens)
+        }
+      ]
     };
   }
 

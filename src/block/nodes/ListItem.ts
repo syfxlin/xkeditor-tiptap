@@ -2,8 +2,7 @@ import { Node } from "tiptap";
 import { liftListItem, sinkListItem, splitListItem } from "tiptap-commands";
 import { NodeSpec, Schema } from "@/utils/prosemirror";
 import { NodeType } from "prosemirror-model";
-import { MdSpec } from "@/block/other/MdSpec";
-import { Token } from "marked";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class ListItem extends Node {
   get name() {
@@ -21,10 +20,7 @@ export default class ListItem extends Node {
         {
           type: "list_item",
           getContent: (token, s, parser) => {
-            if (!("tokens" in token)) {
-              return undefined;
-            }
-            const nodes = parser(token.tokens as Token[]);
+            const nodes = parser((token as Tokens.ListItem).tokens);
             const first = nodes[0];
             if (first && first.isText) {
               nodes.shift();

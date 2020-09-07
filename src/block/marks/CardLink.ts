@@ -2,6 +2,7 @@ import { Mark } from "tiptap";
 import { MarkSpec, MarkType, Schema } from "@/utils/prosemirror";
 import LinkPlugin from "@/block/plugins/LinkPlugin";
 import markInputRule from "@/utils/markInputRule";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class CardLink extends Mark {
   get name() {
@@ -18,7 +19,7 @@ export default class CardLink extends Mark {
     };
   }
 
-  get schema(): MarkSpec {
+  get schema(): MarkSpec & MdSpec {
     return {
       attrs: {
         href: {
@@ -48,6 +49,19 @@ export default class CardLink extends Mark {
           href: this.options.concatLink(mark.attrs.href)
         },
         0
+      ],
+      parseMarkdown: [
+        {
+          type: "card_link",
+          getAttrs: t => {
+            const token = t as Tokens.Link;
+            return {
+              href: token.href,
+              title: token.title
+            };
+          },
+          getContent: token => (token as Tokens.Link).text
+        }
       ]
     };
   }

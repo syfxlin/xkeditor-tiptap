@@ -6,8 +6,7 @@ import {
 } from "tiptap-commands";
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import listPlugin from "@/utils/listPlugin";
-import { MdSpec } from "@/block/other/MdSpec";
-import { Token } from "marked";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class BulletList extends Node {
   get name() {
@@ -24,12 +23,7 @@ export default class BulletList extends Node {
         {
           type: "list",
           matcher: token => "ordered" in token && !token.ordered,
-          getContent: (token, s, parser) => {
-            if (!("items" in token)) {
-              return undefined;
-            }
-            return parser(token.items as Token[]);
-          }
+          getContent: (token, s, parser) => parser((token as Tokens.List).items)
         }
       ]
     };

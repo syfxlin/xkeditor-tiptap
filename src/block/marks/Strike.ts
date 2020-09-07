@@ -6,13 +6,14 @@ import {
   toggleMark
 } from "tiptap-commands";
 import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class Strike extends Mark {
   get name() {
     return "strike";
   }
 
-  get schema(): MarkSpec {
+  get schema(): MarkSpec & MdSpec {
     return {
       parseDOM: [
         {
@@ -30,7 +31,13 @@ export default class Strike extends Mark {
           getAttrs: value => value === "line-through"
         }
       ],
-      toDOM: () => ["s", 0]
+      toDOM: () => ["s", 0],
+      parseMarkdown: [
+        {
+          type: "del",
+          getContent: (token, s, parser) => parser((token as Tokens.Del).tokens)
+        }
+      ]
     };
   }
 

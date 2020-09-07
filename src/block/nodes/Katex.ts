@@ -11,13 +11,14 @@ import nodeInputRule from "@/utils/nodeInputRule";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import inlineNodePasteRule from "@/utils/inlineNodePasteRule";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class Katex extends Node {
   get name() {
     return "katex";
   }
 
-  get schema(): NodeSpec {
+  get schema(): NodeSpec & MdSpec {
     return {
       inline: true,
       group: "inline",
@@ -36,7 +37,13 @@ export default class Katex extends Node {
       ],
       toDOM: node => {
         return ["span", { "data-type": this.name }, 0];
-      }
+      },
+      parseMarkdown: [
+        {
+          type: "tex",
+          getContent: token => (token as Tokens.Tex).tex
+        }
+      ]
     };
   }
 
@@ -62,10 +69,10 @@ export default class Katex extends Node {
   }
 
   inputRules({ type, schema }: { type: NodeType; schema: Schema }): any[] {
-    return [nodeInputRule(/\$\$([^$]+)\$\$/, type, 1)];
+    return [nodeInputRule(/\$+([^$]+)\$+/, type, 1)];
   }
 
   pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {
-    return [inlineNodePasteRule(/\$\$([^$]+)\$\$/, type, 1)];
+    return [inlineNodePasteRule(/\$+([^$]+)\$+/, type, 1)];
   }
 }

@@ -6,8 +6,7 @@ import {
   toggleMark
 } from "tiptap-commands";
 import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
-import { MdSpec } from "@/block/other/MdSpec";
-import { Token } from "marked";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class Bold extends Mark {
   get name() {
@@ -35,12 +34,8 @@ export default class Bold extends Mark {
       parseMarkdown: [
         {
           type: "strong",
-          getContent: (token, s, parser) => {
-            if (!("tokens" in token)) {
-              return undefined;
-            }
-            return parser(token.tokens as Token[]);
-          }
+          getContent: (token, s, parser) =>
+            parser((token as Tokens.Strong).tokens)
         }
       ]
     };

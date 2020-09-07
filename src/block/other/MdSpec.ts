@@ -1,5 +1,5 @@
 // TODO: 未完成
-import { lexer, MarkedOptions, Token, Tokenizer, Tokens } from "marked";
+import { MarkedOptions } from "marked";
 import {
   Fragment,
   Mark,
@@ -8,6 +8,201 @@ import {
   NodeType,
   Schema
 } from "@/utils/prosemirror";
+import { MarkdownLexer } from "@/block/other/MarkdownLexer";
+
+// eslint-disable-next-line
+export namespace Tokens {
+  export interface Space {
+    type: "space";
+    raw: string;
+  }
+
+  export interface Code {
+    type: "code";
+    raw: string;
+    codeBlockStyle?: "indented";
+    lang?: string;
+    text: string;
+  }
+
+  export interface Heading {
+    type: "heading";
+    raw: string;
+    depth: number;
+    text: string;
+    tokens: Token[];
+  }
+
+  export interface Table {
+    type: "table";
+    raw: string;
+    header: string[];
+    align: Array<"center" | "left" | "right" | null>;
+    cells: string[][];
+  }
+
+  export interface Hr {
+    type: "hr";
+    raw: string;
+  }
+
+  export interface Blockquote {
+    type: "blockquote";
+    raw: string;
+    text: string;
+    tokens: Token[];
+  }
+
+  export interface BlockquoteStart {
+    type: "blockquote_start";
+    raw: string;
+  }
+
+  export interface BlockquoteEnd {
+    type: "blockquote_end";
+    raw: string;
+  }
+
+  export interface List {
+    type: "list_start";
+    raw: string;
+    ordered: boolean;
+    start: boolean;
+    loose: boolean;
+    items: ListItem[];
+  }
+
+  export interface ListItem {
+    type: "list_item";
+    raw: string;
+    task: boolean;
+    checked: boolean;
+    loose: boolean;
+    text: string;
+    tokens: Token[];
+  }
+
+  export interface Paragraph {
+    type: "paragraph";
+    raw: string;
+    pre?: boolean;
+    text: string;
+  }
+
+  export interface HTML {
+    type: "html";
+    raw: string;
+    pre: boolean;
+    text: string;
+  }
+
+  export interface Text {
+    type: "text";
+    raw: string;
+    text: string;
+  }
+
+  export interface Def {
+    raw: string;
+    href: string;
+    title: string;
+  }
+
+  export interface Escape {
+    type: "escape";
+    raw: string;
+    text: string;
+  }
+
+  export interface Tag {
+    type: "text" | "html";
+    raw: string;
+    inLink: boolean;
+    inRawBlock: boolean;
+    text: string;
+  }
+
+  export interface Link {
+    type: "link";
+    raw: string;
+    href: string;
+    title: string;
+    text: string;
+    tokens?: Text[];
+  }
+
+  export interface Image {
+    type: "image";
+    raw: string;
+    href: string;
+    title: string;
+    text: string;
+  }
+
+  export interface Strong {
+    type: "strong";
+    raw: string;
+    text: string;
+    tokens: Token[];
+  }
+
+  export interface Em {
+    type: "em";
+    raw: string;
+    text: string;
+    tokens: Token[];
+  }
+
+  export interface Codespan {
+    type: "codespan";
+    raw: string;
+    text: string;
+  }
+
+  export interface Br {
+    type: "br";
+    raw: string;
+  }
+
+  export interface Del {
+    type: "del";
+    raw: string;
+    text: string;
+    tokens: Token[];
+  }
+
+  export interface Tex {
+    type: "tex";
+    raw: string;
+    tex: string;
+  }
+}
+
+export type Token =
+  | Tokens.Space
+  | Tokens.Code
+  | Tokens.Heading
+  | Tokens.Table
+  | Tokens.Hr
+  | Tokens.Blockquote
+  | Tokens.BlockquoteStart
+  | Tokens.BlockquoteEnd
+  | Tokens.List
+  | Tokens.ListItem
+  | Tokens.Paragraph
+  | Tokens.HTML
+  | Tokens.Text
+  | Tokens.Def
+  | Tokens.Escape
+  | Tokens.Tag
+  | Tokens.Image
+  | Tokens.Link
+  | Tokens.Strong
+  | Tokens.Em
+  | Tokens.Codespan
+  | Tokens.Br
+  | Tokens.Del
+  | Tokens.Tex;
 
 export interface MdParseRule {
   // 匹配流程 type[map O(1)] -> matcher[list-for O(n)]
@@ -32,19 +227,18 @@ export interface MdSpec {
   parseMarkdown?: MdParseRule[];
 }
 
-class MarkdownTokenizer extends Tokenizer {
-  codespan(src: string): Tokens.Codespan {
-    const match = src.match(/\$+([^$\n]+?)\$+/);
-    if (match) {
-      return {
-        // @ts-ignore
-        type: "katex",
-        raw: match[0],
-        text: match[1].trim()
-      };
-    }
-    return super.codespan(src);
-  }
+export interface ExtTokenizer {
+  inline: boolean;
+  matcher: (src: string) => RegExpExecArray | null;
+  tokenizer: (
+    match: RegExpExecArray,
+    src: string,
+    tokens: Token[]
+  ) => {
+    type: string;
+    raw: string;
+    [key: string]: any;
+  };
 }
 
 export class MarkdownParser {
@@ -53,10 +247,16 @@ export class MarkdownParser {
     [tokenType: string]: (MdParseRule & { block: MarkType | NodeType })[];
   };
   private readonly options: MarkedOptions | undefined;
+  private readonly extTokenizer: ExtTokenizer[];
 
-  constructor(schema: Schema, options?: MarkedOptions) {
+  constructor(
+    schema: Schema,
+    extTokenizer: ExtTokenizer[],
+    options?: MarkedOptions
+  ) {
     this.schema = schema;
     this.options = options;
+    this.extTokenizer = extTokenizer;
     this.blocks = {};
     for (const block of [
       ...Object.values(schema.marks),
@@ -98,7 +298,7 @@ export class MarkdownParser {
           this.parseTokens((token as any).tokens)
         );
       } else {
-        return this.schema.text(token.raw);
+        return this.schema.text(token.text);
       }
     }
     const blocks = this.blocks[token.type];
@@ -116,26 +316,22 @@ export class MarkdownParser {
           ? parser.getContent(token, this.schema, this.parseTokens.bind(this))
           : undefined;
         if (parser.block instanceof MarkType) {
-          const marks = [parser.block.create(attrs)];
+          const ms = [...(marks || []), parser.block.create(attrs)];
           if (content instanceof Node) {
-            content.marks.push(...marks);
-          }
-          if (content instanceof Array) {
-            content.map(item => item.marks.push(...marks));
-          }
-          if (content instanceof Fragment) {
+            content = content.mark([...content.marks, ...ms]);
+          } else if (content instanceof Array) {
+            content = content.map(item => item.mark([...item.marks, ...ms]));
+          } else if (content instanceof Fragment) {
             const nodes: Node[] = [];
             content.forEach(item => {
-              item.marks.push(...marks);
-              nodes.push(item);
+              nodes.push(item.mark([...item.marks, ...ms]));
             });
             content = nodes;
-          }
-          if (typeof content === "string") {
-            content = this.schema.text(content, marks);
-          }
-          if (content === undefined) {
-            content = this.schema.node("paragraph", marks);
+          } else if (typeof content === "string") {
+            console.log("string");
+            content = this.schema.text(content, ms);
+          } else if (content === undefined) {
+            content = this.schema.node("paragraph", ms);
           }
           return content;
         } else {
@@ -168,11 +364,12 @@ export class MarkdownParser {
   }
 
   parse(markdown: string) {
-    return this.parseTokens(
-      lexer(markdown, {
-        tokenizer: new MarkdownTokenizer(),
-        ...this.options
-      })
+    const nodes = this.parseTokens(
+      new MarkdownLexer(this.extTokenizer, this.options).lex(
+        markdown
+      ) as Token[]
     );
+    console.log(nodes);
+    return nodes;
   }
 }

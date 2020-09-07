@@ -3,8 +3,7 @@ import { pasteRule, removeMark, updateMark } from "tiptap-commands";
 import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
 import markInputRule from "@/utils/markInputRule";
 import LinkPlugin from "@/block/plugins/LinkPlugin";
-import { MdSpec } from "@/block/other/MdSpec";
-import { Tokens } from "marked";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class Link extends Mark {
   get name() {
@@ -64,9 +63,7 @@ export default class Link extends Mark {
               title: token.title
             };
           },
-          getContent: token => {
-            return (token as Tokens.Link).text;
-          }
+          getContent: token => (token as Tokens.Link).text
         }
       ]
     };

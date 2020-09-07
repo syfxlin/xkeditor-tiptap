@@ -7,17 +7,24 @@ import {
 } from "tiptap-commands";
 import { MarkType, Plugin, Schema } from "@/utils/prosemirror";
 import { MarkSpec } from "prosemirror-model";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class Code extends Mark {
   get name() {
     return "code";
   }
 
-  get schema(): MarkSpec {
+  get schema(): MarkSpec & MdSpec {
     return {
       excludes: "_",
       parseDOM: [{ tag: "code" }],
-      toDOM: () => ["code", 0]
+      toDOM: () => ["code", 0],
+      parseMarkdown: [
+        {
+          type: "codespan",
+          getContent: token => (token as Tokens.Codespan).text
+        }
+      ]
     };
   }
 
