@@ -7,6 +7,7 @@ import addPx from "add-px-to-style";
 import hyphenate from "hyphenate-style-name";
 import markInputRule from "@/utils/markInputRule";
 import markPasteRule from "@/utils/markPasteRule";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 const DEFAULT_FOREGROUND = "rgb(55, 53, 47)";
 
@@ -41,7 +42,7 @@ const convertCssObjToStr = (style: { [key: string]: any }) => {
   return result;
 };
 
-const getColorAttrs = (match: string[]) => {
+export const getColorAttrs = (match: string[]) => {
   if (match[2].indexOf(",") !== -1) {
     const colors = match[2].split(",");
     return {
@@ -69,7 +70,7 @@ export default class Style extends Mark {
     return "style";
   }
 
-  get schema(): MarkSpec {
+  get schema(): MarkSpec & MdSpec {
     return {
       attrs: DEFAULT_STYLE_ATTRS,
       parseDOM: [
@@ -86,7 +87,16 @@ export default class Style extends Mark {
       toDOM: mark => {
         const style = convertCssObjToStr(mark.attrs);
         return ["span", { style }, 0];
-      }
+      },
+      parseMarkdown: [
+        {
+          type: "style",
+          getAttrs: token => ({
+            ...(token as Tokens.Style).attrs
+          }),
+          getContent: token => (token as Tokens.Style).text
+        }
+      ]
     };
   }
 

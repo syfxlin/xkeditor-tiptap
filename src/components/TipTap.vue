@@ -18,6 +18,7 @@ import TMenuBubble from "@/components/TMenuBubble.vue";
 import TFloatMenu from "@/components/TFloatMenu.vue";
 import { MarkdownParser } from "@/block/other/MdSpec";
 import marked from "marked";
+import { getColorAttrs } from "@/block/marks/Style";
 
 export default defineComponent({
   name: "TipTap",
@@ -123,6 +124,34 @@ export default defineComponent({
             title
           };
         }
+      },
+      {
+        inline: true,
+        matcher: src => /\[([^\]]+)]{([^}]+)}/.exec(src),
+        tokenizer: match => ({
+          type: "style",
+          raw: match[0],
+          text: match[1],
+          attrs: getColorAttrs(match)
+        })
+      },
+      {
+        inline: true,
+        matcher: src => /-([^_]+)_/.exec(src),
+        tokenizer: match => ({
+          type: "sub",
+          raw: match[0],
+          text: match[1]
+        })
+      },
+      {
+        inline: true,
+        matcher: src => /-([^_]+)-/.exec(src),
+        tokenizer: match => ({
+          type: "sup",
+          raw: match[0],
+          text: match[1]
+        })
       }
     ]);
     // @ts-ignore

@@ -17,7 +17,6 @@ export default class Italic extends Mark {
     return {
       parseDOM: [{ tag: "i" }, { tag: "em" }, { style: "font-style=italic" }],
       toDOM: () => ["em", 0],
-      // TODO: 不能成功插入
       parseMarkdown: [
         {
           type: "em",

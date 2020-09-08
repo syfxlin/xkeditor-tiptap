@@ -20,13 +20,14 @@ import "prismjs/themes/prism-okaidia.css";
 import "prismjs/plugins/toolbar/prism-toolbar.css";
 import "prismjs/plugins/line-numbers/prism-line-numbers.css";
 import nodeListPasteRule, { Matched } from "@/utils/nodeListPasteRule";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class CodeBlockHighlight extends Node {
   get name() {
     return "code_block";
   }
 
-  get schema(): NodeSpec {
+  get schema(): NodeSpec & MdSpec {
     return mergeNodeSpec({
       attrs: {
         language: {
@@ -72,6 +73,15 @@ export default class CodeBlockHighlight extends Node {
         "pre",
         { "data-language": node.attrs.language },
         ["code", 0]
+      ],
+      parseMarkdown: [
+        {
+          type: "code",
+          getAttrs: token => ({
+            language: (token as Tokens.Code).lang
+          }),
+          getContent: token => (token as Tokens.Code).text
+        }
       ]
     });
   }

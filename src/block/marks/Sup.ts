@@ -3,16 +3,23 @@ import { CommandFunction, toggleMark } from "tiptap-commands";
 import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
 import markInputRule from "@/utils/markInputRule";
 import markPasteRule from "@/utils/markPasteRule";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class Sup extends Mark {
   get name() {
     return "sup";
   }
 
-  get schema(): MarkSpec {
+  get schema(): MarkSpec & MdSpec {
     return {
       parseDOM: [{ tag: "sup" }],
-      toDOM: () => ["sup", 0]
+      toDOM: () => ["sup", 0],
+      parseMarkdown: [
+        {
+          type: "sup",
+          getContent: token => (token as Tokens.Sup).text
+        }
+      ]
     };
   }
 

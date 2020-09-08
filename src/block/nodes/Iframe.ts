@@ -35,10 +35,7 @@ export default class Iframe extends Node {
   }
 
   commands() {
-    const command: CommandFunction = () => {
-      console.log("command");
-      return true;
-    };
+    const command: CommandFunction = () => true;
     return () => command;
   }
 

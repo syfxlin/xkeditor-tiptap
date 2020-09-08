@@ -176,6 +176,27 @@ export namespace Tokens {
     raw: string;
     tex: string;
   }
+
+  export interface Style {
+    type: "style";
+    raw: string;
+    text: string;
+    attrs: {
+      [key: string]: any;
+    };
+  }
+
+  export interface Sub {
+    type: "sub";
+    raw: string;
+    text: string;
+  }
+
+  export interface Sup {
+    type: "sup";
+    raw: string;
+    text: string;
+  }
 }
 
 export type Token =
@@ -202,7 +223,10 @@ export type Token =
   | Tokens.Codespan
   | Tokens.Br
   | Tokens.Del
-  | Tokens.Tex;
+  | Tokens.Tex
+  | Tokens.Style
+  | Tokens.Sub
+  | Tokens.Sup;
 
 export interface MdParseRule {
   // 匹配流程 type[map O(1)] -> matcher[list-for O(n)]
@@ -328,7 +352,6 @@ export class MarkdownParser {
             });
             content = nodes;
           } else if (typeof content === "string") {
-            console.log("string");
             content = this.schema.text(content, ms);
           } else if (content === undefined) {
             content = this.schema.node("paragraph", ms);
