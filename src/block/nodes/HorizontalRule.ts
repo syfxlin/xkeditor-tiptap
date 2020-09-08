@@ -2,17 +2,23 @@ import { CommandGetter, Node } from "tiptap";
 import { CommandFunction, nodeInputRule } from "tiptap-commands";
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import nodeLinePasteRule from "@/utils/nodeLinePasteRule";
+import { MdSpec } from "@/block/other/MdSpec";
 
 export default class HorizontalRule extends Node {
   get name() {
     return "horizontal_rule";
   }
 
-  get schema(): NodeSpec {
+  get schema(): NodeSpec & MdSpec {
     return {
       group: "block",
       parseDOM: [{ tag: "hr" }],
-      toDOM: () => ["hr"]
+      toDOM: () => ["hr"],
+      parseMarkdown: [
+        {
+          type: "hr"
+        }
+      ]
     };
   }
 

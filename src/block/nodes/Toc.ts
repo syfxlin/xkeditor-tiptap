@@ -4,13 +4,14 @@ import { NodeType, Schema } from "prosemirror-model";
 import nodeInputRule from "@/utils/nodeInputRule";
 import TocPlugin, { toc } from "@/block/plugins/TocPlugin";
 import { defineComponent } from "vue-demi";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class Toc extends Node {
   get name() {
     return "toc";
   }
 
-  get schema(): NodeSpec {
+  get schema(): NodeSpec & MdSpec {
     return {
       group: "block",
       attrs: {
@@ -37,6 +38,12 @@ export default class Toc extends Node {
           "data-fold": node.attrs.fold ? "fold" : "unfold"
         },
         0
+      ],
+      parseMarkdown: [
+        {
+          type: "toc",
+          getAttrs: token => ({ fold: (token as Tokens.Toc).fold })
+        }
       ]
     };
   }

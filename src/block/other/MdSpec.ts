@@ -197,6 +197,12 @@ export namespace Tokens {
     raw: string;
     text: string;
   }
+
+  export interface Toc {
+    type: "toc";
+    raw: string;
+    fold: boolean;
+  }
 }
 
 export type Token =
@@ -226,7 +232,8 @@ export type Token =
   | Tokens.Tex
   | Tokens.Style
   | Tokens.Sub
-  | Tokens.Sup;
+  | Tokens.Sup
+  | Tokens.Toc;
 
 export interface MdParseRule {
   // 匹配流程 type[map O(1)] -> matcher[list-for O(n)]
@@ -236,12 +243,12 @@ export interface MdParseRule {
   getContent?: (
     token: Token,
     schema: Schema,
-    parser: (tokens: Token[]) => Node[]
+    parser: (tokens: Token[] | string) => Node[]
   ) => Fragment | Node[] | Node | string | undefined;
   getMarks?: (
     token: Token,
     schema: Schema,
-    parser: (tokens: Token[]) => Node[]
+    parser: (tokens: Token[] | string) => Node[]
   ) => Mark[] | undefined;
 }
 
@@ -334,10 +341,10 @@ export class MarkdownParser {
       if (blocks.length === 1 || (parser.matcher && parser.matcher(token))) {
         const attrs = parser.getAttrs ? parser.getAttrs(token) : undefined;
         const marks = parser.getMarks
-          ? parser.getMarks(token, this.schema, this.parseTokens.bind(this))
+          ? parser.getMarks(token, this.schema, this.parse.bind(this))
           : undefined;
         let content = parser.getContent
-          ? parser.getContent(token, this.schema, this.parseTokens.bind(this))
+          ? parser.getContent(token, this.schema, this.parse.bind(this))
           : undefined;
         if (parser.block instanceof MarkType) {
           const ms = [...(marks || []), parser.block.create(attrs)];
@@ -386,13 +393,12 @@ export class MarkdownParser {
     return result;
   }
 
-  parse(markdown: string) {
-    const nodes = this.parseTokens(
-      new MarkdownLexer(this.extTokenizer, this.options).lex(
+  parse(markdown: string | Token[]): Node[] {
+    if (typeof markdown === "string") {
+      markdown = new MarkdownLexer(this.extTokenizer, this.options).lex(
         markdown
-      ) as Token[]
-    );
-    console.log(nodes);
-    return nodes;
+      ) as Token[];
+    }
+    return this.parseTokens(markdown);
   }
 }

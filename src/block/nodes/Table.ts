@@ -14,6 +14,7 @@ import {
   goToNextCell,
   mergeCells,
   Node as ProsemirrorNode,
+  NodeSpec,
   NodeType,
   Plugin,
   Schema,
@@ -28,6 +29,7 @@ import {
 import TableNodes from "@/block/other/TableNodes";
 import { DispatchFn, wrappingInputRule } from "tiptap-commands";
 import nodeListPasteRule from "@/utils/nodeListPasteRule";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class Table extends Node {
   get name() {
@@ -40,8 +42,33 @@ export default class Table extends Node {
     };
   }
 
-  get schema() {
-    return TableNodes.table;
+  get schema(): NodeSpec & MdSpec {
+    return {
+      ...TableNodes.table,
+      parseMarkdown: [
+        {
+          type: "table",
+          getContent: (t, s, parser) => {
+            const token = t as Tokens.Table;
+            const header = s.node(
+              "table_row",
+              undefined,
+              token.header.map(h =>
+                s.node("table_header", undefined, parser(h))
+              )
+            );
+            const cells = token.cells.map(row =>
+              s.node(
+                "table_row",
+                undefined,
+                row.map(cell => s.node("table_cell", undefined, parser(cell)))
+              )
+            );
+            return [header, ...cells];
+          }
+        }
+      ]
+    };
   }
 
   commands({

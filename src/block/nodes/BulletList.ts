@@ -22,7 +22,13 @@ export default class BulletList extends Node {
       parseMarkdown: [
         {
           type: "list",
-          matcher: token => "ordered" in token && !token.ordered,
+          matcher: t => {
+            const token = t as Tokens.List;
+            if (token.items.length === 0 || !token.items[0].task) {
+              return !token.ordered;
+            }
+            return false;
+          },
           getContent: (token, s, parser) => parser((token as Tokens.List).items)
         }
       ]

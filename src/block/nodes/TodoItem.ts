@@ -8,6 +8,7 @@ import {
 import { NodeSpec, NodeType, Schema } from "@/utils/prosemirror";
 import { defineComponent } from "vue-demi";
 import { Node as ProsemirrorNode } from "prosemirror-model";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class TodoItem extends Node {
   get name() {
@@ -31,7 +32,7 @@ export default class TodoItem extends Node {
         return {
           onChange: () => {
             if (props.updateAttrs) {
-              props.updateAttrs({ don: !props.node?.attrs.done });
+              props.updateAttrs({ done: !props.node?.attrs.done });
             }
           }
         };
@@ -45,7 +46,7 @@ export default class TodoItem extends Node {
     });
   }
 
-  get schema(): NodeSpec {
+  get schema(): NodeSpec & MdSpec {
     return {
       attrs: {
         done: {
@@ -74,6 +75,24 @@ export default class TodoItem extends Node {
           getAttrs: node => ({
             done: (node as HTMLElement).getAttribute("data-done") === "true"
           })
+        }
+      ],
+      parseMarkdown: [
+        {
+          type: "list_item",
+          matcher: token => (token as Tokens.ListItem).task,
+          getAttrs: token => ({
+            done: (token as Tokens.ListItem).checked
+          }),
+          getContent: (token, s, parser) => {
+            const nodes = parser((token as Tokens.ListItem).tokens);
+            const first = nodes[0];
+            if (first && first.isText) {
+              nodes.shift();
+              nodes.unshift(s.node("paragraph", undefined, first));
+            }
+            return nodes;
+          }
         }
       ]
     };

@@ -152,6 +152,15 @@ export default defineComponent({
           raw: match[0],
           text: match[1]
         })
+      },
+      {
+        inline: false,
+        matcher: src => /\[(TOC|toc)([^\]]*)\]/.exec(src),
+        tokenizer: match => ({
+          type: "toc",
+          raw: match[0],
+          fold: match[2].endsWith(":fold")
+        })
       }
     ]);
     // @ts-ignore

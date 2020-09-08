@@ -6,7 +6,7 @@ import {
 } from "tiptap-commands";
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import listPlugin from "@/utils/listPlugin";
-import { MdSpec, Token } from "@/block/other/MdSpec";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class OrderedList extends Node {
   get name() {
@@ -41,13 +41,14 @@ export default class OrderedList extends Node {
       parseMarkdown: [
         {
           type: "list",
-          matcher: token => "ordered" in token && token.ordered,
-          getContent: (token, s, parser) => {
-            if (!("items" in token)) {
-              return undefined;
+          matcher: t => {
+            const token = t as Tokens.List;
+            if (token.items.length === 0 || !token.items[0].task) {
+              return token.ordered;
             }
-            return parser(token.items as Token[]);
-          }
+            return false;
+          },
+          getContent: (token, s, parser) => parser((token as Tokens.List).items)
         }
       ]
     };

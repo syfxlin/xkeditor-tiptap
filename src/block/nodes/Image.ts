@@ -8,6 +8,7 @@ import {
   Schema
 } from "@/utils/prosemirror";
 import inlineNodePasteRule from "@/utils/inlineNodePasteRule";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 /**
  * Matches following attributes in Markdown-typed image: [, alt, src, title]
@@ -24,7 +25,7 @@ export default class Image extends Node {
     return "image";
   }
 
-  get schema(): NodeSpec {
+  get schema(): NodeSpec & MdSpec {
     return {
       inline: true,
       attrs: {
@@ -51,7 +52,20 @@ export default class Image extends Node {
           }
         }
       ],
-      toDOM: node => ["img", node.attrs]
+      toDOM: node => ["img", node.attrs],
+      parseMarkdown: [
+        {
+          type: "image",
+          getAttrs: t => {
+            const token = t as Tokens.Image;
+            return {
+              src: token.href,
+              title: token.title,
+              alt: token.text
+            };
+          }
+        }
+      ]
     };
   }
 

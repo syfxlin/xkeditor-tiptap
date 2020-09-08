@@ -2,13 +2,14 @@ import { CommandGetter, Node } from "tiptap";
 import { toggleList, wrappingInputRule } from "tiptap-commands";
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import listPlugin from "@/utils/listPlugin";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class TodoList extends Node {
   get name() {
     return "todo_list";
   }
 
-  get schema(): NodeSpec {
+  get schema(): NodeSpec & MdSpec {
     return {
       group: "block",
       content: "todo_item+",
@@ -17,6 +18,16 @@ export default class TodoList extends Node {
         {
           priority: 51,
           tag: `[data-type="${this.name}"]`
+        }
+      ],
+      parseMarkdown: [
+        {
+          type: "list",
+          matcher: t => {
+            const token = t as Tokens.List;
+            return token.items.length !== 0 && token.items[0].task;
+          },
+          getContent: (token, s, parser) => parser((token as Tokens.List).items)
         }
       ]
     };

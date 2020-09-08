@@ -19,6 +19,7 @@ export default class ListItem extends Node {
       parseMarkdown: [
         {
           type: "list_item",
+          matcher: token => !(token as Tokens.ListItem).task,
           getContent: (token, s, parser) => {
             const nodes = parser((token as Tokens.ListItem).tokens);
             const first = nodes[0];
