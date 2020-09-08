@@ -48,10 +48,10 @@ export default class Sub extends Mark {
   }
 
   inputRules({ type, schema }: { type: MarkType; schema: Schema }): any[] {
-    return [markInputRule(/-([^_]+)_$/, type)];
+    return [markInputRule(/-\*([^_]+)_$/, type)];
   }
 
   pasteRules({ type, schema }: { type: MarkType; schema: Schema }): Plugin[] {
-    return [markPasteRule(/-([^_]+)_$/, type)];
+    return [markPasteRule(/-\*([^_]+)_$/, type)];
   }
 }

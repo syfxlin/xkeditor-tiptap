@@ -137,7 +137,7 @@ export default defineComponent({
       },
       {
         inline: true,
-        matcher: src => /-([^_]+)_/.exec(src),
+        matcher: src => /-\*([^_]+)_/.exec(src),
         tokenizer: match => ({
           type: "sub",
           raw: match[0],
@@ -146,7 +146,7 @@ export default defineComponent({
       },
       {
         inline: true,
-        matcher: src => /-([^_]+)-/.exec(src),
+        matcher: src => /-\*([^_]+)-/.exec(src),
         tokenizer: match => ({
           type: "sup",
           raw: match[0],
