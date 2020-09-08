@@ -64,15 +64,40 @@ export class MarkdownLexer extends Lexer {
 
   blockTokens(src: string, tokens: any[] = [], top = true) {
     src = src.replace(/^ +$/gm, "");
-    let token, i, l, lastToken;
+    let token, i, l, lastToken, matched;
 
     while (src) {
+      matched = false;
+
       // newline
       if ((token = this.tokenizer.space(src))) {
         src = src.substring(token.raw.length);
         if (token.type) {
           tokens.push(token);
         }
+        continue;
+      }
+
+      for (const tzr of this.blockTzr) {
+        let match = tzr.matcher(src);
+        if (match !== null && match) {
+          matched = true;
+          if (typeof match === "boolean") {
+            // @ts-ignore
+            const matchArr: RegExpExecArray = [src];
+            matchArr.index = 0;
+            matchArr.input = src;
+            match = matchArr;
+          }
+          token = tzr.tokenizer(match, src, tokens);
+          const left = src.substring(0, match.index);
+          src = src.substring(match.index + token.raw.length);
+          tokens.push(...this.blockTokens(left, [], top));
+          tokens.push(token);
+          break;
+        }
+      }
+      if (matched) {
         continue;
       }
 
@@ -84,7 +109,6 @@ export class MarkdownLexer extends Lexer {
         } else {
           lastToken = tokens[tokens.length - 1];
           lastToken.raw += "\n" + token.raw;
-          // @ts-ignore
           lastToken.text += "\n" + token.text;
         }
         continue;
@@ -178,23 +202,6 @@ export class MarkdownLexer extends Lexer {
       if (top && (token = this.tokenizer.paragraph(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
-        continue;
-      }
-
-      let matched = false;
-      for (const tzr of this.blockTzr) {
-        const match = tzr.matcher(src);
-        if (match !== null) {
-          matched = true;
-          token = tzr.tokenizer(match, src, tokens);
-          const left = src.substring(0, match.index);
-          src = src.substring(match.index + token.raw.length);
-          tokens.push(...this.blockTokens(left, [], top));
-          tokens.push(token);
-          break;
-        }
-      }
-      if (matched) {
         continue;
       }
 
@@ -363,17 +370,27 @@ export class MarkdownLexer extends Lexer {
         continue;
       }
 
+      // inline tzr
       let matched = false;
       for (const tzr of this.inlineTzr) {
         const match = tzr.matcher(src);
-        if (match !== null) {
+        if (match !== null && match) {
           matched = true;
-          token = tzr.tokenizer(match, src, tokens);
-          const left = src.substring(0, match.index);
-          src = src.substring(match.index + token.raw.length);
-          tokens.push(
-            ...this.inlineTokens(left, [], inLink, inRawBlock, prevChar)
-          );
+          if (typeof match === "boolean") {
+            // @ts-ignore
+            const matchArr: RegExpExecArray = [src];
+            matchArr.index = 0;
+            matchArr.input = src;
+            token = tzr.tokenizer(matchArr, src, tokens);
+            src = src.substring(token.raw.length);
+          } else {
+            token = tzr.tokenizer(match, src, tokens);
+            const left = src.substring(0, match.index);
+            src = src.substring(match.index + token.raw.length);
+            tokens.push(
+              ...this.inlineTokens(left, [], inLink, inRawBlock, prevChar)
+            );
+          }
           tokens.push(token);
           break;
         }

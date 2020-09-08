@@ -174,7 +174,7 @@ export namespace Tokens {
   export interface Tex {
     type: "tex";
     raw: string;
-    tex: string;
+    text: string;
   }
 
   export interface Style {
@@ -202,6 +202,19 @@ export namespace Tokens {
     type: "toc";
     raw: string;
     fold: boolean;
+  }
+
+  export interface Details {
+    type: "details";
+    raw: string;
+    text: string;
+    summary: string;
+  }
+
+  export interface Mermaid {
+    type: "mermaid";
+    raw: string;
+    text: string;
   }
 }
 
@@ -233,7 +246,9 @@ export type Token =
   | Tokens.Style
   | Tokens.Sub
   | Tokens.Sup
-  | Tokens.Toc;
+  | Tokens.Toc
+  | Tokens.Details
+  | Tokens.Mermaid;
 
 export interface MdParseRule {
   // 匹配流程 type[map O(1)] -> matcher[list-for O(n)]
@@ -259,8 +274,8 @@ export interface MdSpec {
 }
 
 export interface ExtTokenizer {
-  inline: boolean;
-  matcher: (src: string) => RegExpExecArray | null;
+  inline?: boolean;
+  matcher: (src: string) => RegExpExecArray | null | boolean;
   tokenizer: (
     match: RegExpExecArray,
     src: string,
@@ -399,6 +414,7 @@ export class MarkdownParser {
         markdown
       ) as Token[];
     }
+    console.log(markdown);
     return this.parseTokens(markdown);
   }
 }

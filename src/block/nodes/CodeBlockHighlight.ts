@@ -88,7 +88,7 @@ export default class CodeBlockHighlight extends Node {
 
   get view() {
     return defineComponent({
-      name: "code_block",
+      name: "node_code_block",
       components: {
         CodeMirrorComponent,
         HighlightComponent

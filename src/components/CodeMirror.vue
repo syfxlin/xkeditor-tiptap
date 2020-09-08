@@ -56,7 +56,7 @@ const CM_EVENTS = [
 ];
 
 export default defineComponent({
-  name: "code-mirror",
+  name: "node_code_mirror",
   props: {
     content: String,
     options: Object,

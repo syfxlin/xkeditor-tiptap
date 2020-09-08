@@ -56,7 +56,7 @@ export default class TodoList extends Node {
       type,
       schema,
       {
-        name: "todo_item",
+        name: "node_todo_item",
         ceil: 2,
         cut: 3
       },

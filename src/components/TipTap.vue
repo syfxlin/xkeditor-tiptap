@@ -101,7 +101,7 @@ export default defineComponent({
         tokenizer: match => ({
           type: "tex",
           raw: match[0],
-          tex: match[1].trim()
+          text: match[1].trim()
         })
       },
       {
@@ -154,12 +154,29 @@ export default defineComponent({
         })
       },
       {
-        inline: false,
         matcher: src => /\[(TOC|toc)([^\]]*)\]/.exec(src),
         tokenizer: match => ({
           type: "toc",
           raw: match[0],
           fold: match[2].endsWith(":fold")
+        })
+      },
+      {
+        matcher: src =>
+          /(:::|;;;)[ \t]?det[ \t]?([^\n]*)\n([\s\S]*)\n(:::|;;;)/.exec(src),
+        tokenizer: match => ({
+          type: "details",
+          raw: match[0],
+          text: match[3],
+          summary: match[2] || "详细信息"
+        })
+      },
+      {
+        matcher: src => /(:::|;;;)[ \t]?mer\n([\s\S]*)\n(:::|;;;)/.exec(src),
+        tokenizer: match => ({
+          type: "mermaid",
+          raw: match[0],
+          text: match[2]
         })
       }
     ]);

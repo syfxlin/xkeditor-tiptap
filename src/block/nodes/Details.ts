@@ -8,13 +8,14 @@ import {
 import nodeListPasteRule, { Matched } from "@/utils/nodeListPasteRule";
 import { defineComponent } from "@vue/composition-api";
 import { wrappingInputRule } from "tiptap-commands";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 export default class Details extends Node {
   get name() {
     return "details";
   }
 
-  get schema(): NodeSpec {
+  get schema(): NodeSpec & MdSpec {
     return {
       attrs: {
         open: {
@@ -51,13 +52,21 @@ export default class Details extends Node {
         } else {
           return ["details", 0];
         }
-      }
+      },
+      parseMarkdown: [
+        {
+          type: "details",
+          getAttrs: token => ({ summary: (token as Tokens.Details).summary }),
+          getContent: (token, s, parser) =>
+            parser((token as Tokens.Details).text)
+        }
+      ]
     };
   }
 
   get view() {
     return defineComponent({
-      name: "details",
+      name: "node_details",
       props: {
         node: ProsemirrorNode,
         updateAttrs: Function
@@ -73,9 +82,13 @@ export default class Details extends Node {
 
   inputRules({ type, schema }: { type: NodeType; schema: Schema }): any[] {
     return [
-      wrappingInputRule(/^(:::|;;;)\s?det\s?([^:;]*)[:;]$/, type, match => ({
-        summary: match[2]
-      }))
+      wrappingInputRule(
+        /^(:::|;;;)[ \t]?det[ \t]?([^:;]*)[:;]$/,
+        type,
+        match => ({
+          summary: match[2]
+        })
+      )
     ];
   }
 
@@ -85,7 +98,7 @@ export default class Details extends Node {
     return [
       nodeListPasteRule(
         content => {
-          const match = /^(:::|;;;)\s?det\s?(.*)$/.exec(content);
+          const match = /^(:::|;;;)[ \t]?det[ \t]?(.*)$/.exec(content);
           if (match) {
             summary = match[2];
             return Matched.CONTAIN_SKIP;

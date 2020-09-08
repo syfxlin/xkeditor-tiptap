@@ -64,7 +64,7 @@ export default class Toc extends Node {
 
   get view() {
     const List = defineComponent({
-      name: "toc_list",
+      name: "node_toc_list",
       props: {
         items: Array
       },

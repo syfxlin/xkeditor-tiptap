@@ -41,7 +41,7 @@ export default class Katex extends Node {
       parseMarkdown: [
         {
           type: "tex",
-          getContent: token => (token as Tokens.Tex).tex
+          getContent: token => (token as Tokens.Tex).text
         }
       ]
     };
@@ -49,7 +49,7 @@ export default class Katex extends Node {
 
   get view() {
     return defineComponent({
-      name: "katex",
+      name: "node_katex",
       props: {
         node: ProsemirrorNode,
         updateAttrs: Function

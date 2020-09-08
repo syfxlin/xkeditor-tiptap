@@ -6,6 +6,7 @@ import mermaid from "mermaid";
 import { useDebounceFn } from "@vueuse/core";
 import { Ref } from "vue-demi";
 import { errSvg } from "@/utils/mermaid-error.ts";
+import { MdSpec, Tokens } from "@/block/other/MdSpec";
 
 mermaid.initialize({
   startOnLoad: false
@@ -16,7 +17,7 @@ export default class Mermaid extends Node {
     return "mermaid";
   }
 
-  get schema(): NodeSpec {
+  get schema(): NodeSpec & MdSpec {
     return mergeNodeSpec({
       parseDOM: [
         {
@@ -34,7 +35,13 @@ export default class Mermaid extends Node {
           }
         }
       ],
-      toDOM: node => ["pre", { "data-type": this.name }, ["code", 0]]
+      toDOM: node => ["pre", { "data-type": this.name }, ["code", 0]],
+      parseMarkdown: [
+        {
+          type: "mermaid",
+          getContent: token => (token as Tokens.Mermaid).text
+        }
+      ]
     });
   }
 
