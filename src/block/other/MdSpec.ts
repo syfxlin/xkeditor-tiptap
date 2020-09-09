@@ -327,6 +327,10 @@ export class MarkdownParser {
     if (!("type" in token)) {
       return this.schema.text(token.raw);
     }
+    // space
+    if (token.type === "space") {
+      return [];
+    }
     // paragraph
     if (token.type === "paragraph") {
       return this.schema.node(

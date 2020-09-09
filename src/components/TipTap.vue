@@ -19,6 +19,7 @@ import TFloatMenu from "@/components/TFloatMenu.vue";
 import { MarkdownParser } from "@/block/other/MdSpec";
 import marked from "marked";
 import { getColorAttrs } from "@/block/marks/Style";
+import { emojiConverter } from "@/block/extensions/Emoji";
 
 export default defineComponent({
   name: "TipTap",
@@ -177,6 +178,15 @@ export default defineComponent({
           type: "mermaid",
           raw: match[0],
           text: match[2]
+        })
+      },
+      {
+        inline: true,
+        matcher: src => /(:[a-zA-Z0-9]+:)/.exec(src),
+        tokenizer: match => ({
+          type: "text",
+          raw: match[0],
+          text: emojiConverter.replace_colons(match[1])
         })
       }
     ]);

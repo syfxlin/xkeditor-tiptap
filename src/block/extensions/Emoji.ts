@@ -9,7 +9,7 @@ import {
 } from "@/utils/prosemirror";
 import { EmojiConvertor } from "emoji-js";
 
-const emojiConverter = new EmojiConvertor();
+export const emojiConverter = new EmojiConvertor();
 // eslint-disable-next-line
 emojiConverter.replace_mode = "unified";
 
