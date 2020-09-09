@@ -1,11 +1,11 @@
 import { Node } from "tiptap";
-import { NodeSpec } from "@/utils/prosemirror";
-import { NodeType, Schema } from "prosemirror-model";
+import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import nodeInputRule from "@/utils/nodeInputRule";
 import TocPlugin, { toc } from "@/block/plugins/TocPlugin";
 import { defineComponent } from "vue-demi";
 import { MdSpec } from "@/block/other/MdSpec";
 import { Tokens } from "@/block/other/MarkdownLexer";
+import nodeLinePasteRule from "@/utils/nodeLinePasteRule";
 
 export default class Toc extends Node {
   get name() {
@@ -60,7 +60,13 @@ export default class Toc extends Node {
     ];
   }
 
-  // TODO: paste rule
+  pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {
+    return [
+      nodeLinePasteRule(/^\[(TOC|toc)([^\]]*)\]$/, type, null, match => ({
+        fold: match[2].endsWith(":fold")
+      }))
+    ];
+  }
 
   get plugins() {
     return [TocPlugin()];

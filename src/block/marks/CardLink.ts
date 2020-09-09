@@ -1,9 +1,10 @@
 import { Mark } from "tiptap";
-import { MarkSpec, MarkType, Schema } from "@/utils/prosemirror";
+import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
 import LinkPlugin from "@/block/plugins/LinkPlugin";
 import markInputRule from "@/utils/markInputRule";
 import { MdSpec } from "@/block/other/MdSpec";
 import { Tokens } from "@/block/other/MarkdownLexer";
+import markPasteRule from "@/utils/markPasteRule";
 
 export default class CardLink extends Mark {
   get name() {
@@ -105,7 +106,33 @@ export default class CardLink extends Mark {
     ];
   }
 
-  // TODO: pasteRules
+  pasteRules({ type, schema }: { type: MarkType; schema: Schema }): Plugin[] {
+    return [
+      markPasteRule(
+        /\[\[([^\]]+)]]/,
+        type,
+        match => {
+          const split = match[1].split(/\|| "|"/);
+          const result =
+            split.length === 4 || split.length === 2 ? split[1] : split[0];
+          return `${result}`;
+        },
+        match => {
+          const split = match[1].split(/\|| "|"/);
+          let title = null;
+          if (split.length === 4) {
+            title = split[2];
+          } else if (split.length === 3) {
+            title = split[1];
+          }
+          return {
+            href: split[0],
+            title
+          };
+        }
+      )
+    ];
+  }
 
   get plugins() {
     return [
