@@ -51,7 +51,16 @@ export default class OrderedList extends Node {
           },
           getContent: (token, s, parser) => parser((token as Tokens.List).items)
         }
-      ]
+      ],
+      toMarkdown: (node, serializer) => {
+        let index = 1;
+        return serializer(node.content)
+          .split(/\n+/)
+          .map(
+            str => (/(\s*\d+\. )/.test(str) ? " " : index++ + ".") + " " + str
+          )
+          .join("\n");
+      }
     };
   }
 

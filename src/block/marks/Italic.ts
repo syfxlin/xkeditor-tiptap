@@ -23,7 +23,8 @@ export default class Italic extends Mark {
           type: "em",
           getContent: (token, s, parser) => parser((token as Tokens.Em).tokens)
         }
-      ]
+      ],
+      toMarkdown: () => content => `*${content}*`
     };
   }
 

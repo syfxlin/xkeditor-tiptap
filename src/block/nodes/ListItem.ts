@@ -31,7 +31,8 @@ export default class ListItem extends Node {
             return nodes;
           }
         }
-      ]
+      ],
+      toMarkdown: (node, serializer) => serializer(node.content)
     };
   }
 

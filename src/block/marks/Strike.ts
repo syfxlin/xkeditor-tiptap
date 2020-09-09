@@ -38,7 +38,8 @@ export default class Strike extends Mark {
           type: "del",
           getContent: (token, s, parser) => parser((token as Tokens.Del).tokens)
         }
-      ]
+      ],
+      toMarkdown: () => content => `~${content}~`
     };
   }
 

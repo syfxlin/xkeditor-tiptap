@@ -18,7 +18,8 @@ export default class HorizontalRule extends Node {
         {
           type: "hr"
         }
-      ]
+      ],
+      toMarkdown: () => `---`
     };
   }
 

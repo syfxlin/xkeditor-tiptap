@@ -66,7 +66,11 @@ export default class Image extends Node {
             };
           }
         }
-      ]
+      ],
+      toMarkdown: node =>
+        `![${node.attrs.alt}](${node.attrs.src}${
+          node.attrs.title ? ` "${node.attrs.title}"` : ""
+        })`
     };
   }
 

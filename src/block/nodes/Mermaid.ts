@@ -42,7 +42,8 @@ export default class Mermaid extends Node {
           type: "mermaid",
           getContent: token => (token as Tokens.Mermaid).text
         }
-      ]
+      ],
+      toMarkdown: node => `:::mer\n${node.textContent}\n:::`
     });
   }
 

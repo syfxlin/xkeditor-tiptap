@@ -66,7 +66,11 @@ export default class Link extends Mark {
           },
           getContent: token => (token as Tokens.Link).text
         }
-      ]
+      ],
+      toMarkdown: () => (content, mark) =>
+        `[${content}](${mark.attrs.href}${
+          mark.attrs.title ? ` "${mark.attrs.title}"` : ""
+        })`
     };
   }
 

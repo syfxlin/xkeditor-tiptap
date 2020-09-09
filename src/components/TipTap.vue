@@ -99,7 +99,7 @@ export default defineComponent({
     window.parser = new MarkdownParser(editor.schema, [
       {
         inline: true,
-        matcher: src => /\$+([^$\n]+?)\$+/.exec(src),
+        matcher: src => /\$\$([^$\n]+?)\$\$/.exec(src),
         tokenizer: match => ({
           type: "tex",
           raw: match[0],
@@ -139,7 +139,7 @@ export default defineComponent({
       },
       {
         inline: true,
-        matcher: src => /-\*([^_]+)_/.exec(src),
+        matcher: src => /\^([^_]+)_/.exec(src),
         tokenizer: match => ({
           type: "sub",
           raw: match[0],
@@ -148,7 +148,7 @@ export default defineComponent({
       },
       {
         inline: true,
-        matcher: src => /-\*([^_]+)-/.exec(src),
+        matcher: src => /\^([^-]+)-/.exec(src),
         tokenizer: match => ({
           type: "sup",
           raw: match[0],

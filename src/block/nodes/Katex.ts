@@ -44,7 +44,8 @@ export default class Katex extends Node {
           type: "tex",
           getContent: token => (token as Tokens.Tex).text
         }
-      ]
+      ],
+      toMarkdown: node => `$$${node.textContent}$$`
     };
   }
 
@@ -70,10 +71,10 @@ export default class Katex extends Node {
   }
 
   inputRules({ type, schema }: { type: NodeType; schema: Schema }): any[] {
-    return [nodeInputRule(/\$+([^$]+)\$+/, type, 1)];
+    return [nodeInputRule(/\$\$([^$]+)\$\$/, type, 1)];
   }
 
   pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {
-    return [inlineNodePasteRule(/\$+([^$]+)\$+/, type, 1)];
+    return [inlineNodePasteRule(/\$\$([^$]+)\$\$/, type, 1)];
   }
 }

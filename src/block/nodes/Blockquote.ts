@@ -28,7 +28,12 @@ export default class Blockquote extends Node {
           getContent: (token, s, parser) =>
             parser((token as Tokens.Blockquote).tokens)
         }
-      ]
+      ],
+      toMarkdown: (node, serializer) =>
+        serializer(node.content)
+          .split("\n")
+          .map(str => "> " + str)
+          .join("\n")
     };
   }
 

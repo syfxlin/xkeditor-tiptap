@@ -1,13 +1,14 @@
 import { CommandGetter, Mark } from "tiptap";
 import { CommandFunction, toggleMark } from "tiptap-commands";
 import { MarkSpec, MarkType, Schema } from "@/utils/prosemirror";
+import { MdSpec } from "@/block/other/MdSpec";
 
 export default class Underline extends Mark {
   get name() {
     return "underline";
   }
 
-  get schema(): MarkSpec {
+  get schema(): MarkSpec & MdSpec {
     return {
       parseDOM: [
         {
@@ -19,7 +20,8 @@ export default class Underline extends Mark {
           getAttrs: value => value === "underline"
         }
       ],
-      toDOM: () => ["u", 0]
+      toDOM: () => ["u", 0],
+      toMarkdown: () => content => `<u>${content}</u>`
     };
   }
 

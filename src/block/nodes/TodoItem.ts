@@ -95,7 +95,9 @@ export default class TodoItem extends Node {
             return nodes;
           }
         }
-      ]
+      ],
+      toMarkdown: (node, serializer) =>
+        `[${node.attrs.done ? "x" : " "}] ${serializer(node.content)}`
     };
   }
 

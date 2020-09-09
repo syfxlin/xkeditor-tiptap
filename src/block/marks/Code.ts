@@ -25,7 +25,8 @@ export default class Code extends Mark {
           type: "codespan",
           getContent: token => (token as Tokens.Codespan).text
         }
-      ]
+      ],
+      toMarkdown: () => content => `\`${content}\``
     };
   }
 

@@ -85,7 +85,7 @@ export default class CodeBlockHighlight extends Node {
         }
       ],
       toMarkdown: (node, serializer) =>
-        `\`\`\`${node.attrs.language}\n${node.textContent}\n\`\`\`\n\n`
+        `\`\`\`${node.attrs.language}\n${node.textContent}\n\`\`\``
     });
   }
 

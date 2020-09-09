@@ -55,7 +55,7 @@ export class MarkdownSerializer {
 
   serializeNode(node: Node): string {
     if (node.type.name === "paragraph") {
-      return this.serializeMark(this.serialize(node.content) + "\n\n", node);
+      return this.serializeMark(this.serialize(node.content), node);
     }
     const block = this.blocks[node.type.name];
     // text and other
@@ -69,16 +69,27 @@ export class MarkdownSerializer {
   }
 
   serialize(nodes: Fragment | Node[] | Node): string {
-    const result: string[] = [];
+    let result = "";
     if (nodes instanceof Fragment) {
-      nodes.forEach(node => result.push(this.serializeNode(node)));
+      nodes.forEach(node => {
+        result += this.serializeNode(node);
+        if ((node.isBlock || node.isTextblock) && node !== nodes.lastChild) {
+          result += "\n\n";
+        }
+      });
     } else if (nodes instanceof Array) {
       for (const node of nodes) {
-        result.push(this.serializeNode(node));
+        result += this.serializeNode(node);
+        if (
+          (node.isBlock || node.isTextblock) &&
+          node !== nodes[nodes.length - 1]
+        ) {
+          result += "\n\n";
+        }
       }
     } else {
-      result.push(this.serializeNode(nodes));
+      result += this.serializeNode(nodes);
     }
-    return result.join("");
+    return result;
   }
 }

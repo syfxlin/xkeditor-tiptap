@@ -63,7 +63,17 @@ export default class CardLink extends Mark {
           },
           getContent: token => (token as Tokens.Link).text
         }
-      ]
+      ],
+      toMarkdown: () => (content, mark) => {
+        let result = `[[${mark.attrs.href}`;
+        if (content !== mark.attrs.href) {
+          result += `|${content}`;
+        }
+        if (mark.attrs.title) {
+          result += ` "${mark.attrs.title}"`;
+        }
+        return `${result}]]`;
+      }
     };
   }
 
@@ -76,7 +86,7 @@ export default class CardLink extends Mark {
           const split = match[1].split(/\|| "|"/);
           const result =
             split.length === 4 || split.length === 2 ? split[1] : split[0];
-          return `[${result}]`;
+          return `${result}`;
         },
         match => {
           const split = match[1].split(/\|| "|"/);

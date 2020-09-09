@@ -20,7 +20,8 @@ export default class Sup extends Mark {
           type: "sup",
           getContent: token => (token as Tokens.Sup).text
         }
-      ]
+      ],
+      toMarkdown: () => content => `^${content}-`
     };
   }
 
@@ -49,10 +50,10 @@ export default class Sup extends Mark {
   }
 
   inputRules({ type, schema }: { type: MarkType; schema: Schema }): any[] {
-    return [markInputRule(/-\*([^-]+)-$/, type)];
+    return [markInputRule(/\^([^-]+)-$/, type)];
   }
 
   pasteRules({ type, schema }: { type: MarkType; schema: Schema }): Plugin[] {
-    return [markPasteRule(/-\*([^-]+)-$/, type)];
+    return [markPasteRule(/\^([^-]+)-$/, type)];
   }
 }

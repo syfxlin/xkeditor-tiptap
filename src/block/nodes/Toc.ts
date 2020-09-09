@@ -45,7 +45,8 @@ export default class Toc extends Node {
           type: "toc",
           getAttrs: token => ({ fold: (token as Tokens.Toc).fold })
         }
-      ]
+      ],
+      toMarkdown: node => `[TOC${node.attrs.fold ? " :fold" : ""}]`
     };
   }
 
@@ -75,7 +76,7 @@ export default class Toc extends Node {
             <a :href="'#' + encodeURI(
               item.head.textContent
             )">{{item.head.textContent}}</a>
-            <toc_list :items="item.sub" />
+            <node_toc_list :items="item.sub" />
           </li>
         </ul>
       `.replace(/>\s+</g, "><")

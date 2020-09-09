@@ -39,7 +39,7 @@ export default class Bold extends Mark {
             parser((token as Tokens.Strong).tokens)
         }
       ],
-      toMarkdown: (node, serializer) => content => `**${content}**`
+      toMarkdown: () => content => `**${content}**`
     };
   }
 

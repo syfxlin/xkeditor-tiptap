@@ -52,7 +52,7 @@ export default class Heading extends Node {
         }
       ],
       toMarkdown: (node, serializer) =>
-        `${"#".repeat(node.attrs.level)} ${serializer(node.content)}\n\n`
+        `${"#".repeat(node.attrs.level)} ${serializer(node.content)}`
     };
   }
 

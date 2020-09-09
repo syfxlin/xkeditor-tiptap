@@ -61,7 +61,11 @@ export default class Details extends Node {
           getContent: (token, s, parser) =>
             parser((token as Tokens.Details).text)
         }
-      ]
+      ],
+      toMarkdown: (node, serializer) =>
+        `:::det${
+          node.attrs.summary ? ` ${node.attrs.summary}` : ""
+        }\n${serializer(node.content)}\n:::`
     };
   }
 

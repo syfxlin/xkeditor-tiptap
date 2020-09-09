@@ -32,7 +32,12 @@ export default class BulletList extends Node {
           },
           getContent: (token, s, parser) => parser((token as Tokens.List).items)
         }
-      ]
+      ],
+      toMarkdown: (node, serializer) =>
+        serializer(node.content)
+          .split(/\n+/)
+          .map(str => (/\s*- /.test(str) ? " " : "-") + " " + str)
+          .join("\n")
     };
   }
 
