@@ -60,6 +60,8 @@ export default class Toc extends Node {
     ];
   }
 
+  // TODO: paste rule
+
   get plugins() {
     return [TocPlugin()];
   }
