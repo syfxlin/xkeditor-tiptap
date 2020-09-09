@@ -18,7 +18,7 @@ import TMenuBubble from "@/components/TMenuBubble.vue";
 import TFloatMenu from "@/components/TFloatMenu.vue";
 import { MarkdownParser } from "@/block/other/MdSpec";
 import marked from "marked";
-import { getColorAttrs } from "@/block/marks/Style";
+import { getStyleAttrs } from "@/block/marks/Style";
 import { emojiConverter } from "@/block/extensions/Emoji";
 
 export default defineComponent({
@@ -133,7 +133,7 @@ export default defineComponent({
           type: "style",
           raw: match[0],
           text: match[1],
-          attrs: getColorAttrs(match)
+          attrs: getStyleAttrs(match)
         })
       },
       {

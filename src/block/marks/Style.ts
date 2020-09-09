@@ -26,7 +26,7 @@ const DEFAULT_BACKGROUND = {
 const DEFAULT_SPAN_STYLE = document.createElement("span").style;
 const DEFAULT_STYLE_ATTRS: { [key: string]: { default: any } } = {};
 for (const [key, value] of Object.entries(DEFAULT_SPAN_STYLE)) {
-  DEFAULT_STYLE_ATTRS[key] = {
+  DEFAULT_STYLE_ATTRS[hyphenate(key)] = {
     default: value
   };
 }
@@ -42,8 +42,19 @@ const convertCssObjToStr = (style: { [key: string]: any }) => {
   return result;
 };
 
-export const getColorAttrs = (match: string[]) => {
-  if (match[2].indexOf(",") !== -1) {
+export const getStyleAttrs = (match: string[]) => {
+  if (match[2].indexOf(":") !== -1) {
+    const split = match[2].split(";");
+    const styles = {};
+    for (const str of split) {
+      const kv = str.split(":");
+      if (kv.length === 2) {
+        // @ts-ignore
+        styles[kv[0]] = kv[1];
+      }
+    }
+    return styles;
+  } else if (match[2].indexOf(",") !== -1) {
     const colors = match[2].split(",");
     return {
       color: colors[0],
@@ -132,10 +143,10 @@ export default class Style extends Mark {
   }
 
   inputRules({ type, schema }: { type: MarkType; schema: Schema }): any[] {
-    return [markInputRule(/\[([^\]]+)]{([^}]+)}$/, type, 1, getColorAttrs)];
+    return [markInputRule(/\[([^\]]+)]{([^}]+)}$/, type, 1, getStyleAttrs)];
   }
 
   pasteRules({ type, schema }: { type: MarkType; schema: Schema }): Plugin[] {
-    return [markPasteRule(/\[([^\]]+)]{([^}]+)}$/, type, 1, getColorAttrs)];
+    return [markPasteRule(/\[([^\]]+)]{([^}]+)}$/, type, 1, getStyleAttrs)];
   }
 }
