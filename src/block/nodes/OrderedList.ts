@@ -6,7 +6,8 @@ import {
 } from "tiptap-commands";
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import listPlugin from "@/utils/listPlugin";
-import { MdSpec, Tokens } from "@/block/other/MdSpec";
+import { MdSpec } from "@/block/other/MdSpec";
+import { Tokens } from "@/block/other/MarkdownLexer";
 
 export default class OrderedList extends Node {
   get name() {

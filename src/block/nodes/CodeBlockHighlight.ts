@@ -20,7 +20,8 @@ import "prismjs/themes/prism-okaidia.css";
 import "prismjs/plugins/toolbar/prism-toolbar.css";
 import "prismjs/plugins/line-numbers/prism-line-numbers.css";
 import nodeListPasteRule, { Matched } from "@/utils/nodeListPasteRule";
-import { MdSpec, Tokens } from "@/block/other/MdSpec";
+import { MdSpec } from "@/block/other/MdSpec";
+import { Tokens } from "@/block/other/MarkdownLexer";
 
 export default class CodeBlockHighlight extends Node {
   get name() {
@@ -82,7 +83,9 @@ export default class CodeBlockHighlight extends Node {
           }),
           getContent: token => (token as Tokens.Code).text
         }
-      ]
+      ],
+      toMarkdown: (node, serializer) =>
+        `\`\`\`${node.attrs.language}\n${node.textContent}\n\`\`\`\n\n`
     });
   }
 

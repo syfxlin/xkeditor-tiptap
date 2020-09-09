@@ -7,7 +7,8 @@ import {
 } from "tiptap-commands";
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import nodeLinePasteRule from "@/utils/nodeLinePasteRule";
-import { MdSpec, Tokens } from "@/block/other/MdSpec";
+import { MdSpec } from "@/block/other/MdSpec";
+import { Tokens } from "@/block/other/MarkdownLexer";
 
 export default class Heading extends Node {
   get name() {
@@ -49,7 +50,9 @@ export default class Heading extends Node {
           getContent: (token, s, parser) =>
             parser((token as Tokens.Heading).tokens)
         }
-      ]
+      ],
+      toMarkdown: (node, serializer) =>
+        `${"#".repeat(node.attrs.level)} ${serializer(node.content)}\n\n`
     };
   }
 

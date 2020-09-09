@@ -8,7 +8,8 @@ import {
 import nodeListPasteRule, { Matched } from "@/utils/nodeListPasteRule";
 import { defineComponent } from "@vue/composition-api";
 import { wrappingInputRule } from "tiptap-commands";
-import { MdSpec, Tokens } from "@/block/other/MdSpec";
+import { MdSpec } from "@/block/other/MdSpec";
+import { Tokens } from "@/block/other/MarkdownLexer";
 
 export default class Details extends Node {
   get name() {

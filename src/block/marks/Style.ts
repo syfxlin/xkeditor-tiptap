@@ -7,7 +7,8 @@ import addPx from "add-px-to-style";
 import hyphenate from "hyphenate-style-name";
 import markInputRule from "@/utils/markInputRule";
 import markPasteRule from "@/utils/markPasteRule";
-import { MdSpec, Tokens } from "@/block/other/MdSpec";
+import { MdSpec } from "@/block/other/MdSpec";
+import { Tokens } from "@/block/other/MarkdownLexer";
 
 const DEFAULT_FOREGROUND = "rgb(55, 53, 47)";
 
@@ -107,7 +108,9 @@ export default class Style extends Mark {
           }),
           getContent: token => (token as Tokens.Style).text
         }
-      ]
+      ],
+      toMarkdown: (node, serializer) => (content, mark) =>
+        `[${content}]{${convertCssObjToStr(mark.attrs)}}`
     };
   }
 

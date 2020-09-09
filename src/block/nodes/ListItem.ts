@@ -2,7 +2,8 @@ import { Node } from "tiptap";
 import { liftListItem, sinkListItem, splitListItem } from "tiptap-commands";
 import { NodeSpec, Schema } from "@/utils/prosemirror";
 import { NodeType } from "prosemirror-model";
-import { MdSpec, Tokens } from "@/block/other/MdSpec";
+import { MdSpec } from "@/block/other/MdSpec";
+import { Tokens } from "@/block/other/MarkdownLexer";
 
 export default class ListItem extends Node {
   get name() {

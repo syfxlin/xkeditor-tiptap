@@ -4,7 +4,8 @@ import { NodeType, Schema } from "prosemirror-model";
 import nodeInputRule from "@/utils/nodeInputRule";
 import TocPlugin, { toc } from "@/block/plugins/TocPlugin";
 import { defineComponent } from "vue-demi";
-import { MdSpec, Tokens } from "@/block/other/MdSpec";
+import { MdSpec } from "@/block/other/MdSpec";
+import { Tokens } from "@/block/other/MarkdownLexer";
 
 export default class Toc extends Node {
   get name() {

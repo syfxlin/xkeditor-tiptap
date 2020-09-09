@@ -8,7 +8,8 @@ import {
 import { NodeSpec, NodeType, Schema } from "@/utils/prosemirror";
 import { defineComponent } from "vue-demi";
 import { Node as ProsemirrorNode } from "prosemirror-model";
-import { MdSpec, Tokens } from "@/block/other/MdSpec";
+import { MdSpec } from "@/block/other/MdSpec";
+import { Tokens } from "@/block/other/MarkdownLexer";
 
 export default class TodoItem extends Node {
   get name() {

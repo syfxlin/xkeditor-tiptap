@@ -29,7 +29,8 @@ import {
 import TableNodes from "@/block/other/TableNodes";
 import { DispatchFn, wrappingInputRule } from "tiptap-commands";
 import nodeListPasteRule from "@/utils/nodeListPasteRule";
-import { MdSpec, Tokens } from "@/block/other/MdSpec";
+import { MdSpec } from "@/block/other/MdSpec";
+import { Tokens } from "@/block/other/MarkdownLexer";
 
 export default class Table extends Node {
   get name() {

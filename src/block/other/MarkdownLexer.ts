@@ -1,5 +1,258 @@
 import { Lexer, MarkedOptions } from "marked";
-import { ExtTokenizer } from "@/block/other/MdSpec";
+
+// eslint-disable-next-line
+export namespace Tokens {
+  export interface Space {
+    type: "space";
+    raw: string;
+  }
+
+  export interface Code {
+    type: "code";
+    raw: string;
+    codeBlockStyle?: "indented";
+    lang?: string;
+    text: string;
+  }
+
+  export interface Heading {
+    type: "heading";
+    raw: string;
+    depth: number;
+    text: string;
+    tokens: Token[];
+  }
+
+  export interface Table {
+    type: "table";
+    raw: string;
+    header: string[];
+    align: Array<"center" | "left" | "right" | null>;
+    cells: string[][];
+  }
+
+  export interface Hr {
+    type: "hr";
+    raw: string;
+  }
+
+  export interface Blockquote {
+    type: "blockquote";
+    raw: string;
+    text: string;
+    tokens: Token[];
+  }
+
+  export interface BlockquoteStart {
+    type: "blockquote_start";
+    raw: string;
+  }
+
+  export interface BlockquoteEnd {
+    type: "blockquote_end";
+    raw: string;
+  }
+
+  export interface List {
+    type: "list_start";
+    raw: string;
+    ordered: boolean;
+    start: boolean;
+    loose: boolean;
+    items: ListItem[];
+  }
+
+  export interface ListItem {
+    type: "list_item";
+    raw: string;
+    task: boolean;
+    checked: boolean;
+    loose: boolean;
+    text: string;
+    tokens: Token[];
+  }
+
+  export interface Paragraph {
+    type: "paragraph";
+    raw: string;
+    pre?: boolean;
+    text: string;
+  }
+
+  export interface HTML {
+    type: "html";
+    raw: string;
+    pre: boolean;
+    text: string;
+  }
+
+  export interface Text {
+    type: "text";
+    raw: string;
+    text: string;
+  }
+
+  export interface Def {
+    raw: string;
+    href: string;
+    title: string;
+  }
+
+  export interface Escape {
+    type: "escape";
+    raw: string;
+    text: string;
+  }
+
+  export interface Tag {
+    type: "text" | "html";
+    raw: string;
+    inLink: boolean;
+    inRawBlock: boolean;
+    text: string;
+  }
+
+  export interface Link {
+    type: "link";
+    raw: string;
+    href: string;
+    title: string;
+    text: string;
+    tokens?: Text[];
+  }
+
+  export interface Image {
+    type: "image";
+    raw: string;
+    href: string;
+    title: string;
+    text: string;
+  }
+
+  export interface Strong {
+    type: "strong";
+    raw: string;
+    text: string;
+    tokens: Token[];
+  }
+
+  export interface Em {
+    type: "em";
+    raw: string;
+    text: string;
+    tokens: Token[];
+  }
+
+  export interface Codespan {
+    type: "codespan";
+    raw: string;
+    text: string;
+  }
+
+  export interface Br {
+    type: "br";
+    raw: string;
+  }
+
+  export interface Del {
+    type: "del";
+    raw: string;
+    text: string;
+    tokens: Token[];
+  }
+
+  export interface Tex {
+    type: "tex";
+    raw: string;
+    text: string;
+  }
+
+  export interface Style {
+    type: "style";
+    raw: string;
+    text: string;
+    attrs: {
+      [key: string]: any;
+    };
+  }
+
+  export interface Sub {
+    type: "sub";
+    raw: string;
+    text: string;
+  }
+
+  export interface Sup {
+    type: "sup";
+    raw: string;
+    text: string;
+  }
+
+  export interface Toc {
+    type: "toc";
+    raw: string;
+    fold: boolean;
+  }
+
+  export interface Details {
+    type: "details";
+    raw: string;
+    text: string;
+    summary: string;
+  }
+
+  export interface Mermaid {
+    type: "mermaid";
+    raw: string;
+    text: string;
+  }
+}
+
+export type Token =
+  | Tokens.Space
+  | Tokens.Code
+  | Tokens.Heading
+  | Tokens.Table
+  | Tokens.Hr
+  | Tokens.Blockquote
+  | Tokens.BlockquoteStart
+  | Tokens.BlockquoteEnd
+  | Tokens.List
+  | Tokens.ListItem
+  | Tokens.Paragraph
+  | Tokens.HTML
+  | Tokens.Text
+  | Tokens.Def
+  | Tokens.Escape
+  | Tokens.Tag
+  | Tokens.Image
+  | Tokens.Link
+  | Tokens.Strong
+  | Tokens.Em
+  | Tokens.Codespan
+  | Tokens.Br
+  | Tokens.Del
+  | Tokens.Tex
+  | Tokens.Style
+  | Tokens.Sub
+  | Tokens.Sup
+  | Tokens.Toc
+  | Tokens.Details
+  | Tokens.Mermaid;
+
+export interface ExtTokenizer {
+  inline?: boolean;
+  matcher: (src: string) => RegExpExecArray | null | boolean;
+  tokenizer: (
+    match: RegExpExecArray,
+    src: string,
+    tokens: Token[]
+  ) => {
+    type: string;
+    raw: string;
+    [key: string]: any;
+  };
+}
 
 function smartypants(text: string) {
   return (

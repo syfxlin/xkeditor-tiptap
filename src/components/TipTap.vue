@@ -16,10 +16,11 @@ import { useExtensions } from "@/utils/tiptap";
 import TMenuBar from "@/components/TMenuBar.vue";
 import TMenuBubble from "@/components/TMenuBubble.vue";
 import TFloatMenu from "@/components/TFloatMenu.vue";
-import { MarkdownParser } from "@/block/other/MdSpec";
 import marked from "marked";
 import { getStyleAttrs } from "@/block/marks/Style";
 import { emojiConverter } from "@/block/extensions/Emoji";
+import { MarkdownParser } from "@/block/other/MarkdownParser";
+import { MarkdownSerializer } from "@/block/other/MarkdownSerializer";
 
 export default defineComponent({
   name: "TipTap",
@@ -190,6 +191,8 @@ export default defineComponent({
         })
       }
     ]);
+    // @ts-ignore
+    window.serializer = new MarkdownSerializer(editor.schema);
     // @ts-ignore
     window.marked = marked;
 
