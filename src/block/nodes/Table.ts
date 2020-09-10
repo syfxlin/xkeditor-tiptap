@@ -68,7 +68,8 @@ export default class Table extends Node {
             return [header, ...cells];
           }
         }
-      ]
+      ],
+      toMarkdown: (node, serializer) => serializer(node.content, "\n")
     };
   }
 
@@ -155,22 +156,20 @@ export default class Table extends Node {
         "table_row",
         {},
         columns.map(item => {
-          const match = item.match(/([^\s].*?)\s*$/);
+          const match = item.match(/(\s*)(.*?)\s*$/);
           let result;
           if (match && match.index !== undefined) {
+            const start = pos + match.index + match[1].length + 1;
             result = schema.node(
               isHeader ? "table_header" : "table_cell",
               {},
-              node.cut(
-                pos + match.index,
-                pos + match.index + match[1].length + 1
-              )
+              node.cut(start, start + match[2].length)
             );
           } else {
             result = schema.node(
               isHeader ? "table_header" : "table_cell",
               {},
-              schema.text(item)
+              schema.text(item.trim())
             );
           }
           pos += item.length + 1;

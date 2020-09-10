@@ -10,7 +10,7 @@ import { MdSpec } from "@/block/other/MdSpec";
 
 export type MdSerializerRule = (
   node: Node,
-  serializer: (nodes: Fragment | Node[] | Node) => string
+  serializer: (nodes: Fragment | Node[] | Node, separator?: string) => string
 ) => string | ((content: string, mark: Mark) => string);
 
 export class MarkdownSerializer {
@@ -54,6 +54,11 @@ export class MarkdownSerializer {
   }
 
   serializeNode(node: Node): string {
+    // doc
+    if (node.type.name === "doc") {
+      return this.serializeMark(this.serialize(node.content), node);
+    }
+    // paragraph
     if (node.type.name === "paragraph") {
       return this.serializeMark(this.serialize(node.content), node);
     }
@@ -68,13 +73,13 @@ export class MarkdownSerializer {
     );
   }
 
-  serialize(nodes: Fragment | Node[] | Node): string {
+  serialize(nodes: Fragment | Node[] | Node, separator = "\n\n"): string {
     let result = "";
     if (nodes instanceof Fragment) {
       nodes.forEach(node => {
         result += this.serializeNode(node);
         if ((node.isBlock || node.isTextblock) && node !== nodes.lastChild) {
-          result += "\n\n";
+          result += separator;
         }
       });
     } else if (nodes instanceof Array) {
@@ -84,7 +89,7 @@ export class MarkdownSerializer {
           (node.isBlock || node.isTextblock) &&
           node !== nodes[nodes.length - 1]
         ) {
-          result += "\n\n";
+          result += separator;
         }
       }
     } else {
