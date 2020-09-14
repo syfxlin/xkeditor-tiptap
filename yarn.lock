@@ -11423,6 +11423,11 @@ vue-demi@latest:
   dependencies:
     "@vue/composition-api" ">=1.0.0-beta.1"
 
+vue-draggable-resizable@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.npm.taobao.org/vue-draggable-resizable/download/vue-draggable-resizable-2.2.0.tgz#eb4581b6ddd6a20c5f54f99993c8646382523296"
+  integrity sha1-60WBtt3WogxfVPmZk8hkY4JSMpY=
+
 vue-eslint-parser@^7.0.0:
   version "7.1.0"
   resolved "https://registry.npm.taobao.org/vue-eslint-parser/download/vue-eslint-parser-7.1.0.tgz#9cdbcc823e656b087507a1911732b867ac101e83"
