@@ -1,28 +1,23 @@
 <template>
   <div id="app">
     <tip-tap />
-    <div>
-      {{ count }}
-      <button @click="addCount">Add</button>
-    </div>
+    <md-editor />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue-demi";
 import TipTap from "@/components/TipTap.vue";
-import { useAction, useState } from "@/store";
+import MdEditor from "@/components/MdEditor.vue";
 
 export default defineComponent({
   name: "App",
   components: {
-    TipTap
+    TipTap,
+    MdEditor
   },
   setup() {
-    const count = useState<number>("count");
-    const addCount = useAction<Function>("addCount");
-
-    return { count, addCount };
+    //
   }
 });
 </script>

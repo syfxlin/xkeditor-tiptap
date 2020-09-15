@@ -2,8 +2,8 @@ import { CommandGetter, Node } from "tiptap";
 import { toggleList, wrappingInputRule } from "tiptap-commands";
 import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import listPlugin from "@/utils/listPlugin";
-import { MdSpec } from "@/block/other/MdSpec";
-import { Tokens } from "@/block/other/MarkdownLexer";
+import { MdSpec } from "@/marked/MdSpec";
+import { Tokens } from "@/marked/MdLexer";
 
 export default class TodoList extends Node {
   get name() {

@@ -6,14 +6,14 @@ import {
   NodeType,
   Schema
 } from "@/utils/prosemirror";
-import { MdSpec } from "@/block/other/MdSpec";
+import { MdSpec } from "@/marked/MdSpec";
 
 export type MdSerializerRule = (
   node: Node,
   serializer: (nodes: Fragment | Node[] | Node, separator?: string) => string
 ) => string | ((content: string, mark: Mark) => string);
 
-export class MarkdownSerializer {
+export class NodeMdSerializer {
   private readonly schema: Schema;
   private readonly blocks: {
     [tokenType: string]: {

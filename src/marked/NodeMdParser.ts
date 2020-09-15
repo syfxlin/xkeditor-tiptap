@@ -7,12 +7,8 @@ import {
   Schema
 } from "@/utils/prosemirror";
 import { MarkedOptions } from "marked";
-import {
-  ExtTokenizer,
-  MarkdownLexer,
-  Token
-} from "@/block/other/MarkdownLexer";
-import { MdSpec } from "@/block/other/MdSpec";
+import { ExtTokenizer, MdLexer, Token } from "@/marked/MdLexer";
+import { MdSpec } from "@/marked/MdSpec";
 
 export interface MdParseRule {
   // 匹配流程 type[map O(1)] -> matcher[list-for O(n)]
@@ -31,7 +27,7 @@ export interface MdParseRule {
   ) => Mark[] | undefined;
 }
 
-export class MarkdownParser {
+export class NodeMdParser {
   private readonly schema: Schema;
   private readonly blocks: {
     [tokenType: string]: (MdParseRule & { block: MarkType | NodeType })[];
@@ -158,7 +154,7 @@ export class MarkdownParser {
 
   parse(markdown: string | Token[] | Token): Node[] {
     if (typeof markdown === "string") {
-      markdown = new MarkdownLexer(this.extTokenizer, this.options).lex(
+      markdown = new MdLexer(this.extTokenizer, this.options).lex(
         markdown
       ) as Token[];
     }

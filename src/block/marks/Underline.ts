@@ -1,7 +1,7 @@
 import { CommandGetter, Mark } from "tiptap";
 import { CommandFunction, toggleMark } from "tiptap-commands";
 import { MarkSpec, MarkType, Schema } from "@/utils/prosemirror";
-import { MdSpec } from "@/block/other/MdSpec";
+import { MdSpec } from "@/marked/MdSpec";
 
 export default class Underline extends Mark {
   get name() {

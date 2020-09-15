@@ -8,8 +8,8 @@ import {
   Schema
 } from "@/utils/prosemirror";
 import inlineNodePasteRule from "@/utils/inlineNodePasteRule";
-import { MdSpec } from "@/block/other/MdSpec";
-import { Tokens } from "@/block/other/MarkdownLexer";
+import { MdSpec } from "@/marked/MdSpec";
+import { Tokens } from "@/marked/MdLexer";
 
 /**
  * Matches following attributes in Markdown-typed image: [, alt, src, title]

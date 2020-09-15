@@ -17,7 +17,7 @@ import {
 } from "vue-demi";
 import { Editor as TipTapEditor } from "tiptap";
 import CodeMirrorComponent from "@/block/other/CodeMirrorComponent.vue";
-import { MdSpec } from "@/block/other/MdSpec";
+import { MdSpec } from "@/marked/MdSpec";
 
 export function focus(cm: Editor | undefined | null) {
   if (cm === undefined || cm === null) {

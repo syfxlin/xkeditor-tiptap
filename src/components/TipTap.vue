@@ -1,12 +1,13 @@
 <template>
   <div class="editor-container">
     <vue-draggable-resizable
-      class-name="editor"
+      :class-name="'editor'"
       :handles="['mr']"
       :draggable="false"
       :min-width="200"
       :w="550"
-      axis="x"
+      :h="'auto'"
+      :axis="'x'"
       :scale="0.5"
     >
       <t-menu-bar :editor="editor" :menus="menus" />
@@ -30,11 +31,11 @@ import VueDraggableResizable from "vue-draggable-resizable";
 import marked from "marked";
 import { getStyleAttrs } from "@/block/marks/Style";
 import { emojiConverter } from "@/block/extensions/Emoji";
-import { MarkdownParser } from "@/block/other/MarkdownParser";
-import { MarkdownSerializer } from "@/block/other/MarkdownSerializer";
+import { NodeMdParser } from "@/marked/NodeMdParser";
+import { NodeMdSerializer } from "@/marked/NodeMdSerializer";
 
 export default defineComponent({
-  name: "TipTap",
+  name: "tip-tip",
   components: {
     EditorContent,
     TMenuBar,
@@ -108,7 +109,7 @@ export default defineComponent({
     // @ts-ignore
     window.editor = editor;
     // @ts-ignore
-    window.parser = new MarkdownParser(editor.schema, [
+    window.parser = new NodeMdParser(editor.schema, [
       {
         inline: true,
         matcher: src => /\$\$([^$\n]+?)\$\$/.exec(src),
@@ -204,7 +205,7 @@ export default defineComponent({
       }
     ]);
     // @ts-ignore
-    window.serializer = new MarkdownSerializer(editor.schema);
+    window.serializer = new NodeMdSerializer(editor.schema);
     // @ts-ignore
     window.marked = marked;
 

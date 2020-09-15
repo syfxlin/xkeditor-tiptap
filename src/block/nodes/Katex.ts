@@ -11,8 +11,8 @@ import nodeInputRule from "@/utils/nodeInputRule";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import inlineNodePasteRule from "@/utils/inlineNodePasteRule";
-import { MdSpec } from "@/block/other/MdSpec";
-import { Tokens } from "@/block/other/MarkdownLexer";
+import { MdSpec } from "@/marked/MdSpec";
+import { Tokens } from "@/marked/MdLexer";
 
 export default class Katex extends Node {
   get name() {

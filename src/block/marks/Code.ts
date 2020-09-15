@@ -7,8 +7,8 @@ import {
 } from "tiptap-commands";
 import { MarkType, Plugin, Schema } from "@/utils/prosemirror";
 import { MarkSpec } from "prosemirror-model";
-import { MdSpec } from "@/block/other/MdSpec";
-import { Tokens } from "@/block/other/MarkdownLexer";
+import { MdSpec } from "@/marked/MdSpec";
+import { Tokens } from "@/marked/MdLexer";
 
 export default class Code extends Mark {
   get name() {

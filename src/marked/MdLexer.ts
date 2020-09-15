@@ -296,7 +296,7 @@ function mangle(text: string) {
   return out;
 }
 
-export class MarkdownLexer extends Lexer {
+export class MdLexer extends Lexer {
   private readonly inlineTzr: ExtTokenizer[];
   private readonly blockTzr: ExtTokenizer[];
   // @ts-ignore

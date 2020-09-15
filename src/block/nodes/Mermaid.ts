@@ -6,8 +6,8 @@ import mermaid from "mermaid";
 import { useDebounceFn } from "@vueuse/core";
 import { Ref } from "vue-demi";
 import { errSvg } from "@/utils/mermaid-error.ts";
-import { MdSpec } from "@/block/other/MdSpec";
-import { Tokens } from "@/block/other/MarkdownLexer";
+import { MdSpec } from "@/marked/MdSpec";
+import { Tokens } from "@/marked/MdLexer";
 
 mermaid.initialize({
   startOnLoad: false

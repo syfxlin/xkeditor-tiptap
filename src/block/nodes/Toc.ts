@@ -3,8 +3,8 @@ import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import nodeInputRule from "@/utils/nodeInputRule";
 import TocPlugin, { toc } from "@/block/plugins/TocPlugin";
 import { defineComponent } from "vue-demi";
-import { MdSpec } from "@/block/other/MdSpec";
-import { Tokens } from "@/block/other/MarkdownLexer";
+import { MdSpec } from "@/marked/MdSpec";
+import { Tokens } from "@/marked/MdLexer";
 import nodeLinePasteRule from "@/utils/nodeLinePasteRule";
 
 export default class Toc extends Node {
