@@ -1,7 +1,6 @@
 <template>
   <div class="md-editor">
     <code-mirror :content="content" :options="options" />
-    <div v-html="htmlContent" />
   </div>
 </template>
 

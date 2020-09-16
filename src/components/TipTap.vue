@@ -33,6 +33,8 @@ import { getStyleAttrs } from "@/block/marks/Style";
 import { emojiConverter } from "@/block/extensions/Emoji";
 import { NodeMdParser } from "@/marked/NodeMdParser";
 import { NodeMdSerializer } from "@/marked/NodeMdSerializer";
+import MdParser from "@/marked/MdParser";
+import { ExtTokenizer, MdLexer } from "@/marked/MdLexer";
 
 export default defineComponent({
   name: "tip-tip",
@@ -106,10 +108,7 @@ export default defineComponent({
     // );
 
     // TODO: remove
-    // @ts-ignore
-    window.editor = editor;
-    // @ts-ignore
-    window.parser = new NodeMdParser(editor.schema, [
+    const extTokenizers: ExtTokenizer[] = [
       {
         inline: true,
         matcher: src => /\$\$([^$\n]+?)\$\$/.exec(src),
@@ -203,11 +202,24 @@ export default defineComponent({
           text: emojiConverter.replace_colons(match[1])
         })
       }
-    ]);
+    ];
+    // @ts-ignore
+    window.editor = editor;
+    // @ts-ignore
+    window.parser = new NodeMdParser(editor.schema, extTokenizers);
     // @ts-ignore
     window.serializer = new NodeMdSerializer(editor.schema);
     // @ts-ignore
     window.marked = marked;
+    // @ts-ignore
+    window.mdparser = new MdParser([
+      {
+        type: "toc",
+        parser: token => `[TOC]`
+      }
+    ]);
+    // @ts-ignore
+    window.lexer = new MdLexer(extTokenizers);
 
     return { editor, menus };
   }
