@@ -29,7 +29,7 @@ import TMenuBubble from "@/components/TMenuBubble.vue";
 import TFloatMenu from "@/components/TFloatMenu.vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import marked from "marked";
-import { getStyleAttrs } from "@/block/marks/Style";
+import { convertCssObjToStr, getStyleAttrs } from "@/block/marks/Style";
 import { emojiConverter } from "@/block/extensions/Emoji";
 import { NodeMdParser } from "@/marked/NodeMdParser";
 import { NodeMdSerializer } from "@/marked/NodeMdSerializer";
@@ -207,27 +207,46 @@ export default defineComponent({
     // @ts-ignore
     window.editor = editor;
     // @ts-ignore
-    window.parser = new NodeMdParser(editor.schema, extTokenizers);
+    window.parser = new NodeMdParser(editor.extensions, extTokenizers);
     // @ts-ignore
-    window.serializer = new NodeMdSerializer(editor.schema);
+    window.serializer = new NodeMdSerializer(editor.extensions);
     // @ts-ignore
     window.marked = marked;
     // @ts-ignore
-    window.mdparser = new MdParser(editor.schema, [
+    window.mdparser = new MdParser(editor.extensions, [
       {
         type: "tex",
         parser: token =>
           katex.renderToString((token as Tokens.Tex).text, {
             throwOnError: false
           })
+      },
+      {
+        type: "card_link",
+        parser: (t, parser) => {
+          const token = t as Tokens.Link;
+          return `<a href="${parser.manager.options.card_link.concatLink(
+            token.href
+          )}" ${token.title ? `title="${token.title}"` : ""}>${token.text}</a>`;
+        }
+      },
+      {
+        type: "style",
+        parser: t => {
+          const token = t as Tokens.Style;
+          return `<span style="${convertCssObjToStr(token.attrs)}">${
+            token.text
+          }</span>`;
+        }
+      },
+      {
+        type: "sub",
+        parser: token => `<sub>${(token as Tokens.Sub).text}</sub>`
+      },
+      {
+        type: "sup",
+        parser: token => `<sup>${(token as Tokens.Sup).text}</sup>`
       }
-      // {
-      //   type: "card_link",
-      //   parser: (t, parser) => {
-      //     const token = t as Tokens.Link;
-      //     return `<a href="${parser.schema}" title=""></a>`;
-      //   }
-      // }
     ]);
     // @ts-ignore
     window.lexer = new MdLexer(extTokenizers);

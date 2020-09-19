@@ -32,7 +32,7 @@ for (const [key, value] of Object.entries(DEFAULT_SPAN_STYLE)) {
   };
 }
 
-const convertCssObjToStr = (style: { [key: string]: any }) => {
+export const convertCssObjToStr = (style: { [key: string]: any }) => {
   let result = "";
   for (const [key, value] of Object.entries(style)) {
     if (value === "") {

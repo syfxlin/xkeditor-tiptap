@@ -1,6 +1,7 @@
 import { MarkedOptions, Parser, Renderer, TokensList } from "marked";
 import { Token } from "@/marked/MdLexer";
 import { Schema } from "prosemirror-model";
+import { ExtensionManager } from "tiptap";
 
 export interface ExtParser {
   type: string;
@@ -9,11 +10,17 @@ export interface ExtParser {
 
 export default class MdParser extends Parser {
   public readonly schema: Schema;
+  public readonly manager: ExtensionManager;
   private readonly parsers: { [type: string]: ExtParser };
 
-  constructor(schema: Schema, parsers?: ExtParser[], options?: MarkedOptions) {
+  constructor(
+    manager: ExtensionManager,
+    parsers?: ExtParser[],
+    options?: MarkedOptions
+  ) {
     super(options);
-    this.schema = schema;
+    this.manager = manager;
+    this.schema = manager.view.state.schema;
     this.parsers = {};
     if (parsers) {
       for (const parser of parsers) {

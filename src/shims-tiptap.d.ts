@@ -115,15 +115,24 @@ declare module "tiptap" {
     onDrop?: (...args: any) => void;
   }
 
+  export class ExtensionManager {
+    nodes: NodeSpec[];
+    marks: MarkSpec[];
+    plugins: Plugin[];
+    options: { [key: string]: any };
+    extensions: (Extension | Mark | Node)[];
+    view: EditorView;
+  }
+
   export class Editor {
     commands: { [key: string]: Command };
     defaultOptions: { [key: string]: any };
     element: Element;
-    extensions: Extension[];
+    extensions: ExtensionManager;
     inputRules: any[];
     keymaps: any[];
-    marks: Mark[];
-    nodes: Node[];
+    marks: MarkSpec[];
+    nodes: NodeSpec[];
     pasteRules: any[];
     plugins: Plugin[];
     schema: Schema;

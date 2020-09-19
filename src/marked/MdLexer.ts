@@ -302,15 +302,17 @@ export class MdLexer extends Lexer {
   // @ts-ignore
   private tokenizer: any;
 
-  constructor(tokenizers: ExtTokenizer[], options?: MarkedOptions) {
+  constructor(tokenizers?: ExtTokenizer[], options?: MarkedOptions) {
     super(options);
     this.inlineTzr = [];
     this.blockTzr = [];
-    for (const tokenizer of tokenizers) {
-      if (tokenizer.inline) {
-        this.inlineTzr.push(tokenizer);
-      } else {
-        this.blockTzr.push(tokenizer);
+    if (tokenizers) {
+      for (const tokenizer of tokenizers) {
+        if (tokenizer.inline) {
+          this.inlineTzr.push(tokenizer);
+        } else {
+          this.blockTzr.push(tokenizer);
+        }
       }
     }
   }

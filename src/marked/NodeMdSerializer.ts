@@ -7,6 +7,7 @@ import {
   Schema
 } from "@/utils/prosemirror";
 import { MdSpec } from "@/marked/MdSpec";
+import { ExtensionManager } from "tiptap";
 
 export type MdSerializerRule = (
   node: Node,
@@ -15,6 +16,7 @@ export type MdSerializerRule = (
 
 export class NodeMdSerializer {
   public readonly schema: Schema;
+  public readonly manager: ExtensionManager;
   private readonly blocks: {
     [tokenType: string]: {
       serializer: MdSerializerRule;
@@ -22,12 +24,13 @@ export class NodeMdSerializer {
     };
   };
 
-  constructor(schema: Schema) {
-    this.schema = schema;
+  constructor(manager: ExtensionManager) {
+    this.manager = manager;
+    this.schema = manager.view.state.schema;
     this.blocks = {};
     for (const block of [
-      ...Object.values(schema.marks),
-      ...Object.values(schema.nodes)
+      ...Object.values(this.schema.marks),
+      ...Object.values(this.schema.nodes)
     ]) {
       const serializer = (block.spec as MdSpec).toMarkdown;
       if (serializer) {

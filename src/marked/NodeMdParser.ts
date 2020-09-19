@@ -9,6 +9,7 @@ import {
 import { MarkedOptions } from "marked";
 import { ExtTokenizer, MdLexer, Token } from "@/marked/MdLexer";
 import { MdSpec } from "@/marked/MdSpec";
+import { ExtensionManager } from "tiptap";
 
 export interface MdParseRule {
   // 匹配流程 type[map O(1)] -> matcher[list-for O(n)]
@@ -24,24 +25,26 @@ export interface MdParseRule {
 
 export class NodeMdParser {
   public readonly schema: Schema;
+  public readonly manager: ExtensionManager;
   private readonly blocks: {
     [tokenType: string]: (MdParseRule & { block: MarkType | NodeType })[];
   };
   private readonly options: MarkedOptions | undefined;
-  private readonly extTokenizer: ExtTokenizer[];
+  private readonly extTokenizer: ExtTokenizer[] | undefined;
 
   constructor(
-    schema: Schema,
-    extTokenizer: ExtTokenizer[],
+    manager: ExtensionManager,
+    extTokenizer?: ExtTokenizer[],
     options?: MarkedOptions
   ) {
-    this.schema = schema;
+    this.manager = manager;
+    this.schema = manager.view.state.schema;
     this.options = options;
     this.extTokenizer = extTokenizer;
     this.blocks = {};
     for (const block of [
-      ...Object.values(schema.marks),
-      ...Object.values(schema.nodes)
+      ...Object.values(this.schema.marks),
+      ...Object.values(this.schema.nodes)
     ]) {
       const parsers = (block.spec as MdSpec).parseMarkdown;
       if (parsers) {
