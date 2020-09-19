@@ -17,18 +17,13 @@ export interface MdParseRule {
   getAttrs?: (token: Token) => { [key: string]: any } | undefined;
   getContent?: (
     token: Token,
-    schema: Schema,
-    parser: (tokens: Token[] | Token | string) => Node[]
+    parser: NodeMdParser
   ) => Fragment | Node[] | Node | string | undefined;
-  getMarks?: (
-    token: Token,
-    schema: Schema,
-    parser: (tokens: Token[] | Token | string) => Node[]
-  ) => Mark[] | undefined;
+  getMarks?: (token: Token, parser: NodeMdParser) => Mark[] | undefined;
 }
 
 export class NodeMdParser {
-  private readonly schema: Schema;
+  public readonly schema: Schema;
   private readonly blocks: {
     [tokenType: string]: (MdParseRule & { block: MarkType | NodeType })[];
   };
@@ -63,7 +58,7 @@ export class NodeMdParser {
     }
   }
 
-  parseToken(token: Token): Node | Fragment | Node[] {
+  private parseToken(token: Token): Node | Fragment | Node[] {
     if (!("type" in token)) {
       return this.schema.text(token.raw);
     }
@@ -100,10 +95,10 @@ export class NodeMdParser {
       if (blocks.length === 1 || (parser.matcher && parser.matcher(token))) {
         const attrs = parser.getAttrs ? parser.getAttrs(token) : undefined;
         const marks = parser.getMarks
-          ? parser.getMarks(token, this.schema, this.parse.bind(this))
+          ? parser.getMarks(token, this)
           : undefined;
         let content = parser.getContent
-          ? parser.getContent(token, this.schema, this.parse.bind(this))
+          ? parser.getContent(token, this)
           : undefined;
         if (parser.block instanceof MarkType) {
           const ms = [...(marks || []), parser.block.create(attrs)];
@@ -134,7 +129,7 @@ export class NodeMdParser {
     return this.schema.text(token.raw);
   }
 
-  parseTokens(tokens: Token[]): Node[] {
+  private parseTokens(tokens: Token[]): Node[] {
     const parser = this.parseToken.bind(this);
     const result: Node[] = [];
     for (const token of tokens) {

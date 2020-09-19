@@ -28,11 +28,13 @@ export default class TodoList extends Node {
             const token = t as Tokens.List;
             return token.items.length !== 0 && token.items[0].task;
           },
-          getContent: (token, s, parser) => parser((token as Tokens.List).items)
+          getContent: (token, parser) =>
+            parser.parse((token as Tokens.List).items)
         }
       ],
       toMarkdown: (node, serializer) =>
-        serializer(node.content)
+        serializer
+          .serialize(node.content)
           .split(/\n+/)
           .map(str => (/\s*- /.test(str) ? " " : "-") + " " + str)
           .join("\n")

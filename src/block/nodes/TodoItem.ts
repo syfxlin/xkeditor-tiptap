@@ -85,19 +85,19 @@ export default class TodoItem extends Node {
           getAttrs: token => ({
             done: (token as Tokens.ListItem).checked
           }),
-          getContent: (token, s, parser) => {
-            const nodes = parser((token as Tokens.ListItem).tokens);
+          getContent: (token, parser) => {
+            const nodes = parser.parse((token as Tokens.ListItem).tokens);
             const first = nodes[0];
             if (first && first.isText) {
               nodes.shift();
-              nodes.unshift(s.node("paragraph", undefined, first));
+              nodes.unshift(parser.schema.node("paragraph", undefined, first));
             }
             return nodes;
           }
         }
       ],
       toMarkdown: (node, serializer) =>
-        `[${node.attrs.done ? "x" : " "}] ${serializer(node.content)}`
+        `[${node.attrs.done ? "x" : " "}] ${serializer.serialize(node.content)}`
     };
   }
 

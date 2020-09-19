@@ -47,12 +47,12 @@ export default class Heading extends Node {
           getAttrs: token => ({
             level: (token as Tokens.Heading).depth
           }),
-          getContent: (token, s, parser) =>
-            parser((token as Tokens.Heading).tokens)
+          getContent: (token, parser) =>
+            parser.parse((token as Tokens.Heading).tokens)
         }
       ],
       toMarkdown: (node, serializer) =>
-        `${"#".repeat(node.attrs.level)} ${serializer(node.content)}`
+        `${"#".repeat(node.attrs.level)} ${serializer.serialize(node.content)}`
     };
   }
 

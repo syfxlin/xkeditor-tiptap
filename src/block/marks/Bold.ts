@@ -35,8 +35,8 @@ export default class Bold extends Mark {
       parseMarkdown: [
         {
           type: "strong",
-          getContent: (token, s, parser) =>
-            parser((token as Tokens.Strong).tokens)
+          getContent: (token, parser) =>
+            parser.parse((token as Tokens.Strong).tokens)
         }
       ],
       toMarkdown: () => content => `**${content}**`

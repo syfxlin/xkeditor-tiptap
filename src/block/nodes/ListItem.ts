@@ -21,18 +21,18 @@ export default class ListItem extends Node {
         {
           type: "list_item",
           matcher: token => !(token as Tokens.ListItem).task,
-          getContent: (token, s, parser) => {
-            const nodes = parser((token as Tokens.ListItem).tokens);
+          getContent: (token, parser) => {
+            const nodes = parser.parse((token as Tokens.ListItem).tokens);
             const first = nodes[0];
             if (first && first.isText) {
               nodes.shift();
-              nodes.unshift(s.node("paragraph", undefined, first));
+              nodes.unshift(parser.schema.node("paragraph", undefined, first));
             }
             return nodes;
           }
         }
       ],
-      toMarkdown: (node, serializer) => serializer(node.content)
+      toMarkdown: (node, serializer) => serializer.serialize(node.content)
     };
   }
 

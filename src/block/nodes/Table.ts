@@ -49,27 +49,30 @@ export default class Table extends Node {
       parseMarkdown: [
         {
           type: "table",
-          getContent: (t, s, parser) => {
+          getContent: (t, parser) => {
             const token = t as Tokens.Table;
-            const header = s.node(
+            const schema = parser.schema;
+            const header = schema.node(
               "table_row",
               undefined,
               token.header.map(h =>
-                s.node("table_header", undefined, parser(h))
+                schema.node("table_header", undefined, parser.parse(h))
               )
             );
             const cells = token.cells.map(row =>
-              s.node(
+              schema.node(
                 "table_row",
                 undefined,
-                row.map(cell => s.node("table_cell", undefined, parser(cell)))
+                row.map(cell =>
+                  schema.node("table_cell", undefined, parser.parse(cell))
+                )
               )
             );
             return [header, ...cells];
           }
         }
       ],
-      toMarkdown: (node, serializer) => serializer(node.content, "\n")
+      toMarkdown: (node, serializer) => serializer.serialize(node.content, "\n")
     };
   }
 

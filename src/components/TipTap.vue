@@ -34,7 +34,8 @@ import { emojiConverter } from "@/block/extensions/Emoji";
 import { NodeMdParser } from "@/marked/NodeMdParser";
 import { NodeMdSerializer } from "@/marked/NodeMdSerializer";
 import MdParser from "@/marked/MdParser";
-import { ExtTokenizer, MdLexer } from "@/marked/MdLexer";
+import { ExtTokenizer, MdLexer, Tokens } from "@/marked/MdLexer";
+import katex from "katex";
 
 export default defineComponent({
   name: "tip-tip",
@@ -212,11 +213,21 @@ export default defineComponent({
     // @ts-ignore
     window.marked = marked;
     // @ts-ignore
-    window.mdparser = new MdParser([
+    window.mdparser = new MdParser(editor.schema, [
       {
-        type: "toc",
-        parser: token => `[TOC]`
+        type: "tex",
+        parser: token =>
+          katex.renderToString((token as Tokens.Tex).text, {
+            throwOnError: false
+          })
       }
+      // {
+      //   type: "card_link",
+      //   parser: (t, parser) => {
+      //     const token = t as Tokens.Link;
+      //     return `<a href="${parser.schema}" title=""></a>`;
+      //   }
+      // }
     ]);
     // @ts-ignore
     window.lexer = new MdLexer(extTokenizers);

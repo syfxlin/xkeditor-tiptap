@@ -10,11 +10,11 @@ import { MdSpec } from "@/marked/MdSpec";
 
 export type MdSerializerRule = (
   node: Node,
-  serializer: (nodes: Fragment | Node[] | Node, separator?: string) => string
+  serializer: NodeMdSerializer
 ) => string | ((content: string, mark: Mark) => string);
 
 export class NodeMdSerializer {
-  private readonly schema: Schema;
+  public readonly schema: Schema;
   private readonly blocks: {
     [tokenType: string]: {
       serializer: MdSerializerRule;
@@ -39,21 +39,21 @@ export class NodeMdSerializer {
     }
   }
 
-  serializeMark(content: string, node: Node): string {
+  private serializeMark(content: string, node: Node): string {
     for (const mark of node.marks) {
       const markBlock = this.blocks[mark.type.name];
       if (markBlock) {
-        const decorator = markBlock.serializer(
-          node,
-          this.serialize.bind(this)
-        ) as (content: string, mark: Mark) => string;
+        const decorator = markBlock.serializer(node, this) as (
+          content: string,
+          mark: Mark
+        ) => string;
         content = decorator(content, mark);
       }
     }
     return content;
   }
 
-  serializeNode(node: Node): string {
+  private serializeNode(node: Node): string {
     // doc
     if (node.type.name === "doc") {
       return this.serializeMark(this.serialize(node.content), node);
@@ -67,10 +67,7 @@ export class NodeMdSerializer {
     if (!block) {
       return this.serializeMark(node.textContent, node);
     }
-    return this.serializeMark(
-      block.serializer(node, this.serialize.bind(this)) as string,
-      node
-    );
+    return this.serializeMark(block.serializer(node, this) as string, node);
   }
 
   serialize(nodes: Fragment | Node[] | Node, separator = "\n\n"): string {

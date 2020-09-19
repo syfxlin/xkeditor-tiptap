@@ -11,7 +11,7 @@ export default class TableHeader extends Node {
   get schema(): NodeSpec & MdSpec {
     return {
       ...TableNodes.table_header,
-      toMarkdown: (node, serializer) => serializer(node.content)
+      toMarkdown: (node, serializer) => serializer.serialize(node.content)
     };
   }
 }

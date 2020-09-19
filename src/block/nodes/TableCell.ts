@@ -14,7 +14,7 @@ export default class TableCell extends Node {
       toMarkdown: (node, serializer) => {
         const nodes: string[] = [];
         node.content.forEach(item => {
-          let content = serializer(item);
+          let content = serializer.serialize(item);
           if (item.type.name === "table") {
             content = " :" + JSON.stringify(content);
           }

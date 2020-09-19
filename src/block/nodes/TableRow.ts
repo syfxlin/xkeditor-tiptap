@@ -13,7 +13,7 @@ export default class TableRow extends Node {
       ...TableNodes.table_row,
       toMarkdown: (node, serializer) => {
         const nodes: string[] = [];
-        node.content.forEach(item => nodes.push(serializer(item)));
+        node.content.forEach(item => nodes.push(serializer.serialize(item)));
         return "| " + nodes.join(" | ") + " |";
       }
     };
