@@ -9,7 +9,7 @@ import {
 import { ref } from "vue-demi";
 import { useDebounceFn } from "@vueuse/core";
 
-type Head = {
+export type Head = {
   head: Node;
   sub: Head[];
 };

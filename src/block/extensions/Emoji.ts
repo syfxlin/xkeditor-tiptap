@@ -9,9 +9,13 @@ import {
 } from "@/utils/prosemirror";
 import { EmojiConvertor } from "emoji-js";
 
-export const emojiConverter = new EmojiConvertor();
+const emojiConverter = new EmojiConvertor();
 // eslint-disable-next-line
 emojiConverter.replace_mode = "unified";
+
+export function convertEmoji(code: string): string {
+  return emojiConverter.replace_colons(code);
+}
 
 export default class Emoji extends Extension {
   get name() {
@@ -22,11 +26,7 @@ export default class Emoji extends Extension {
     return [
       new InputRule(/(:[a-zA-Z0-9]+:)/, (state, match, start, end) => {
         const { tr, schema } = state;
-        tr.replaceWith(
-          start,
-          end,
-          schema.text(emojiConverter.replace_colons(match[1]))
-        );
+        tr.replaceWith(start, end, schema.text(convertEmoji(match[1])));
         return tr;
       })
     ];
@@ -55,12 +55,7 @@ export default class Emoji extends Extension {
 
               // adding the markdown part to nodes
               child.cut(start, end);
-              nodes.push(
-                schema.text(
-                  emojiConverter.replace_colons(match[1]),
-                  child.marks
-                )
-              );
+              nodes.push(schema.text(convertEmoji(match[1]), child.marks));
 
               pos = end;
             }

@@ -29,8 +29,8 @@ import TMenuBubble from "@/components/TMenuBubble.vue";
 import TFloatMenu from "@/components/TFloatMenu.vue";
 import VueDraggableResizable from "vue-draggable-resizable";
 import marked from "marked";
-import { convertCssObjToStr, getStyleAttrs } from "@/block/marks/Style";
-import { emojiConverter } from "@/block/extensions/Emoji";
+import { convertCss, getStyleAttrs } from "@/block/marks/Style";
+import { convertEmoji } from "@/block/extensions/Emoji";
 import { NodeMdParser } from "@/marked/NodeMdParser";
 import { NodeMdSerializer } from "@/marked/NodeMdSerializer";
 import MdParser from "@/marked/MdParser";
@@ -200,7 +200,7 @@ export default defineComponent({
         tokenizer: match => ({
           type: "text",
           raw: match[0],
-          text: emojiConverter.replace_colons(match[1])
+          text: convertEmoji(match[1])
         })
       }
     ];
@@ -234,7 +234,7 @@ export default defineComponent({
         type: "style",
         parser: t => {
           const token = t as Tokens.Style;
-          return `<span style="${convertCssObjToStr(token.attrs)}">${
+          return `<span style="${convertCss(token.attrs)}">${
             token.text
           }</span>`;
         }
@@ -246,6 +246,18 @@ export default defineComponent({
       {
         type: "sup",
         parser: token => `<sup>${(token as Tokens.Sup).text}</sup>`
+      },
+      {
+        type: "details",
+        parser: t => {
+          const token = t as Tokens.Details;
+          return `<details><summary>${token.summary}</summary>${token.text}</details>`;
+        }
+      },
+      {
+        type: "mermaid",
+        parser: token =>
+          `<div class="mermaid">${(token as Tokens.Mermaid).text}</div>`
       }
     ]);
     // @ts-ignore

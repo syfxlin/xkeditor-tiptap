@@ -32,7 +32,7 @@ for (const [key, value] of Object.entries(DEFAULT_SPAN_STYLE)) {
   };
 }
 
-export const convertCssObjToStr = (style: { [key: string]: any }) => {
+export const convertCss = (style: { [key: string]: any }) => {
   let result = "";
   for (const [key, value] of Object.entries(style)) {
     if (value === "") {
@@ -97,7 +97,7 @@ export default class Style extends Mark {
         }
       ],
       toDOM: mark => {
-        const style = convertCssObjToStr(mark.attrs);
+        const style = convertCss(mark.attrs);
         return ["span", { style }, 0];
       },
       parseMarkdown: [
@@ -110,7 +110,7 @@ export default class Style extends Mark {
         }
       ],
       toMarkdown: (node, serializer) => (content, mark) =>
-        `[${content}]{${convertCssObjToStr(mark.attrs)}}`
+        `[${content}]{${convertCss(mark.attrs)}}`
     };
   }
 
