@@ -9,6 +9,7 @@ import { NodeSpec, NodeType, Plugin, Schema } from "@/utils/prosemirror";
 import nodeLinePasteRule from "@/utils/nodeLinePasteRule";
 import { MdSpec } from "@/marked/MdSpec";
 import { Tokens } from "@/marked/MdLexer";
+import MdSlugger from "@/marked/MdSlugger";
 
 export default class Heading extends Node {
   get name() {
@@ -38,7 +39,7 @@ export default class Heading extends Node {
       })),
       toDOM: node => [
         `h${node.attrs.level}`,
-        { id: encodeURI(node.textContent) },
+        { id: MdSlugger.slug(node.textContent) },
         0
       ],
       parseMarkdown: [

@@ -2,6 +2,7 @@ import { MarkedOptions, Parser, Renderer, TokensList } from "marked";
 import { Token } from "@/marked/MdLexer";
 import { Schema } from "prosemirror-model";
 import { ExtensionManager } from "tiptap";
+import MdSlugger from "@/marked/MdSlugger";
 
 export interface ExtParser {
   type: string;
@@ -19,6 +20,7 @@ export default class MdParser extends Parser {
     options?: MarkedOptions
   ) {
     super(options);
+    this.slugger = new MdSlugger();
     this.manager = manager;
     this.schema = manager.view.state.schema;
     this.parsers = {};

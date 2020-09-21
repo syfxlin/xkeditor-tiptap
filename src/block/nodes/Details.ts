@@ -6,7 +6,7 @@ import {
   Schema
 } from "@/utils/prosemirror";
 import nodeListPasteRule, { Matched } from "@/utils/nodeListPasteRule";
-import { defineComponent } from "@vue/composition-api";
+import { defineComponent } from "vue-demi";
 import { wrappingInputRule } from "tiptap-commands";
 import { MdSpec } from "@/marked/MdSpec";
 import { Tokens } from "@/marked/MdLexer";

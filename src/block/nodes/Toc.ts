@@ -6,6 +6,7 @@ import { defineComponent } from "vue-demi";
 import { MdSpec } from "@/marked/MdSpec";
 import { Tokens } from "@/marked/MdLexer";
 import nodeLinePasteRule from "@/utils/nodeLinePasteRule";
+import MdSlugger from "@/marked/MdSlugger";
 
 export default class Toc extends Node {
   get name() {
@@ -78,10 +79,13 @@ export default class Toc extends Node {
       props: {
         items: Array
       },
+      setup() {
+        return { slug: MdSlugger.slug };
+      },
       template: `
         <ul>
           <li v-for="item in items">
-            <a :href="'#' + encodeURI(
+            <a :href="'#' + slug(
               item.head.textContent
             )">{{item.head.textContent}}</a>
             <node_toc_list :items="item.sub" />
