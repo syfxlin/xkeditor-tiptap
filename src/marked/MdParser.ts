@@ -16,7 +16,7 @@ export default class MdParser extends Parser {
 
   constructor(
     manager: ExtensionManager,
-    parsers?: ExtParser[],
+    extParsers?: ExtParser[],
     options?: MarkedOptions
   ) {
     super(options);
@@ -24,8 +24,8 @@ export default class MdParser extends Parser {
     this.manager = manager;
     this.schema = manager.view.state.schema;
     this.parsers = {};
-    if (parsers) {
-      for (const parser of parsers) {
+    if (extParsers) {
+      for (const parser of extParsers) {
         this.parsers[parser.type] = parser;
       }
     }
