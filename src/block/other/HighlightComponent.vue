@@ -8,19 +8,12 @@ export default defineComponent({
   name: "highlight-component",
   props: {
     code: String,
-    language: String,
-    codeRef: HTMLElement
+    language: String
   },
   setup(props) {
-    const nodes = computed(() => {
-      let code = "";
-      if (props.code !== undefined) {
-        code = props.code;
-      } else if (props.codeRef !== undefined) {
-        code = props.codeRef.textContent || "";
-      }
-      return refractor.highlight(code, props.language || "markup");
-    });
+    const nodes = computed(() =>
+      refractor.highlight(props.code || "", props.language || "markup")
+    );
     const parseNodes = (nodes: RefractorNode[]): VNodeChildren => {
       return nodes.map(node => {
         if (node.type === "text") {

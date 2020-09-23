@@ -13,9 +13,9 @@ import {
   Schema
 } from "@/utils/prosemirror";
 import { computed, defineComponent, nextTick, ref } from "vue-demi";
-import { dirFocus, mergeNodeSpec, nodeKeys } from "@/utils/codemirror";
-import CodeMirrorComponent from "@/block/other/CodeMirrorComponent.vue";
+import { dirFocus, mergeNodeSpec, nodeKeys } from "@/utils/ace";
 import HighlightComponent from "@/block/other/HighlightComponent.vue";
+import AceComponent from "@/block/other/AceComponent.vue";
 import "prismjs/themes/prism-okaidia.css";
 import "prismjs/plugins/toolbar/prism-toolbar.css";
 import "prismjs/plugins/line-numbers/prism-line-numbers.css";
@@ -93,8 +93,8 @@ export default class CodeBlockHighlight extends Node {
     return defineComponent({
       name: "node_code_block",
       components: {
-        CodeMirrorComponent,
-        HighlightComponent
+        HighlightComponent,
+        AceComponent
       },
       props: {
         node: ProsemirrorNode,
@@ -131,18 +131,27 @@ export default class CodeBlockHighlight extends Node {
           () => props.node?.textContent.split("\n").length
         );
 
-        return { content, edit, blur, lines };
+        const code = computed({
+          get: () => props.node?.textContent,
+          set: v => {
+            if (content.value !== undefined) {
+              content.value.textContent = v === undefined ? "" : v;
+            }
+          }
+        });
+
+        return { content, edit, blur, lines, code };
       },
       template: `
         <div contenteditable="false">
-          <code-mirror-component
+          <ace-component
               v-if="node.attrs.isEditing"
               :node="node"
               :update-attrs="updateAttrs"
               :view="view"
               :editor="editor"
               :get-pos="getPos"
-              :content-ref="content"
+              :code.sync="code"
               @blur="blur"
           />
           <div class="code-toolbar">
@@ -150,7 +159,7 @@ export default class CodeBlockHighlight extends Node {
               <span aria-hidden="true" class="line-numbers-rows">
                 <span v-for="n in lines"></span>
               </span>
-              <highlight-component :code-ref="content" :language="node.attrs.language" />
+              <highlight-component :code="code" :language="node.attrs.language" />
               <code ref="content" v-show="false"></code>
             </pre>
             <div class="toolbar">
@@ -190,7 +199,7 @@ export default class CodeBlockHighlight extends Node {
       "Shift-Ctrl-\\": setBlockType(type),
       ...nodeKeys(
         node => node.type.name === "code_block",
-        (cm, node) => (node.attrs.isEditing = true)
+        (ace, node) => (node.attrs.isEditing = true)
       )
     };
   }

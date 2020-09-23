@@ -126,3 +126,10 @@ export default defineComponent({
   }
 });
 </script>
+
+<style lang="scss">
+.CodeMirror {
+  height: 100%;
+  min-height: 100px;
+}
+</style>

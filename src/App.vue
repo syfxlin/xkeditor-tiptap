@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <tip-tap :editor="editor" />
+    <tip-tap :editor="editor" v-if="true" />
     <md-editor :editor="editor" />
   </div>
 </template>
@@ -62,4 +62,9 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+#app {
+  width: 100vw;
+  height: 100vh;
+}
+</style>

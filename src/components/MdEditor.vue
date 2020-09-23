@@ -1,13 +1,13 @@
 <template>
   <div class="md-editor">
-    <code-mirror :content.sync="content" :options.sync="options" />
-    <div v-html="htmlContent"></div>
+    <ace :content.sync="content" :options.sync="options" />
+    <div class="md-preview" v-html="htmlContent"></div>
   </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue-demi";
-import CodeMirror from "@/components/CodeMirror.vue";
+import Ace from "@/components/Ace.vue";
 import { Editor } from "tiptap";
 import MdParser from "@/marked/MdParser";
 import { extParsers, extTokenizers } from "@/marked/rules";
@@ -16,7 +16,7 @@ import { MdLexer } from "@/marked/MdLexer";
 export default defineComponent({
   name: "md-editor",
   components: {
-    CodeMirror
+    Ace
   },
   props: {
     editor: Editor
@@ -30,9 +30,32 @@ export default defineComponent({
       )
     );
     const options = ref({
-      lineNumbers: true
+      fontSize: "17px",
+      theme: "ace/theme/solarized_light",
+      mode: "ace/mode/markdown",
+      tabSize: 4,
+      wrap: true,
+      enableSnippets: true,
+      enableLiveAutocompletion: true,
+      enableBasicAutocompletion: true
     });
     return { content, options, htmlContent };
   }
 });
 </script>
+
+<style lang="scss">
+.md-editor {
+  display: flex;
+  width: 100%;
+  height: 100%;
+
+  > * {
+    width: 50%;
+  }
+
+  .md-preview {
+    overflow: hidden;
+  }
+}
+</style>
