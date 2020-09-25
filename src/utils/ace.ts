@@ -1,8 +1,19 @@
 import { Ace } from "ace-builds";
 import { Command, Node, NodeSpec, Selection } from "@/utils/prosemirror";
-import { nextTick } from "vue-demi";
+import {
+  computed,
+  defineComponent,
+  nextTick,
+  onMounted,
+  ref,
+  Ref,
+  watch
+} from "vue-demi";
 import { CommandFunction } from "tiptap-commands";
 import { MdSpec } from "@/marked/MdSpec";
+import { Node as ProsemirrorNode } from "prosemirror-model";
+import { Editor as TipTapEditor } from "tiptap";
+import AceComponent from "@/block/other/AceComponent.vue";
 import Editor = Ace.Editor;
 
 export function focus(ace: Editor | undefined | null) {
@@ -116,4 +127,79 @@ export function mergeNodeSpec(spec: NodeSpec & MdSpec): NodeSpec {
     ace: true,
     ...spec
   };
+}
+
+export function scEditor(
+  name: string,
+  codeToView: (code: string, htmlView: Ref<string>, id: string) => void,
+  viewAttrs?: {
+    class: string;
+  },
+  setup?: (props: any) => { [key: string]: any }
+) {
+  return defineComponent({
+    name,
+    components: {
+      AceComponent
+    },
+    props: {
+      node: ProsemirrorNode,
+      updateAttrs: Function,
+      view: Object,
+      options: Object,
+      selected: Boolean,
+      editor: TipTapEditor,
+      getPos: Function,
+      decorations: Array
+    },
+    setup(props) {
+      const id =
+        name +
+        "-" +
+        Math.random()
+          .toString(36)
+          .slice(-8);
+      const content = ref<HTMLElement>();
+      const htmlView = ref<string>("");
+      const code = computed({
+        get: () => props.node?.textContent,
+        set: v => {
+          if (content.value !== undefined) {
+            content.value.textContent = v === undefined ? "" : v;
+          }
+        }
+      });
+
+      watch(code, val => {
+        codeToView(val || "", htmlView, id);
+      });
+
+      let result = {};
+      if (setup) {
+        result = setup(props);
+      }
+
+      onMounted(() => {
+        nextTick(() => {
+          dirFocus(props.node?.attrs.cmRef, 1);
+        });
+      });
+
+      return { code, content, htmlView, ...result, attrs: viewAttrs || {}, id };
+    },
+    template: `
+      <div class="sc-editor" contenteditable="false">
+        <ace-component
+          :node="node"
+          :update-attrs="updateAttrs"
+          :view="view"
+          :editor="editor"
+          :get-pos="getPos"
+          :code.sync="code"
+        />
+        <div :class="attrs.class" :id="id" v-html="htmlView"></div>
+        <textarea hidden ref="content" />
+      </div>
+    `.replace(/>\s+</g, "><")
+  });
 }

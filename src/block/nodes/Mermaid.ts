@@ -1,6 +1,6 @@
 import { Node } from "tiptap";
 import { NodeSpec, NodeType, Schema } from "@/utils/prosemirror";
-import { mergeNodeSpec, nodeKeys, sepColCodeMirror } from "@/utils/codemirror";
+import { mergeNodeSpec, nodeKeys, scEditor } from "@/utils/ace";
 import { CommandFunction, textblockTypeInputRule } from "tiptap-commands";
 import mermaid from "mermaid";
 import { useDebounceFn } from "@vueuse/core";
@@ -58,7 +58,7 @@ export default class Mermaid extends Node {
         htmlView.value = errSvg;
       }
     }, 500);
-    return sepColCodeMirror(this.name, (code, htmlView) => {
+    return scEditor(this.name, (code, htmlView) => {
       convertFn(code, htmlView);
     });
   }
