@@ -81,5 +81,6 @@ export default defineComponent({
 .ace-editor,
 .ace_editor {
   min-height: 300px;
+  height: 100%;
 }
 </style>

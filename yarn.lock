@@ -10352,6 +10352,11 @@ split-string@^3.0.1, split-string@^3.0.2:
   dependencies:
     extend-shallow "^3.0.0"
 
+splitpanes@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.npm.taobao.org/splitpanes/download/splitpanes-2.2.1.tgz#95c5824eb4033cd109a1a5d1a498765e2bde8c92"
+  integrity sha1-lcWCTrQDPNEJoaXRpJh2XivejJI=
+
 sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.npm.taobao.org/sprintf-js/download/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
@@ -11403,11 +11408,6 @@ vue-demi@latest:
   integrity sha1-m0ZPCUx8N1R8G6vpXpvyxhz0odI=
   dependencies:
     "@vue/composition-api" ">=1.0.0-beta.1"
-
-vue-draggable-resizable@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.npm.taobao.org/vue-draggable-resizable/download/vue-draggable-resizable-2.2.0.tgz#eb4581b6ddd6a20c5f54f99993c8646382523296"
-  integrity sha1-60WBtt3WogxfVPmZk8hkY4JSMpY=
 
 vue-eslint-parser@^7.0.0:
   version "7.1.0"

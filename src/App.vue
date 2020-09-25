@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <tip-tap :editor="editor" v-if="true" />
-    <md-editor :editor="editor" />
+    <md-editor :editor="editor" v-if="false" />
   </div>
 </template>
 

@@ -3,7 +3,7 @@ import VueCompositionAPI from "@vue/composition-api";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import App from "./App.vue";
-import "vue-draggable-resizable/dist/VueDraggableResizable.css";
+import "splitpanes/dist/splitpanes.css";
 
 Vue.config.productionTip = false;
 Vue.use(VueCompositionAPI);

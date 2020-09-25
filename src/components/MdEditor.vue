@@ -1,8 +1,12 @@
 <template>
-  <div class="md-editor">
-    <ace :content.sync="content" :options.sync="options" />
-    <div class="md-preview" v-html="htmlContent"></div>
-  </div>
+  <splitpanes class="md-editor">
+    <pane>
+      <ace :content.sync="content" :options.sync="options" />
+    </pane>
+    <pane>
+      <div class="md-preview" v-html="htmlContent"></div>
+    </pane>
+  </splitpanes>
 </template>
 
 <script lang="ts">
@@ -12,11 +16,14 @@ import { Editor } from "tiptap";
 import MdParser from "@/marked/MdParser";
 import { extParsers, extTokenizers } from "@/marked/rules";
 import { MdLexer } from "@/marked/MdLexer";
+import { Pane, Splitpanes } from "splitpanes";
 
 export default defineComponent({
   name: "md-editor",
   components: {
-    Ace
+    Ace,
+    Splitpanes,
+    Pane
   },
   props: {
     editor: Editor
@@ -50,12 +57,12 @@ export default defineComponent({
   width: 100%;
   height: 100%;
 
-  > * {
-    width: 50%;
-  }
-
   .md-preview {
-    overflow: hidden;
+    overflow: auto;
   }
+}
+
+.splitpanes--vertical > .splitpanes__splitter {
+  width: 5px;
 }
 </style>

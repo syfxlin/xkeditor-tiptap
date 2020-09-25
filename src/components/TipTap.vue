@@ -1,22 +1,13 @@
 <template>
-  <div class="editor-container">
-    <vue-draggable-resizable
-      :class-name="'editor'"
-      :handles="['mr']"
-      :draggable="false"
-      :min-width="200"
-      :w="550"
-      :h="'auto'"
-      :axis="'x'"
-      :scale="0.5"
-    >
+  <resize-panel class="editor-container">
+    <pane class="editor">
       <t-menu-bar :editor="editor" :menus="menus" />
       <t-menu-bubble :editor="editor" :menus="menus" />
       <t-float-menu :editor="editor" :menus="menus" />
 
       <editor-content class="editor__content" :editor="editor" />
-    </vue-draggable-resizable>
-  </div>
+    </pane>
+  </resize-panel>
 </template>
 
 <script lang="ts">
@@ -26,7 +17,8 @@ import { Editor, EditorContent } from "tiptap";
 import TMenuBar from "@/components/TMenuBar.vue";
 import TMenuBubble from "@/components/TMenuBubble.vue";
 import TFloatMenu from "@/components/TFloatMenu.vue";
-import VueDraggableResizable from "vue-draggable-resizable";
+import ResizePanel from "@/components/ResizePanel.vue";
+import { Pane } from "splitpanes";
 
 export default defineComponent({
   name: "tip-tip",
@@ -36,7 +28,8 @@ export default defineComponent({
     TMenuBubble,
     TFloatMenu,
     Icon,
-    VueDraggableResizable
+    ResizePanel,
+    Pane
   },
   props: {
     editor: Editor
