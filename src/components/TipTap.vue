@@ -1,5 +1,5 @@
 <template>
-  <resize-panel class="editor-container">
+  <resize-panel class="editor-container splitpanes-default">
     <pane class="editor">
       <t-menu-bar :editor="editor" :menus="menus" />
       <t-menu-bubble :editor="editor" :menus="menus" />

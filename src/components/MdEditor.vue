@@ -1,9 +1,9 @@
 <template>
-  <splitpanes class="md-editor">
-    <pane>
-      <ace :content.sync="content" :options.sync="options" />
+  <splitpanes class="md-editor splitpanes-default" @resized="resized">
+    <pane :min-size="20">
+      <ace :content.sync="content" :options.sync="options" :ace.sync="ace" />
     </pane>
-    <pane>
+    <pane :min-size="20">
       <div class="md-preview" v-html="htmlContent"></div>
     </pane>
   </splitpanes>
@@ -17,6 +17,8 @@ import MdParser from "@/marked/MdParser";
 import { extParsers, extTokenizers } from "@/marked/rules";
 import { MdLexer } from "@/marked/MdLexer";
 import { Pane, Splitpanes } from "splitpanes";
+import { Ace as AceBuilds } from "ace-builds";
+import AceEditor = AceBuilds.Editor;
 
 export default defineComponent({
   name: "md-editor",
@@ -46,7 +48,14 @@ export default defineComponent({
       enableLiveAutocompletion: true,
       enableBasicAutocompletion: true
     });
-    return { content, options, htmlContent };
+
+    const ace = ref<AceEditor>();
+    const resized = () => {
+      if (ace.value) {
+        ace.value.resize();
+      }
+    };
+    return { content, options, htmlContent, resized, ace };
   }
 });
 </script>
