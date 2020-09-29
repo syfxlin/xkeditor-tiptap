@@ -18,7 +18,7 @@ export namespace Tokens {
   export interface Heading {
     type: "heading";
     raw: string;
-    depth: number;
+    depth: 1 | 2 | 3 | 4 | 5 | 6;
     text: string;
     tokens: Token[];
   }
@@ -29,6 +29,10 @@ export namespace Tokens {
     header: string[];
     align: Array<"center" | "left" | "right" | null>;
     cells: string[][];
+    tokens: {
+      header: Token[][];
+      cells: Token[][];
+    };
   }
 
   export interface Hr {
@@ -77,6 +81,7 @@ export namespace Tokens {
     raw: string;
     pre?: boolean;
     text: string;
+    tokens: Token[];
   }
 
   export interface HTML {
@@ -118,7 +123,7 @@ export namespace Tokens {
     href: string;
     title: string;
     text: string;
-    tokens?: Text[];
+    tokens: Text[];
   }
 
   export interface Image {
@@ -288,25 +293,24 @@ export class MdLexer extends Lexer {
       src: string;
       token: any;
       tokens: any[];
-      matched: boolean;
       top: boolean;
       lexer: MdLexer;
     } = {
       src: src.replace(/^ +$/gm, ""),
       token: undefined,
-      matched: false,
       tokens,
       top,
       lexer: this
     };
+    let matched;
 
     while (obj.src) {
-      obj.matched = false;
+      matched = false;
 
       for (const tzr of this.blockTzr) {
         let match = tzr.matcher(obj.src, obj);
         if (match !== null && match) {
-          obj.matched = true;
+          matched = true;
           if (typeof match === "boolean") {
             // @ts-ignore
             const matchArr: RegExpExecArray = [obj.src];
@@ -333,7 +337,7 @@ export class MdLexer extends Lexer {
           break;
         }
       }
-      if (obj.matched) {
+      if (matched) {
         continue;
       }
 

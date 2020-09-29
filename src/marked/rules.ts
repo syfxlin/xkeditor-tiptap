@@ -824,7 +824,7 @@ export const extParsers: ExtParser[] = [
   // CardLink
   {
     type: "card_link",
-    parser: (t, parser) => {
+    parser: (t, { parser }) => {
       const token = t as Tokens.Link;
       return `<a href="${parser.manager.options.card_link.concatLink(
         token.href
@@ -862,5 +862,219 @@ export const extParsers: ExtParser[] = [
     type: "mermaid",
     parser: token =>
       `<div class="mermaid">${(token as Tokens.Mermaid).text}</div>`
+  },
+  // Escape
+  {
+    type: "escape",
+    parser: (token, { renderer }) =>
+      renderer.text((token as Tokens.Escape).text)
+  },
+  // HTML
+  {
+    type: "html",
+    parser: (token, { renderer }) => renderer.html((token as Tokens.HTML).text)
+  },
+  // Link
+  {
+    type: "link",
+    parser: (t, { parser, renderer }) => {
+      const token = t as Tokens.Link;
+      return renderer.link(
+        token.href,
+        token.title,
+        parser.parseInline(token.tokens, renderer)
+      );
+    }
+  },
+  // Image
+  {
+    type: "image",
+    parser: (t, { renderer }) => {
+      const token = t as Tokens.Image;
+      return renderer.image(token.href, token.title, token.text);
+    }
+  },
+  // Strong
+  {
+    type: "strong",
+    parser: (t, { parser, renderer }) => {
+      const token = t as Tokens.Strong;
+      return renderer.strong(parser.parseInline(token.tokens, renderer));
+    }
+  },
+  // Em
+  {
+    type: "em",
+    parser: (t, { parser, renderer }) => {
+      const token = t as Tokens.Em;
+      return renderer.em(parser.parseInline(token.tokens, renderer));
+    }
+  },
+  // Codespan
+  {
+    type: "codespan",
+    parser: (token, { renderer }) =>
+      renderer.codespan((token as Tokens.Codespan).text)
+  },
+  // Br
+  {
+    type: "br",
+    parser: (token, { renderer }) => renderer.br()
+  },
+  // Del
+  {
+    type: "del",
+    parser: (t, { parser, renderer }) => {
+      const token = t as Tokens.Del;
+      return renderer.del(parser.parseInline(token.tokens, renderer));
+    }
+  },
+  // Text
+  {
+    type: "text",
+    parser: (token, { renderer }) => renderer.text((token as Tokens.Text).text)
+  },
+  // Space
+  {
+    type: "space",
+    parser: () => null
+  },
+  // Hr
+  {
+    type: "hr",
+    parser: (token, { renderer }) => renderer.hr()
+  },
+  // Heading
+  {
+    type: "heading",
+    parser: (t, { parser, renderer }) => {
+      const token = t as Tokens.Heading;
+      return renderer.heading(
+        parser.parseInline(token.tokens),
+        token.depth,
+        // @ts-ignore
+        unescape(parser.parseInline(token.tokens, parser.textRenderer)),
+        parser.slugger
+      );
+    }
+  },
+  // Code
+  {
+    type: "code",
+    parser: (t, { parser, renderer }) => {
+      const token = t as Tokens.Code;
+      // @ts-ignore
+      return renderer.code(token.text, token.lang, token.escaped);
+    }
+  },
+  // Table
+  {
+    type: "table",
+    parser: (t, { parser, renderer }) => {
+      const token = t as Tokens.Table;
+      let header = "";
+
+      // header
+      let cell = "";
+      let l2 = token.header.length;
+      for (let j = 0; j < l2; j++) {
+        cell += renderer.tablecell(parser.parseInline(token.tokens.header[j]), {
+          header: true,
+          align: token.align[j]
+        });
+      }
+      header += renderer.tablerow(cell);
+
+      let body = "";
+      l2 = token.cells.length;
+      for (let j = 0; j < l2; j++) {
+        const row = token.tokens.cells[j];
+
+        cell = "";
+        const l3 = row.length;
+        for (let k = 0; k < l3; k++) {
+          cell += renderer.tablecell(parser.parseInline(row[k] as any), {
+            header: false,
+            align: token.align[k]
+          });
+        }
+
+        body += renderer.tablerow(cell);
+      }
+      return renderer.table(header, body);
+    }
+  },
+  // Blockquote
+  {
+    type: "blockquote",
+    parser: (token, { parser, renderer }) =>
+      renderer.blockquote(
+        parser.parse((token as Tokens.Blockquote).tokens) as string
+      )
+  },
+  // List
+  {
+    type: "list",
+    parser: (t, { parser, renderer }) => {
+      const token = t as Tokens.List;
+      const ordered = token.ordered;
+      const start = token.start;
+      const loose = token.loose;
+      const l2 = token.items.length;
+
+      let body = "";
+      for (let j = 0; j < l2; j++) {
+        const item = token.items[j];
+        const checked = item.checked;
+        const task = item.task;
+
+        let itemBody = "";
+        if (item.task) {
+          const checkbox = renderer.checkbox(checked);
+          if (loose) {
+            const itemToken = item.tokens[0] as any;
+            if (item.tokens.length > 0 && itemToken.type === "text") {
+              itemToken.text = checkbox + " " + itemToken.text;
+              if (
+                itemToken.tokens &&
+                itemToken.tokens.length > 0 &&
+                itemToken.tokens[0].type === "text"
+              ) {
+                itemToken.tokens[0].text =
+                  checkbox + " " + itemToken.tokens[0].text;
+              }
+            } else {
+              item.tokens.unshift({
+                // @ts-ignore
+                type: "text",
+                text: checkbox
+              });
+            }
+          } else {
+            itemBody += checkbox;
+          }
+        }
+
+        itemBody += parser.parse(item.tokens, loose);
+        // @ts-ignore
+        body += renderer.listitem(itemBody, task, checked);
+      }
+
+      // @ts-ignore
+      return renderer.list(body, ordered, start);
+    }
+  },
+  // HTML
+  {
+    type: "html",
+    parser: (token, { renderer }) => renderer.html((token as Tokens.HTML).text)
+  },
+  // Paragraph
+  {
+    type: "paragraph",
+    parser: (t, { parser, renderer }) => {
+      const token = t as Tokens.Paragraph;
+      return renderer.paragraph(parser.parseInline(token.tokens));
+    }
   }
 ];
