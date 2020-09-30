@@ -1,4 +1,4 @@
-import { Ace } from "ace-builds";
+import { Ace, Range } from "ace-builds";
 import { Command, Node, NodeSpec, Selection } from "@/utils/prosemirror";
 import {
   computed,
@@ -202,4 +202,34 @@ export function scEditor(
       </div>
     `.replace(/>\s+</g, "><")
   });
+}
+
+export function insertText(
+  ace: Ace.Editor,
+  insert: { left?: string; right?: string; replace?: string },
+  moveToLeft: null | number = null,
+  fromStart = false
+) {
+  const selectText = ace.getSelectedText();
+  const str = insert.replace
+    ? insert.replace
+    : (insert.left || "") + selectText + (insert.right || "");
+  const range = ace.getSelectionRange();
+  if (fromStart) {
+    for (let i = range.start.row; i <= range.end.row; i++) {
+      ace.session.replace(new Range(i, 0, i, 0), str);
+    }
+  } else {
+    ace.session.replace(range, str);
+  }
+  if (moveToLeft !== null) {
+    if (moveToLeft !== 0) {
+      // @ts-ignore
+      ace.navigateLeft(moveToLeft);
+    }
+  } else if (insert.right) {
+    // @ts-ignore
+    ace.navigateLeft(insert.right.length);
+  }
+  ace.focus();
 }

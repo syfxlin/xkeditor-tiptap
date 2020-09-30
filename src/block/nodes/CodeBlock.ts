@@ -23,7 +23,7 @@ import nodeListPasteRule, { Matched } from "@/utils/nodeListPasteRule";
 import { MdSpec } from "@/marked/MdSpec";
 import { Tokens } from "@/marked/MdLexer";
 
-export default class CodeBlockHighlight extends Node {
+export default class CodeBlock extends Node {
   get name() {
     return "code_block";
   }

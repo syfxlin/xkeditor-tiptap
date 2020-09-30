@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue-demi";
+import { computed, defineComponent, ref, watch } from "vue-demi";
 import Ace from "@/components/Ace.vue";
 import { Editor } from "tiptap";
 import MdParser from "@/marked/MdParser";
@@ -18,6 +18,7 @@ import { extParsers, extTokenizers } from "@/marked/rules";
 import { MdLexer } from "@/marked/MdLexer";
 import { Pane, Splitpanes } from "splitpanes";
 import { Ace as AceBuilds } from "ace-builds";
+import { useCommands } from "@/marked/commands";
 import AceEditor = AceBuilds.Editor;
 
 export default defineComponent({
@@ -55,6 +56,12 @@ export default defineComponent({
         ace.value.resize();
       }
     };
+
+    watch(ace, value => {
+      if (value !== undefined) {
+        window.commands = useCommands(value);
+      }
+    });
     return { content, options, htmlContent, resized, ace };
   }
 });

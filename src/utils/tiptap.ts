@@ -6,7 +6,7 @@ import {
   TrailingNode
 } from "tiptap-extensions";
 import { ExtensionOption } from "tiptap";
-import CodeBlockHighlight from "@/block/nodes/CodeBlockHighlight";
+import CodeBlock from "@/block/nodes/CodeBlock";
 import Style from "@/block/marks/Style";
 import Emoji from "@/block/extensions/Emoji";
 import { Fragment } from "@/utils/prosemirror";
@@ -67,7 +67,7 @@ const EXTENSIONS = {
   // custom
   style: Style,
   iframe: Iframe,
-  codeBlockHighlight: CodeBlockHighlight,
+  codeBlock: CodeBlock,
   emoji: Emoji,
   blockquote: Blockquote,
   katex: Katex,
@@ -90,7 +90,7 @@ const DEFAULT_EXTENSIONS = [
   "heading",
   "horizontalRule",
   "iframe",
-  "codeBlockHighlight",
+  "codeBlock",
   "style",
   "emoji",
   "blockquote", // 在 blockquote 中使用 heading，heading 就必须先解析
