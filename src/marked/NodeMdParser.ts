@@ -34,8 +34,8 @@ export class NodeMdParser {
 
   constructor(
     manager: ExtensionManager,
-    extTokenizer?: ExtTokenizer[],
-    options?: MarkedOptions
+    options?: MarkedOptions,
+    extTokenizer?: ExtTokenizer[]
   ) {
     this.manager = manager;
     this.schema = manager.view.state.schema;
@@ -152,14 +152,13 @@ export class NodeMdParser {
 
   parse(markdown: string | Token[] | Token): Node[] {
     if (typeof markdown === "string") {
-      markdown = new MdLexer(this.extTokenizer, this.options).lex(
+      markdown = new MdLexer(this.options, this.extTokenizer).lex(
         markdown
       ) as Token[];
     }
     if (!(markdown instanceof Array)) {
       markdown = [markdown];
     }
-    console.log(markdown);
     return this.parseTokens(markdown);
   }
 }

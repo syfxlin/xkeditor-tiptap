@@ -1,7 +1,7 @@
 <template>
   <ace-vue
-    :content="code"
-    @update:content="updateContent"
+    :value="code"
+    @update:value="updateContent"
     :options.sync="options"
     :ace.sync="ace"
     @blur="blur"

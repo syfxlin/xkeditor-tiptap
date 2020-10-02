@@ -3,6 +3,7 @@ import { Token } from "@/marked/MdLexer";
 import { Schema } from "prosemirror-model";
 import { ExtensionManager } from "tiptap";
 import MdSlugger from "@/marked/MdSlugger";
+import { extParsers } from "@/marked/rules";
 
 export interface ExtParser {
   type: string;
@@ -24,18 +25,17 @@ export default class MdParser extends Parser {
 
   constructor(
     manager: ExtensionManager,
-    extParsers?: ExtParser[],
-    options?: MarkedOptions
+    options?: MarkedOptions,
+    parsers?: ExtParser[]
   ) {
     super(options);
     this.slugger = new MdSlugger();
     this.manager = manager;
     this.schema = manager.view.state.schema;
     this.parsers = {};
-    if (extParsers) {
-      for (const parser of extParsers) {
-        this.parsers[parser.type] = parser;
-      }
+    parsers = [...extParsers, ...(parsers || [])];
+    for (const parser of parsers) {
+      this.parsers[parser.type] = parser;
     }
   }
 

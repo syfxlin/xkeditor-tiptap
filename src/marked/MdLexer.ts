@@ -1,4 +1,5 @@
 import { Lexer, MarkedOptions } from "marked";
+import { extTokenizers } from "@/marked/rules";
 
 // eslint-disable-next-line
 export namespace Tokens {
@@ -272,17 +273,16 @@ export class MdLexer extends Lexer {
   public tokenizer: any;
   public rules: any;
 
-  constructor(tokenizers?: ExtTokenizer[], options?: MarkedOptions) {
+  constructor(options?: MarkedOptions, tokenizers?: ExtTokenizer[]) {
     super(options);
     this.inlineTzr = [];
     this.blockTzr = [];
-    if (tokenizers) {
-      for (const tokenizer of tokenizers) {
-        if (tokenizer.inline) {
-          this.inlineTzr.push(tokenizer);
-        } else {
-          this.blockTzr.push(tokenizer);
-        }
+    tokenizers = [...extTokenizers, ...(tokenizers || [])];
+    for (const tokenizer of tokenizers) {
+      if (tokenizer.inline) {
+        this.inlineTzr.push(tokenizer);
+      } else {
+        this.blockTzr.push(tokenizer);
       }
     }
     this.rules = this.tokenizer.rules;

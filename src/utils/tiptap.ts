@@ -9,7 +9,6 @@ import { ExtensionOption } from "tiptap";
 import CodeBlock from "@/block/nodes/CodeBlock";
 import Style from "@/block/marks/Style";
 import Emoji from "@/block/extensions/Emoji";
-import { Fragment } from "@/utils/prosemirror";
 import Heading from "@/block/nodes/Heading";
 import Blockquote from "@/block/nodes/Blockquote";
 import Image from "@/block/nodes/Image";
@@ -164,18 +163,4 @@ export function useExtensions(
     extensions.push(new EXTENSIONS[configName](configs[configName]));
   }
   return extensions;
-}
-
-export function fragToContent(fragment: Fragment) {
-  let content = "";
-
-  fragment.forEach(child => {
-    if (child.isText) {
-      content += child.text;
-    } else {
-      content += fragToContent(child.content) + "\n";
-    }
-  });
-
-  return content;
 }

@@ -5,7 +5,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from "vue-demi";
+import {
+  defineComponent,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch
+} from "vue-demi";
 import { Ace, config as aceConfig, edit as aceEdit } from "ace-builds";
 import Editor = Ace.Editor;
 
@@ -22,21 +28,21 @@ const ACE_EVENT = [
 export default defineComponent({
   name: "node_ace",
   props: {
-    content: String,
+    value: String,
     options: Object,
     ace: Object
   },
   setup(props, ctx) {
     const editor = ref<HTMLElement>();
     const ace = ref<Editor>();
-    const value = ref(props.content);
+    const value = ref(props.value);
     aceConfig.set(
       "basePath",
       "https://cdn.jsdelivr.net/npm/ace-builds@1.4.4/src-noconflict/"
     );
 
     watch(
-      () => props.content,
+      () => props.value,
       val => {
         if (value.value === val) return;
         ace.value?.setValue(val === undefined ? "" : val);
@@ -54,13 +60,13 @@ export default defineComponent({
 
     onMounted(() => {
       ace.value = aceEdit(editor.value as HTMLElement, {
-        value: props.content,
+        value: props.value,
         minLines: 10,
         ...props.options
       });
       ace.value.on("change", () => {
         value.value = ace.value?.getValue();
-        ctx.emit("update:content", value.value);
+        ctx.emit("update:value", value.value);
       });
       for (const event of ACE_EVENT) {
         // @ts-ignore
@@ -70,6 +76,10 @@ export default defineComponent({
       }
       ctx.emit("ready", ace.value);
       ctx.emit("update:ace", ace.value);
+    });
+
+    onBeforeUnmount(() => {
+      ace.value?.destroy();
     });
 
     return { editor };

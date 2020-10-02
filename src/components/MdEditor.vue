@@ -1,7 +1,7 @@
 <template>
   <splitpanes class="md-editor splitpanes-default" @resized="resized">
-    <pane :min-size="20">
-      <ace :content.sync="content" :options.sync="options" :ace.sync="ace" />
+    <pane :min-size="20" contenteditable="false">
+      <div ref="editor"></div>
     </pane>
     <pane :min-size="20">
       <div class="md-preview" v-html="htmlContent"></div>
@@ -10,59 +10,41 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue-demi";
-import Ace from "@/components/Ace.vue";
-import { Editor } from "tiptap";
-import MdParser from "@/marked/MdParser";
-import { extParsers, extTokenizers } from "@/marked/rules";
-import { MdLexer } from "@/marked/MdLexer";
+import { defineComponent, onMounted, ref } from "vue-demi";
 import { Pane, Splitpanes } from "splitpanes";
-import { Ace as AceBuilds } from "ace-builds";
-import { useCommands } from "@/marked/commands";
-import AceEditor = AceBuilds.Editor;
+import { Actions, State, useAction, useState } from "@/store";
+import { Ace } from "ace-builds";
+import { useDebounceFn } from "@vueuse/core";
+import Editor = Ace.Editor;
 
 export default defineComponent({
   name: "md-editor",
   components: {
-    Ace,
     Splitpanes,
     Pane
   },
-  props: {
-    editor: Editor
-  },
-  setup(props) {
-    const editor = props.editor as Editor;
-    const content = ref("# Markdown");
-    const htmlContent = computed(() =>
-      new MdParser(editor.extensions, extParsers).parse(
-        new MdLexer(extTokenizers).lex(content.value)
-      )
-    );
-    const options = ref({
-      fontSize: "17px",
-      theme: "ace/theme/solarized_light",
-      mode: "ace/mode/markdown",
-      tabSize: 4,
-      wrap: true,
-      enableSnippets: true,
-      enableLiveAutocompletion: true,
-      enableBasicAutocompletion: true
+  setup() {
+    const ace = ref<Editor>();
+    const editor = ref<HTMLElement>();
+    const actions = useAction<Actions>();
+    const state = useState<State>();
+    const htmlContent = ref<string>();
+    const updateHtml = useDebounceFn(() => {
+      htmlContent.value = actions.convertMarkdownToHtml(
+        ace.value ? ace.value.getValue() : ""
+      );
+    }, 500);
+    onMounted(() => {
+      ace.value = actions.createAce(
+        editor.value as HTMLElement,
+        state.value.config.ace
+      );
+      ace.value.on("change", updateHtml);
     });
-
-    const ace = ref<AceEditor>();
     const resized = () => {
-      if (ace.value) {
-        ace.value.resize();
-      }
+      ace.value?.resize();
     };
-
-    watch(ace, value => {
-      if (value !== undefined) {
-        window.commands = useCommands(value);
-      }
-    });
-    return { content, options, htmlContent, resized, ace };
+    return { editor, htmlContent, resized };
   }
 });
 </script>
