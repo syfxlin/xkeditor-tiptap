@@ -12,7 +12,7 @@ import {
   Plugin,
   Schema
 } from "@/utils/prosemirror";
-import { computed, defineComponent, nextTick, ref } from "vue-demi";
+import { computed, defineComponent, nextTick, onMounted, ref } from "vue-demi";
 import { dirFocus, mergeNodeSpec, nodeKeys } from "@/utils/ace";
 import HighlightComponent from "@/block/other/HighlightComponent.vue";
 import AceComponent from "@/block/other/AceComponent.vue";
@@ -114,7 +114,7 @@ export default class CodeBlock extends Node {
               isEditing: true
             });
             nextTick(() => {
-              dirFocus(props.node?.attrs.cmRef, 1);
+              dirFocus(props.node?.attrs.aceRef, 1);
             });
           }
         };
@@ -137,6 +137,14 @@ export default class CodeBlock extends Node {
             if (content.value !== undefined) {
               content.value.textContent = v === undefined ? "" : v;
             }
+          }
+        });
+
+        onMounted(() => {
+          if (props.node?.attrs.isEditing) {
+            nextTick(() => {
+              props.node?.attrs.aceRef.focus();
+            });
           }
         });
 
@@ -205,7 +213,12 @@ export default class CodeBlock extends Node {
   }
 
   inputRules({ type, schema }: { type: NodeType; schema: Schema }): any[] {
-    return [textblockTypeInputRule(/^```$/, type)];
+    return [
+      textblockTypeInputRule(/^```([^:;]*)[:;]$/, type, match => ({
+        language: match[1],
+        isEditing: true
+      }))
+    ];
   }
 
   pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {

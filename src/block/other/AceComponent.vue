@@ -89,10 +89,7 @@ export default defineComponent({
       theme: "ace/theme/solarized_light",
       mode: `ace/mode/${props.node?.attrs.language || "markup"}`,
       tabSize: 4,
-      wrap: true,
-      enableSnippets: true,
-      enableLiveAutocompletion: true,
-      enableBasicAutocompletion: true
+      wrap: true
     });
     const ace = ref<Editor>();
 

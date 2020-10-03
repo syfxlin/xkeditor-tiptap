@@ -72,7 +72,12 @@ export default class Table extends Node {
           }
         }
       ],
-      toMarkdown: (node, serializer) => serializer.serialize(node.content, "\n")
+      toMarkdown: (node, serializer) => {
+        const nodes: string[] = [];
+        node.content.forEach(item => nodes.push(serializer.serialize(item)));
+        nodes.splice(1, 0, nodes[0].replace(/[^|]+/g, "---"));
+        return nodes.join("\n");
+      }
     };
   }
 

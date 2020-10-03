@@ -11,7 +11,7 @@ import { MdLexer } from "@/marked/MdLexer";
 import AceConfig = Ace.EditorOptions;
 
 export const actions = {
-  initConfig(config: Partial<XkEditorConfig>): XkEditorConfig {
+  initConfig(config?: Partial<XkEditorConfig>): XkEditorConfig {
     state.config = deepAssign(state.config, config);
     return state.config;
   },
@@ -22,16 +22,7 @@ export const actions = {
     });
     return state.tiptap;
   },
-  createAce(
-    el: HTMLElement,
-    config: Partial<
-      AceConfig & {
-        enableSnippets: boolean;
-        enableLiveAutocompletion: boolean;
-        enableBasicAutocompletion: boolean;
-      }
-    >
-  ) {
+  createAce(el: HTMLElement, config: Partial<AceConfig>) {
     aceConfig.set(
       "basePath",
       "https://cdn.jsdelivr.net/npm/ace-builds@1.4.4/src-noconflict/"

@@ -181,7 +181,7 @@ export function scEditor(
 
       onMounted(() => {
         nextTick(() => {
-          dirFocus(props.node?.attrs.cmRef, 1);
+          dirFocus(props.node?.attrs.aceRef, 1);
         });
       });
 

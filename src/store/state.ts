@@ -6,13 +6,7 @@ import AceEditor = Ace.Editor;
 
 export interface XkEditorConfig {
   tiptap: TiptapConfig;
-  ace: Partial<
-    AceConfig & {
-      enableSnippets: boolean;
-      enableLiveAutocompletion: boolean;
-      enableBasicAutocompletion: boolean;
-    }
-  >;
+  ace: Partial<AceConfig>;
   xk: {
     [key: string]: any;
   };
@@ -36,10 +30,7 @@ const initialState: {
       theme: "ace/theme/solarized_light",
       mode: "ace/mode/markdown",
       tabSize: 4,
-      wrap: true,
-      enableSnippets: true,
-      enableLiveAutocompletion: true,
-      enableBasicAutocompletion: true
+      wrap: true
     },
     xk: {}
   },
