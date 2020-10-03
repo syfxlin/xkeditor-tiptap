@@ -87,6 +87,19 @@ export const actions = {
     this.setMarkdown(value);
     return state.mode;
   },
+  setConfig(config: Partial<XkEditorConfig>): XkEditorConfig {
+    state.config = deepAssign(state.config, config);
+    if (state.tiptap) {
+      state.tiptap.setOptions(state.config.tiptap);
+    }
+    if (state.ace) {
+      state.ace.setOptions(state.config.ace);
+    }
+    return state.config;
+  },
+  getConfig() {
+    return state.config;
+  },
   convertMarkdownToHtml(markdown: string) {
     if (state.tiptap) {
       return new MdParser(state.tiptap.extensions).parse(
