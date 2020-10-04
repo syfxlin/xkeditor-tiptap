@@ -1,12 +1,15 @@
 <template>
-  <splitpanes class="md-editor splitpanes-default" @resized="resized">
-    <pane :min-size="20" contenteditable="false">
-      <div ref="editor"></div>
-    </pane>
-    <pane :min-size="20">
-      <div class="md-preview" v-html="htmlContent"></div>
-    </pane>
-  </splitpanes>
+  <div class="md-editor-container">
+    <md-menu-bar :menus="menus" :commands="commands" />
+    <splitpanes class="md-editor splitpanes-default" @resized="resized">
+      <pane :min-size="20" contenteditable="false">
+        <div ref="editor"></div>
+      </pane>
+      <pane :min-size="20">
+        <div class="md-preview" v-html="htmlContent"></div>
+      </pane>
+    </splitpanes>
+  </div>
 </template>
 
 <script lang="ts">
@@ -15,13 +18,16 @@ import { Pane, Splitpanes } from "splitpanes";
 import { Actions, State, useAction, useState } from "@/store";
 import { Ace } from "ace-builds";
 import { useDebounceFn } from "@vueuse/core";
+import { useCommands } from "@/marked/commands";
+import MdMenuBar from "@/components/MdMenuBar.vue";
 import Editor = Ace.Editor;
 
 export default defineComponent({
   name: "md-editor",
   components: {
     Splitpanes,
-    Pane
+    Pane,
+    MdMenuBar
   },
   setup() {
     const ace = ref<Editor>();
@@ -44,7 +50,26 @@ export default defineComponent({
     const resized = () => {
       ace.value?.resize();
     };
-    return { editor, htmlContent, resized };
+
+    const commands = useCommands(ace);
+    const menus = [
+      {
+        name: "bold",
+        icon: "bold"
+      },
+      {
+        name: "italic",
+        icon: "italic"
+      },
+      {
+        name: "style",
+        icon: "italic",
+        options: {
+          color: "blue"
+        }
+      }
+    ];
+    return { editor, htmlContent, commands, menus, resized };
   }
 });
 </script>
