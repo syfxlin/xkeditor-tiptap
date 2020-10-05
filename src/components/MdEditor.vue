@@ -1,6 +1,11 @@
 <template>
   <div class="md-editor-container">
-    <md-menu-bar :menus="menus" :commands="commands" />
+    <menu-bar
+      :menus="menus"
+      :commands="commands"
+      class="menubar"
+      item-class="menubar__button"
+    />
     <splitpanes class="md-editor splitpanes-default" @resized="resized">
       <pane :min-size="20" contenteditable="false">
         <div ref="editor"></div>
@@ -19,7 +24,7 @@ import { Actions, State, useAction, useState } from "@/store";
 import { Ace } from "ace-builds";
 import { useDebounceFn } from "@vueuse/core";
 import { useCommands } from "@/marked/commands";
-import MdMenuBar from "@/components/MdMenuBar.vue";
+import MenuBar from "@/components/MenuBar.vue";
 import Editor = Ace.Editor;
 
 export default defineComponent({
@@ -27,7 +32,7 @@ export default defineComponent({
   components: {
     Splitpanes,
     Pane,
-    MdMenuBar
+    MenuBar
   },
   setup() {
     const ace = ref<Editor>();

@@ -10,6 +10,13 @@ export interface MdCommands {
   [key: string]: MdCommand;
 }
 
+export interface Commands {
+  [key: string]: {
+    handler: (attrs?: { [key: string]: any }) => void;
+    isActive: (attrs?: { [key: string]: any }) => ComputedRef<boolean>;
+  };
+}
+
 const allCommands: MdCommands = reactive({
   bold: {
     handler: attrs => ace => insertText(ace, { left: "**", right: "**" })
@@ -144,12 +151,7 @@ const allCommands: MdCommands = reactive({
 });
 
 export function useCommands(ace: Ref<Ace.Editor | undefined>) {
-  const commands: {
-    [key: string]: {
-      handler: (attrs?: { [key: string]: any }) => void;
-      isActive: (attrs?: { [key: string]: any }) => ComputedRef<boolean>;
-    };
-  } = {};
+  const commands: Commands = {};
   const applyHandler = (command: MdCommand, attrs: { [key: string]: any }) => {
     if (ace.value) {
       return command.handler(attrs)(ace.value);

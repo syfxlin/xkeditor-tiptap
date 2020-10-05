@@ -90,6 +90,7 @@ export default class Table extends Node {
     schema: Schema;
     attrs: { [p: string]: string };
   }): CommandGetter {
+    // @ts-ignore
     return {
       createTable: ({ rowsCount, colsCount, withHeaderRow }) => (
         state: EditorState,

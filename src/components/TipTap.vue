@@ -1,9 +1,40 @@
 <template>
   <resize-panel class="editor-container splitpanes-default">
     <pane class="editor">
-      <t-menu-bar :editor="editor" :menus="menus" />
-      <t-menu-bubble :editor="editor" :menus="menus" />
-      <t-float-menu :editor="editor" :menus="menus" />
+      <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
+        <menu-bar
+          :menus="menus"
+          :commands="converter(commands, isActive)"
+          class="menubar"
+          item-class="menubar__button"
+        />
+      </editor-menu-bar>
+      <editor-menu-bubble
+        :editor="editor"
+        v-slot="{ commands, isActive, menu }"
+      >
+        <menu-bar
+          :menus="menus"
+          :commands="converter(commands, isActive)"
+          class="menu-bubble"
+          item-class="menu-bubble__button"
+          :class="{ 'is-active': menu.isActive }"
+          :style="{ left: menu.left + 'px', bottom: menu.bottom + 'px' }"
+        />
+      </editor-menu-bubble>
+      <editor-floating-menu
+        :editor="editor"
+        v-slot="{ commands, isActive, menu }"
+      >
+        <menu-bar
+          :menus="menus"
+          :commands="converter(commands, isActive)"
+          class="editor__floating-menu"
+          item-class="menubar__button"
+          :class="{ 'is-active': menu.isActive }"
+          :style="{ top: menu.top + 'px' }"
+        />
+      </editor-floating-menu>
 
       <editor-content class="editor__content" :editor="editor" />
     </pane>
@@ -11,23 +42,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue-demi";
-import Icon from "@/components/Icon.vue";
-import { Editor, EditorContent } from "tiptap";
-import TMenuBar from "@/components/TMenuBar.vue";
-import TMenuBubble from "@/components/TMenuBubble.vue";
-import TFloatMenu from "@/components/TFloatMenu.vue";
+import { computed, defineComponent } from "vue-demi";
+import {
+  Editor,
+  EditorContent,
+  EditorFloatingMenu,
+  EditorMenuBar,
+  EditorMenuBubble
+} from "tiptap";
 import ResizePanel from "@/components/ResizePanel.vue";
 import { Pane } from "splitpanes";
+import { Commands } from "@/marked/commands";
+import MenuBar from "@/components/MenuBar.vue";
 
 export default defineComponent({
   name: "tip-tip",
   components: {
     EditorContent,
-    TMenuBar,
-    TMenuBubble,
-    TFloatMenu,
-    Icon,
+    EditorMenuBar,
+    EditorMenuBubble,
+    EditorFloatingMenu,
+    MenuBar,
     ResizePanel,
     Pane
   },
@@ -53,6 +88,22 @@ export default defineComponent({
       }
     ];
 
+    const converter = (
+      commands: {
+        [key: string]: (attrs?: { [key: string]: any }) => void;
+      },
+      isActive: { [key: string]: (attrs?: { [key: string]: any }) => boolean }
+    ) => {
+      const result: Commands = {};
+      for (const name in commands) {
+        result[name] = {
+          isActive: attrs => computed(() => isActive[name](attrs)),
+          handler: commands[name]
+        };
+      }
+      return result;
+    };
+
     // TODO: 分页 Demo，解决节点过多导致卡顿问题
     // const index = ref<number>(0);
     // const tempNodes = ref<Node[]>([]);
@@ -77,7 +128,7 @@ export default defineComponent({
     //   }
     // );
 
-    return { menus };
+    return { menus, converter };
   }
 });
 </script>
