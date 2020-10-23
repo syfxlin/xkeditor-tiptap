@@ -20,6 +20,8 @@
 
 重写了 Marked 的 Lexer 和 Parser，使其支持模块化。Marked Token 通过自定义的转换器直接转换成 Node，避免多次转换导致的性能损失。
 
+在 TipTap 的基础上完善 InputRules 和 PasteRules，支持 Markdown 语法编辑和 Markdown 内容的粘贴。同时增加了 Markdown 的生成器和解析器。
+
 ## 文档 Doc
 
 暂无
