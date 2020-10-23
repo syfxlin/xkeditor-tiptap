@@ -5,8 +5,8 @@
         <menu-bar
           :menus="menus"
           :commands="converter(commands, isActive)"
-          class="menubar"
-          item-class="menubar__button"
+          class="menu-bar"
+          item-class="menu-bar__button"
         />
       </editor-menu-bar>
       <editor-menu-bubble
@@ -29,8 +29,8 @@
         <menu-bar
           :menus="menus"
           :commands="converter(commands, isActive)"
-          class="editor__floating-menu"
-          item-class="menubar__button"
+          class="menu-floating"
+          item-class="menu-bar__button"
           :class="{ 'is-active': menu.isActive }"
           :style="{ top: menu.top + 'px' }"
         />
@@ -133,4 +133,4 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" src="../assets/scss/main.scss"></style>
+<style lang="scss" src="../assets/scss/editor.scss"></style>

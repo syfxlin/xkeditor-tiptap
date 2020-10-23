@@ -56,3 +56,58 @@ export default defineComponent({
   }
 });
 </script>
+
+<style lang="scss">
+.splitpanes.splitpanes-default {
+  .splitpanes__pane {
+    background-color: #fff;
+  }
+  .splitpanes__splitter {
+    background-color: #f7f7f7;
+    box-sizing: border-box;
+    position: relative;
+    flex-shrink: 0;
+    &:before,
+    &:after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      background-color: rgba(0, 0, 0, 0.15);
+      transition: background-color 0.3s;
+    }
+    &:hover:before,
+    &:hover:after {
+      background-color: rgba(0, 0, 0, 0.25);
+    }
+    &:first-child {
+      cursor: auto;
+    }
+  }
+}
+
+.splitpanes-default {
+  &.splitpanes .splitpanes .splitpanes__splitter {
+    z-index: 1;
+  }
+  &.splitpanes--vertical > .splitpanes__splitter,
+  .splitpanes--vertical > .splitpanes__splitter {
+    width: 7px;
+    border-left: 1px solid #f7f7f7;
+    border-right: 1px solid #f7f7f7;
+    margin-left: -1px;
+    &:before,
+    &:after {
+      transform: translateY(-50%);
+      width: 1px;
+      height: 30px;
+    }
+    &:before {
+      margin-left: -2px;
+    }
+    &:after {
+      margin-left: 1px;
+    }
+  }
+}
+</style>

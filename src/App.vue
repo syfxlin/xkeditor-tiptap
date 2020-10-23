@@ -25,6 +25,84 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-touch-callout: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 滚动槽 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.06);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.08);
+}
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.12);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+html {
+  font-family: "Inter", serif;
+  font-size: 18px;
+  color: #000000;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+pre,
+blockquote {
+  margin: 1rem 0;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.3;
+}
+
 #app {
   width: 100vw;
   height: 100vh;

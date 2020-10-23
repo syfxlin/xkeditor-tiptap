@@ -3,8 +3,8 @@
     <menu-bar
       :menus="menus"
       :commands="commands"
-      class="menubar"
-      item-class="menubar__button"
+      class="menu-bar"
+      item-class="menu-bar__button"
     />
     <splitpanes class="md-editor splitpanes-default" @resized="resized">
       <pane :min-size="20" contenteditable="false">
@@ -80,10 +80,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.md-editor {
-  display: flex;
+.md-editor-container {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.md-editor {
+  display: flex;
+  flex: 1;
 
   .md-preview {
     overflow: auto;
