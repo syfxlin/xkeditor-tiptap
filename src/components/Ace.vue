@@ -87,10 +87,4 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-.ace-editor,
-.ace_editor {
-  min-height: 300px;
-  height: 100%;
-}
-</style>
+<style lang="scss" src="../assets/scss/ace-editor.scss"></style>

@@ -1,21 +1,13 @@
 <template>
-  <resize-panel class="editor-container splitpanes-default">
-    <pane class="editor">
-      <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
-        <menu-bar
-          :menus="menus"
-          :commands="converter(commands, isActive)"
-          class="menu-bar"
-          item-class="menu-bar__button"
-        />
-      </editor-menu-bar>
+  <resize-panel class="tiptap__container splitpanes-default">
+    <pane class="tiptap__pane">
       <editor-menu-bubble
         :editor="editor"
         v-slot="{ commands, isActive, menu }"
       >
         <menu-bar
           :menus="menus"
-          :commands="converter(commands, isActive)"
+          :commands="convertCommands(commands, isActive)"
           class="menu-bubble"
           item-class="menu-bubble__button"
           :class="{ 'is-active': menu.isActive }"
@@ -28,7 +20,7 @@
       >
         <menu-bar
           :menus="menus"
-          :commands="converter(commands, isActive)"
+          :commands="convertCommands(commands, isActive)"
           class="menu-floating"
           item-class="menu-bar__button"
           :class="{ 'is-active': menu.isActive }"
@@ -36,13 +28,13 @@
         />
       </editor-floating-menu>
 
-      <editor-content class="editor__content" :editor="editor" />
+      <editor-content class="tiptap__content" :editor="editor" />
     </pane>
   </resize-panel>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue-demi";
+import { defineComponent } from "vue-demi";
 import {
   Editor,
   EditorContent,
@@ -52,8 +44,8 @@ import {
 } from "tiptap";
 import ResizePanel from "@/components/ResizePanel.vue";
 import { Pane } from "splitpanes";
-import { Commands } from "@/marked/commands";
 import MenuBar from "@/components/MenuBar.vue";
+import { convertCommands } from "@/utils/tiptap";
 
 export default defineComponent({
   name: "tip-tip",
@@ -88,22 +80,6 @@ export default defineComponent({
       }
     ];
 
-    const converter = (
-      commands: {
-        [key: string]: (attrs?: { [key: string]: any }) => void;
-      },
-      isActive: { [key: string]: (attrs?: { [key: string]: any }) => boolean }
-    ) => {
-      const result: Commands = {};
-      for (const name in commands) {
-        result[name] = {
-          isActive: attrs => computed(() => isActive[name](attrs)),
-          handler: commands[name]
-        };
-      }
-      return result;
-    };
-
     // TODO: 分页 Demo，解决节点过多导致卡顿问题
     // const index = ref<number>(0);
     // const tempNodes = ref<Node[]>([]);
@@ -128,9 +104,9 @@ export default defineComponent({
     //   }
     // );
 
-    return { menus, converter };
+    return { menus, convertCommands };
   }
 });
 </script>
 
-<style lang="scss" src="../assets/scss/editor.scss"></style>
+<style lang="scss" src="../assets/scss/tiptap.scss"></style>

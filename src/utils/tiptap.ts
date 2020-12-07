@@ -37,6 +37,8 @@ import TableCell from "@/block/nodes/TableCell";
 import TableHeader from "@/block/nodes/TableHeader";
 import TableRow from "@/block/nodes/TableRow";
 import TodoItem from "@/block/nodes/TodoItem";
+import { Commands } from "@/marked/commands";
+import { computed } from "vue-demi";
 
 const EXTENSIONS = {
   hardBreak: HardBreak,
@@ -163,4 +165,20 @@ export function useExtensions(
     extensions.push(new EXTENSIONS[configName](configs[configName]));
   }
   return extensions;
+}
+
+export function convertCommands(
+  commands: {
+    [key: string]: (attrs?: { [key: string]: any }) => void;
+  },
+  isActive: { [key: string]: (attrs?: { [key: string]: any }) => boolean }
+) {
+  const result: Commands = {};
+  for (const name in commands) {
+    result[name] = {
+      isActive: attrs => computed(() => isActive[name](attrs)),
+      handler: commands[name]
+    };
+  }
+  return result;
 }

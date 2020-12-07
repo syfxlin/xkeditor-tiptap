@@ -126,6 +126,7 @@ declare module "tiptap" {
 
   export class Editor {
     commands: { [key: string]: Command };
+    isActive: { [key: string]: (attrs?: { [key: string]: any }) => boolean };
     defaultOptions: { [key: string]: any };
     element: Element;
     extensions: ExtensionManager;

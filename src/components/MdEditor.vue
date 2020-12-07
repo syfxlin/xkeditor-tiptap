@@ -1,17 +1,14 @@
 <template>
-  <div class="md-editor-container">
-    <menu-bar
-      :menus="menus"
-      :commands="commands"
-      class="menu-bar"
-      item-class="menu-bar__button"
-    />
-    <splitpanes class="md-editor splitpanes-default" @resized="resized">
+  <div class="md-editor__container">
+    <splitpanes
+      class="md-editor__content splitpanes-default"
+      @resized="resized"
+    >
       <pane :min-size="20" contenteditable="false">
         <div ref="editor"></div>
       </pane>
       <pane :min-size="20">
-        <div class="md-preview" v-html="htmlContent"></div>
+        <div class="md-editor__preview" v-html="htmlContent"></div>
       </pane>
     </splitpanes>
   </div>
@@ -23,7 +20,6 @@ import { Pane, Splitpanes } from "splitpanes";
 import { Actions, State, useAction, useState } from "@/store";
 import { Ace } from "ace-builds";
 import { useDebounceFn } from "@vueuse/core";
-import { useCommands } from "@/marked/commands";
 import MenuBar from "@/components/MenuBar.vue";
 import Editor = Ace.Editor;
 
@@ -55,48 +51,9 @@ export default defineComponent({
     const resized = () => {
       ace.value?.resize();
     };
-
-    const commands = useCommands(ace);
-    const menus = [
-      {
-        name: "bold",
-        icon: "bold"
-      },
-      {
-        name: "italic",
-        icon: "italic"
-      },
-      {
-        name: "style",
-        icon: "italic",
-        options: {
-          color: "blue"
-        }
-      }
-    ];
-    return { editor, htmlContent, commands, menus, resized };
+    return { editor, htmlContent, resized };
   }
 });
 </script>
 
-<style lang="scss">
-.md-editor-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.md-editor {
-  display: flex;
-  flex: 1;
-
-  .md-preview {
-    overflow: auto;
-  }
-}
-
-.splitpanes--vertical > .splitpanes__splitter {
-  width: 5px;
-}
-</style>
+<style lang="scss" src="../assets/scss/md-editor.scss"></style>

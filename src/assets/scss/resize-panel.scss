@@ -1,0 +1,26 @@
+.splitpanes.splitpanes-default {
+  .splitpanes__splitter {
+    position: relative;
+    flex-shrink: 0;
+    &:after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      background-color: #bbb;
+      border-radius: 5px;
+    }
+  }
+}
+
+.splitpanes-default {
+  &.splitpanes .splitpanes__splitter {
+    z-index: 1;
+  }
+  &.splitpanes--vertical > .splitpanes__splitter,
+  &.splitpanes--vertical > .splitpanes__splitter {
+    &:after {
+      width: 7px;
+      height: 40px;
+    }
+  }
+}

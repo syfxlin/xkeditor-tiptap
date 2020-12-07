@@ -21,11 +21,11 @@ export default class ExitMark extends Extension {
           ($cursor.marks().length > 0 || state.storedMarks)
         ) {
           let tr = state.tr;
-          for (const storedMark of [
-            ...$cursor.marks(),
-            ...(state.storedMarks || [])
-          ]) {
-            tr = tr.removeStoredMark(storedMark);
+          for (const mark of state.storedMarks || []) {
+            tr = tr.removeStoredMark(mark);
+          }
+          for (const mark of $cursor.marks()) {
+            tr = tr.removeStoredMark(mark);
           }
           dispatch?.(tr);
           return true;
