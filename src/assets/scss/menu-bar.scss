@@ -59,14 +59,16 @@
   }
 
   .el-color {
-    .el-button {
+    .el-button,
+    .el-color-picker {
       padding-left: 0;
       padding-right: 0;
     }
 
-    .el-color-picker {
-      padding-left: 0;
-      padding-right: 0;
+    &.is-active .el-button,
+    &.is-active .el-color-picker {
+      background-color: #ecf5ff;
+      border-color: #c6e2ff;
     }
   }
 

@@ -1,18 +1,24 @@
 .md-editor {
   &__container {
-    width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: column;
+    height: 100%;
   }
 
   &__content {
     display: flex;
-    flex: 1;
+    height: 100%;
+
+    .splitpanes__pane {
+      height: 100%;
+    }
   }
 
   &__preview {
-    overflow: auto;
+    height: 100%;
+    overflow-y: auto;
+    padding: 15px;
+    position: relative;
   }
 }
 

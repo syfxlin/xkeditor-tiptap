@@ -60,11 +60,9 @@
         v-if="menu.type === 'color'"
         :key="menu.id"
         class="el-color"
+        :class="menu.isActive(menu.options).value ? 'is-active' : ''"
       >
-        <el-button
-          :style="{ color: menu.value.value }"
-          :class="menu.isActive(menu.options).value ? 'is-active' : ''"
-        >
+        <el-button :style="{ color: menu.value.value }">
           <icon :name="menu.icon" />
         </el-button>
         <el-color-picker
