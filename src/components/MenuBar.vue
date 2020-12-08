@@ -1,20 +1,79 @@
 <template>
   <div>
     <template v-for="menu in menus">
-      <button
+      <el-button
+        v-if="menu.type === 'button'"
         :key="menu.id"
-        :class="
-          itemClass +
-            ' ' +
-            (commands[menu.name].isActive(menu.options).value
-              ? 'is-active'
-              : '')
-        "
-        @click="commands[menu.name].handler(menu.options)"
-        :data-tooltip="menu.tooltip"
+        :class="menu.isActive(menu.options).value ? 'is-active' : ''"
+        @click="menu.handler(menu.options)"
       >
         <icon :name="menu.icon" />
-      </button>
+      </el-button>
+      <el-select
+        v-if="menu.type === 'select'"
+        :key="menu.id"
+        :filterable="menu.allowCreate"
+        :allow-create="menu.allowCreate"
+        :placeholder="menu.placeholder"
+        v-model="menu.value.value"
+        @change="menu.handler"
+      >
+        <el-option
+          v-for="option in menu.options"
+          :key="option.id"
+          :label="option.label"
+          :value="option.value"
+        />
+      </el-select>
+      <el-dropdown
+        v-if="menu.type === 'dropdown'"
+        :key="menu.id"
+        @command="menu.handler"
+        :split-button="menu.click !== undefined"
+        @click="menu.click ? menu.click : () => {}"
+      >
+        <el-button v-if="menu.click === undefined">
+          <icon v-if="menu.icon" :name="menu.icon" />
+          <template v-if="menu.label">
+            {{ menu.label }}
+          </template>
+          <i class="el-icon-arrow-down el-icon--right"></i>
+        </el-button>
+        <template v-else>
+          <icon v-if="menu.icon" :name="menu.icon" />
+          <template v-if="menu.label">
+            {{ menu.label }}
+          </template>
+        </template>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item
+            v-for="option in menu.options"
+            :key="option.id"
+            :command="option.command"
+          >
+            <icon v-if="option.icon" :name="option.icon" />
+            {{ option.label }}
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <el-button-group
+        v-if="menu.type === 'color'"
+        :key="menu.id"
+        class="el-color"
+      >
+        <el-button
+          :style="{ color: menu.value.value }"
+          :class="menu.isActive(menu.options).value ? 'is-active' : ''"
+        >
+          <icon :name="menu.icon" />
+        </el-button>
+        <el-color-picker
+          show-alpha
+          :predefine="menu.predefine"
+          v-model="menu.value.value"
+          @change="menu.handler"
+        />
+      </el-button-group>
     </template>
   </div>
 </template>
@@ -30,8 +89,7 @@ export default defineComponent({
   },
   props: {
     commands: Object,
-    menus: Array,
-    itemClass: String
+    menus: Array
   }
 });
 </script>

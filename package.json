@@ -33,6 +33,7 @@
     "ace-builds": "^1.4.12",
     "add-px-to-style": "^1.0.0",
     "core-js": "^3.6.5",
+    "element-ui": "^2.14.1",
     "emoji-js": "^3.5.0",
     "hyphenate-style-name": "^1.0.4",
     "katex": "^0.12.0",

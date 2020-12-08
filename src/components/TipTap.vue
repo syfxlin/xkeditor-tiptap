@@ -9,7 +9,6 @@
           :menus="menus"
           :commands="convertCommands(commands, isActive)"
           class="menu-floating"
-          item-class="menu-bar__button"
           :class="{ 'is-active': menu.isActive }"
           :style="{ top: menu.top + 'px' }"
         />
