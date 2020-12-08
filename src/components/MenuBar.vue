@@ -1,16 +1,21 @@
 <template>
   <div>
-    <button
-      v-for="menu in menus"
-      :key="menu.id"
-      :class="
-        `${itemClass} ` +
-          (commands[menu.name].isActive(menu.options).value ? 'is-active' : '')
-      "
-      @click="commands[menu.name].handler(menu.options)"
-    >
-      <icon :name="menu.icon" />
-    </button>
+    <template v-for="menu in menus">
+      <button
+        :key="menu.id"
+        :class="
+          itemClass +
+            ' ' +
+            (commands[menu.name].isActive(menu.options).value
+              ? 'is-active'
+              : '')
+        "
+        @click="commands[menu.name].handler(menu.options)"
+        :data-tooltip="menu.tooltip"
+      >
+        <icon :name="menu.icon" />
+      </button>
+    </template>
   </div>
 </template>
 

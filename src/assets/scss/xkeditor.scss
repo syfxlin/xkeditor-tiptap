@@ -1,10 +1,31 @@
 .xkeditor {
   background-color: #f9f9f9;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 
   &__menu {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #fcfcfc;
+    border: 1px solid #e8e8e8;
+    box-shadow: 0 2px 8px rgba(115, 115, 115, 0.08);
+    z-index: 10;
+
+    .menu-bar {
+      padding: 4px 8px;
+      border-left: 1px solid #e8e8e8;
+
+      &:first-child {
+        border-left: none;
+      }
+    }
   }
 
   &__content {
     padding: 16px 0 64px 0;
+    flex: 1;
+    overflow-y: auto;
   }
 }

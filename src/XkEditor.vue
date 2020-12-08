@@ -2,7 +2,9 @@
   <div class="xkeditor">
     <div class="xkeditor__menu">
       <menu-bar
-        :menus="menus"
+        v-for="menu in menus"
+        :key="menu.id"
+        :menus="menu"
         :commands="commands"
         class="menu-bar"
         item-class="menu-bar__button"
@@ -46,21 +48,46 @@ export default defineComponent({
     window.store = useStore();
 
     const menus = [
-      {
-        name: "bold",
-        icon: "bold"
-      },
-      {
-        name: "italic",
-        icon: "italic"
-      },
-      {
-        name: "style",
-        icon: "italic",
-        options: {
-          color: "blue"
+      [
+        {
+          name: "bold",
+          icon: "bold",
+          tooltip: "粗体\nCtrl+B"
+        },
+        {
+          name: "italic",
+          icon: "italic",
+          tooltip: "斜体\nCtrl+I"
+        },
+        {
+          name: "style",
+          icon: "italic",
+          tooltip: "颜色",
+          options: {
+            color: "blue"
+          }
         }
-      }
+      ],
+      [
+        {
+          name: "bold",
+          icon: "bold",
+          tooltip: "粗体\nCtrl+B"
+        },
+        {
+          name: "italic",
+          icon: "italic",
+          tooltip: "斜体\nCtrl+I"
+        },
+        {
+          name: "style",
+          icon: "italic",
+          tooltip: "颜色",
+          options: {
+            color: "blue"
+          }
+        }
+      ]
     ];
 
     const commands = computed(() => {

@@ -1,19 +1,6 @@
 <template>
   <resize-panel class="tiptap__container splitpanes-default">
     <pane class="tiptap__pane">
-      <editor-menu-bubble
-        :editor="editor"
-        v-slot="{ commands, isActive, menu }"
-      >
-        <menu-bar
-          :menus="menus"
-          :commands="convertCommands(commands, isActive)"
-          class="menu-bubble"
-          item-class="menu-bubble__button"
-          :class="{ 'is-active': menu.isActive }"
-          :style="{ left: menu.left + 'px', bottom: menu.bottom + 'px' }"
-        />
-      </editor-menu-bubble>
       <editor-floating-menu
         :editor="editor"
         v-slot="{ commands, isActive, menu }"
@@ -35,13 +22,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue-demi";
-import {
-  Editor,
-  EditorContent,
-  EditorFloatingMenu,
-  EditorMenuBar,
-  EditorMenuBubble
-} from "tiptap";
+import { Editor, EditorContent, EditorFloatingMenu } from "tiptap";
 import ResizePanel from "@/components/ResizePanel.vue";
 import { Pane } from "splitpanes";
 import MenuBar from "@/components/MenuBar.vue";
@@ -51,8 +32,6 @@ export default defineComponent({
   name: "tip-tip",
   components: {
     EditorContent,
-    EditorMenuBar,
-    EditorMenuBubble,
     EditorFloatingMenu,
     MenuBar,
     ResizePanel,

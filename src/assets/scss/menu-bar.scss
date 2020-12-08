@@ -1,9 +1,4 @@
-$color-black: #000000;
-$color-white: #ffffff;
-$color-grey: #dddddd;
-
 .menu-bar {
-  margin-bottom: 1rem;
   transition: visibility 0.2s 0.4s, opacity 0.2s 0.4s;
 
   &.is-hidden {
@@ -18,81 +13,73 @@ $color-grey: #dddddd;
   }
 
   &__button {
-    font-weight: bold;
-    display: inline-flex;
-    background: transparent;
-    border: 0;
-    color: $color-black;
-    padding: 0.2rem 0.5rem;
-    margin-right: 0.2rem;
-    border-radius: 3px;
+    display: inline-block;
+    height: 32px;
+    width: auto;
+    min-width: 32px;
+    text-align: center;
+    padding: 0 7px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    font-size: 16px;
     cursor: pointer;
+    color: #595959;
+    outline: none;
+    position: relative;
+    margin: 0 0 0 3px;
+
+    &:first-child {
+      margin: 0;
+    }
 
     &:hover {
-      background-color: rgba($color-black, 0.05);
+      color: #fff;
+      background: rgba(97, 144, 232, 0.63);
     }
 
     &.is-active {
-      background-color: rgba($color-black, 0.1);
+      color: #fff;
+      background: #6190e8;
+    }
+
+    &[data-tooltip] {
+      &:after {
+        background: rgba(48, 55, 66, 0.95);
+        border-radius: 4px;
+        color: #fff;
+        content: attr(data-tooltip);
+        display: block;
+        font-size: 14px;
+        left: 50%;
+        top: 100%;
+        max-width: 320px;
+        opacity: 0;
+        visibility: hidden;
+        overflow: hidden;
+        padding: 6px 10px;
+        pointer-events: none;
+        position: absolute;
+        text-overflow: ellipsis;
+        transform: translate(-50%, 8px);
+        transition: opacity 0.2s, transform 0.2s;
+        white-space: pre;
+        z-index: 300;
+      }
+
+      &:hover,
+      &:focus {
+        &:after {
+          opacity: 1;
+          visibility: visible;
+          transform: translate(-50%, 4px);
+        }
+      }
     }
   }
 
   span#{&}__button {
     font-size: 13.3333px;
-  }
-}
-
-.menu-bubble {
-  position: absolute;
-  display: flex;
-  z-index: 20;
-  background: $color-black;
-  border-radius: 5px;
-  padding: 0.3rem;
-  margin-bottom: 0.5rem;
-  transform: translateX(-50%);
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.2s, visibility 0.2s;
-
-  &.is-active {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  &__button {
-    display: inline-flex;
-    background: transparent;
-    border: 0;
-    color: $color-white;
-    padding: 0.2rem 0.5rem;
-    margin-right: 0.2rem;
-    border-radius: 3px;
-    cursor: pointer;
-
-    &:last-child {
-      margin-right: 0;
-    }
-
-    &:hover {
-      background-color: rgba($color-white, 0.1);
-    }
-
-    &.is-active {
-      background-color: rgba($color-white, 0.2);
-    }
-  }
-
-  &__form {
-    display: flex;
-    align-items: center;
-  }
-
-  &__input {
-    font: inherit;
-    border: none;
-    background: transparent;
-    color: $color-white;
   }
 }
 

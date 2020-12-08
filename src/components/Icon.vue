@@ -1,10 +1,10 @@
 <template>
-  <div
+  <span
     class="icon"
     :class="[`icon--${name}`, `icon--${size}`, { 'has-align-fix': fixAlign }]"
   >
     <fa-icon :icon="name" class="icon__svg" />
-  </div>
+  </span>
 </template>
 
 <script lang="ts">

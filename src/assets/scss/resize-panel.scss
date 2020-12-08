@@ -1,3 +1,9 @@
+.splitpanes,
+.splitpanes__pane {
+  height: min-content;
+  overflow: unset;
+}
+
 .splitpanes.splitpanes-default {
   .splitpanes__splitter {
     position: relative;
