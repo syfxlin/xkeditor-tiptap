@@ -86,7 +86,6 @@ export default defineComponent({
     Icon
   },
   props: {
-    commands: Object,
     menus: Array
   }
 });

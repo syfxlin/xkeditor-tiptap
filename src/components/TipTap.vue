@@ -7,7 +7,6 @@
       >
         <menu-bar
           :menus="menus"
-          :commands="convertCommands(commands, isActive)"
           class="menu-floating"
           :class="{ 'is-active': menu.isActive }"
           :style="{ top: menu.top + 'px' }"
@@ -25,7 +24,6 @@ import { Editor, EditorContent, EditorFloatingMenu } from "tiptap";
 import ResizePanel from "@/components/ResizePanel.vue";
 import { Pane } from "splitpanes";
 import MenuBar from "@/components/MenuBar.vue";
-import { convertCommands } from "@/utils/tiptap";
 
 export default defineComponent({
   name: "tip-tip",
@@ -82,7 +80,7 @@ export default defineComponent({
     //   }
     // );
 
-    return { menus, convertCommands };
+    return { menus };
   }
 });
 </script>

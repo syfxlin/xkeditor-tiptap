@@ -8,7 +8,14 @@ import { NodeMdSerializer } from "@/marked/NodeMdSerializer";
 import { Ace, config as aceConfig, edit as aceEdit } from "ace-builds";
 import MdParser from "@/marked/MdParser";
 import { MdLexer } from "@/marked/MdLexer";
+import allCommands from "@/marked/commands";
+import { computed, ComputedRef } from "vue-demi";
 import AceConfig = Ace.EditorOptions;
+
+export interface Command {
+  handler: (options?: any) => void;
+  isActive: (options?: any) => ComputedRef<boolean>;
+}
 
 export const actions = {
   initConfig(config?: Partial<XkEditorConfig>): XkEditorConfig {
@@ -107,6 +114,43 @@ export const actions = {
       );
     }
     return "";
+  },
+  getCommand(command: string): Command {
+    return {
+      handler: attrs => {
+        if (state.mode === XkEditorMode.RichText) {
+          if (state.tiptap) {
+            return state.tiptap.commands[command](attrs);
+          }
+        } else {
+          if (state.ace) {
+            return allCommands[command].handler(attrs);
+          }
+        }
+        throw new Error("Editor has not been created");
+      },
+      isActive: attrs =>
+        computed(() => {
+          if (state.mode === XkEditorMode.RichText) {
+            if (state.tiptap) {
+              return state.tiptap.isActive[command](attrs);
+            }
+          } else {
+            if (state.ace) {
+              const active = allCommands[command].isActive;
+              if (active) {
+                return active(attrs)(state.ace);
+              } else {
+                return false;
+              }
+            }
+          }
+          throw new Error("Editor has not been created");
+        })
+    };
+  },
+  execCommand(command: string, options: any) {
+    return this.getCommand(command).handler(options);
   }
 };
 

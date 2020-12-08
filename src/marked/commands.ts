@@ -1,20 +1,13 @@
 import { Ace } from "ace-builds";
 import { insertText } from "@/utils/ace";
-import { computed, ComputedRef, reactive, Ref } from "vue-demi";
+import { reactive } from "vue-demi";
 
 export interface MdCommand {
-  isActive?: (attrs: { [key: string]: any }) => (ace: Ace.Editor) => boolean;
-  handler: (attrs: { [key: string]: any }) => (ace: Ace.Editor) => void;
+  isActive?: (attrs: any) => (ace: Ace.Editor) => boolean;
+  handler: (attrs: any) => (ace: Ace.Editor) => void;
 }
 export interface MdCommands {
   [key: string]: MdCommand;
-}
-
-export interface Commands {
-  [key: string]: {
-    handler: (attrs?: { [key: string]: any }) => void;
-    isActive: (attrs?: { [key: string]: any }) => ComputedRef<boolean>;
-  };
 }
 
 const allCommands: MdCommands = reactive({
@@ -149,35 +142,5 @@ const allCommands: MdCommands = reactive({
     handler: attrs => ace => insertText(ace, { replace: "- [ ] " }, 0, true)
   }
 });
-
-export function useCommands(ace: Ref<Ace.Editor | undefined>) {
-  const commands: Commands = {};
-  const applyHandler = (command: MdCommand, attrs: { [key: string]: any }) => {
-    if (ace.value) {
-      return command.handler(attrs)(ace.value);
-    }
-  };
-  const applyActive = (command: MdCommand, attrs: { [key: string]: any }) => {
-    return computed(() => {
-      if (ace.value && command.isActive) {
-        return command.isActive(attrs)(ace.value);
-      }
-      return false;
-    });
-  };
-
-  const handle = (name: string, command: MdCommand) => {
-    commands[name] = {
-      handler: attrs => applyHandler(command, attrs || {}),
-      isActive: attrs => applyActive(command, attrs || {})
-    };
-  };
-
-  for (const name in allCommands) {
-    handle(name, allCommands[name]);
-  }
-
-  return commands;
-}
 
 export default allCommands;

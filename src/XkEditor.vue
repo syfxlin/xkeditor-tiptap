@@ -5,7 +5,6 @@
         v-for="menu in menus"
         :key="menu.id"
         :menus="menu"
-        :commands="commands"
         class="menu-bar"
       />
     </div>
@@ -17,14 +16,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue-demi";
+import { defineComponent, ref } from "vue-demi";
 import TipTap from "@/components/TipTap.vue";
 import MdEditor from "@/components/MdEditor.vue";
 import { Actions, useAction, useState, useStore } from "@/store";
 import { XkEditorMode } from "@/store/state";
 import MenuBar from "@/components/MenuBar.vue";
-import { convertCommands } from "@/utils/tiptap";
-import { useCommands } from "@/marked/commands";
 import { Ace } from "ace-builds";
 
 export default defineComponent({
@@ -48,6 +45,9 @@ export default defineComponent({
 
     const fontSize = ref("14px");
 
+    const boldCommand = actions.getCommand("bold");
+    const italicCommand = actions.getCommand("italic");
+
     const menus = [
       [
         {
@@ -55,8 +55,16 @@ export default defineComponent({
           name: "bold",
           icon: "bold",
           tooltip: "粗体\nCtrl+B",
-          handler: editor.commands["bold"],
-          isActive: attrs => computed(() => editor.isActive["bold"](attrs))
+          handler: boldCommand.handler,
+          isActive: boldCommand.isActive
+        },
+        {
+          type: "button",
+          name: "italic",
+          icon: "italic",
+          tooltip: "斜体\nCtrl+I",
+          handler: italicCommand.handler,
+          isActive: italicCommand.isActive
         }
       ],
       [
@@ -125,15 +133,7 @@ export default defineComponent({
       ]
     ];
 
-    const commands = computed(() => {
-      if (mode.value === XkEditorMode.RichText) {
-        return convertCommands(editor.commands, editor.isActive);
-      } else {
-        return useCommands(ace);
-      }
-    });
-
-    return { editor, mode, XkEditorMode, menus, commands, fontSize };
+    return { editor, mode, XkEditorMode, menus, fontSize };
   }
 });
 </script>
