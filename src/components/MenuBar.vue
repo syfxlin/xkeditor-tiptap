@@ -62,7 +62,10 @@
         class="el-color"
         :class="menu.isActive(menu.options).value ? 'is-active' : ''"
       >
-        <el-button :style="{ color: menu.value.value }">
+        <el-button
+          :style="{ color: menu.value.value }"
+          @click="menu.handler(menu.value.value)"
+        >
           <icon :name="menu.icon" />
         </el-button>
         <el-color-picker

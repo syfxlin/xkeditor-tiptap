@@ -9,7 +9,7 @@
       />
     </div>
     <div class="xkeditor__content">
-      <tip-tap :editor="editor" v-show="mode === XkEditorMode.RichText" />
+      <tip-tap v-show="mode === XkEditorMode.RichText" />
       <md-editor v-show="mode === XkEditorMode.Markdown" />
     </div>
   </div>
@@ -22,7 +22,6 @@ import MdEditor from "@/components/MdEditor.vue";
 import { Actions, useAction, useState, useStore } from "@/store";
 import { XkEditorMode } from "@/store/state";
 import MenuBar from "@/components/MenuBar.vue";
-import { Ace } from "ace-builds";
 
 export default defineComponent({
   name: "xkeditor",
@@ -36,10 +35,8 @@ export default defineComponent({
   },
   setup(props) {
     const mode = useState<XkEditorMode>("mode");
-    const ace = useState<Ace.Editor>("ace");
     const actions = useAction<Actions>();
-    const config = actions.initConfig(props.init);
-    const editor = actions.createTiptap(config.tiptap);
+    actions.initConfig(props.init);
 
     window.store = useStore();
 
@@ -47,6 +44,7 @@ export default defineComponent({
 
     const boldCommand = actions.getCommand("bold");
     const italicCommand = actions.getCommand("italic");
+    const styleCommand = actions.getCommand("style");
 
     const menus = [
       [
@@ -110,9 +108,39 @@ export default defineComponent({
           icon: "bold",
           value: ref(),
           handler: (color: string) => {
-            console.log(color);
+            styleCommand.handler({
+              color: color
+            });
           },
-          isActive: attrs => ref(true),
+          isActive: () => ref(false),
+          predefine: [
+            "#ff4500",
+            "#ff8c00",
+            "#ffd700",
+            "#90ee90",
+            "#00ced1",
+            "#1e90ff",
+            "#c71585",
+            "rgba(255, 69, 0, 0.68)",
+            "rgb(255, 120, 0)",
+            "hsv(51, 100, 98)",
+            "hsva(120, 40, 94, 0.5)",
+            "hsl(181, 100%, 37%)",
+            "hsla(209, 100%, 56%, 0.73)",
+            "#c7158577"
+          ]
+        },
+        {
+          type: "color",
+          name: "background",
+          icon: "bold",
+          value: ref(),
+          handler: (color: string) => {
+            styleCommand.handler({
+              background: color
+            });
+          },
+          isActive: () => ref(false),
           predefine: [
             "#ff4500",
             "#ff8c00",
@@ -133,7 +161,7 @@ export default defineComponent({
       ]
     ];
 
-    return { editor, mode, XkEditorMode, menus, fontSize };
+    return { mode, XkEditorMode, menus, fontSize };
   }
 });
 </script>

@@ -145,7 +145,7 @@ export const actions = {
               }
             }
           }
-          throw new Error("Editor has not been created");
+          return false;
         })
     };
   },

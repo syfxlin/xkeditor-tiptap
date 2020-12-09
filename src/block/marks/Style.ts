@@ -1,5 +1,12 @@
 import { CommandGetter, Mark } from "tiptap";
-import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
+import {
+  Mark as ProseMirrorMark,
+  MarkSpec,
+  MarkType,
+  Plugin,
+  Schema,
+  TextSelection
+} from "@/utils/prosemirror";
 import { CommandFunction, toggleMark } from "tiptap-commands";
 // @ts-ignore
 import addPx from "add-px-to-style";
@@ -9,6 +16,8 @@ import markInputRule from "@/utils/markInputRule";
 import markPasteRule from "@/utils/markPasteRule";
 import { MdSpec } from "@/marked/MdSpec";
 import { Tokens } from "@/marked/MdLexer";
+import { Node } from "prosemirror-model";
+import { SelectionRange } from "prosemirror-state";
 
 const DEFAULT_FOREGROUND = "rgb(55, 53, 47)";
 
@@ -138,11 +147,89 @@ export default class Style extends Mark {
     schema: MarkSpec;
     attrs: { [p: string]: string };
   }): CommandGetter {
-    return options =>
-      toggleMark(type, {
-        color: options.color || "",
-        background: options.background || ""
-      });
+    const markApplies = (
+      doc: Node,
+      ranges: SelectionRange[],
+      type: MarkType
+    ) => {
+      for (let i = 0; i < ranges.length; i++) {
+        const { $from, $to } = ranges[i];
+        let can = $from.depth == 0 ? doc.type.allowsMarkType(type) : false;
+        doc.nodesBetween($from.pos, $to.pos, node => {
+          if (can) return false;
+          can = node.inlineContent && node.type.allowsMarkType(type);
+        });
+        if (can) return true;
+      }
+      return false;
+    };
+    return options => (state, dispatch) => {
+      const { empty, $cursor, ranges } = state.selection as TextSelection;
+      if ((empty && !$cursor) || !markApplies(state.doc, ranges, type)) {
+        return false;
+      }
+      if (dispatch) {
+        if ($cursor) {
+          const found = type.isInSet(state.storedMarks || $cursor.marks());
+          if (found) {
+            for (const name in options) {
+              if (found.attrs[name]) {
+                options[name] = "";
+              }
+            }
+            dispatch(
+              state.tr.removeStoredMark(type).addStoredMark(
+                type.create({
+                  ...found.attrs,
+                  ...options
+                })
+              )
+            );
+          } else {
+            dispatch(state.tr.addStoredMark(type.create(options)));
+          }
+        } else {
+          let found: null | ProseMirrorMark = null;
+          const tr = state.tr;
+          for (let i = 0; !found && i < ranges.length; i++) {
+            const { $from, $to } = ranges[i];
+            state.doc.nodesBetween($from.pos, $to.pos, node => {
+              const mark = type.isInSet(node.marks);
+              if (mark) {
+                found = mark;
+              }
+              return !found;
+            });
+          }
+          for (let i = 0; i < ranges.length; i++) {
+            const { $from, $to } = ranges[i];
+            if (found) {
+              for (const name in options) {
+                if (found.attrs[name]) {
+                  options[name] = "";
+                }
+              }
+              tr.removeMark($from.pos, $to.pos, type);
+              if (Object.keys(options).length > 0) {
+                tr.addMark(
+                  $from.pos,
+                  $to.pos,
+                  type.create({
+                    // @ts-ignore
+                    ...found.attrs,
+                    ...options
+                  })
+                );
+              }
+            } else {
+              tr.addMark($from.pos, $to.pos, type.create(options));
+            }
+          }
+          dispatch(tr.scrollIntoView());
+        }
+      }
+      return true;
+    };
   }
 
   inputRules({ type, schema }: { type: MarkType; schema: Schema }): any[] {
