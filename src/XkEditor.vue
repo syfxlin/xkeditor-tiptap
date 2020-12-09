@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue-demi";
+import { computed, defineComponent, ref } from "vue-demi";
 import TipTap from "@/components/TipTap.vue";
 import MdEditor from "@/components/MdEditor.vue";
 import { Actions, useAction, useState, useStore } from "@/store";
@@ -45,6 +45,7 @@ export default defineComponent({
     const boldCommand = actions.getCommand("bold");
     const italicCommand = actions.getCommand("italic");
     const styleCommand = actions.getCommand("style");
+    const headingCommand = actions.getCommand("heading");
 
     const menus = [
       [
@@ -63,6 +64,57 @@ export default defineComponent({
           tooltip: "斜体\nCtrl+I",
           handler: italicCommand.handler,
           isActive: italicCommand.isActive
+        },
+        {
+          type: "select",
+          name: "title",
+          value: computed({
+            get: () => {
+              for (let i = 0; i < 6; i++) {
+                if (headingCommand.isActive({ level: i }).value) {
+                  return `heading${i}`;
+                }
+              }
+              return "paragraph";
+            },
+            set: (value: string) => {
+              if (value === "paragraph") {
+                headingCommand.handler();
+              } else {
+                headingCommand.handler({ level: parseInt(value.substring(7)) });
+              }
+            }
+          }),
+          options: [
+            {
+              label: "正文",
+              value: "paragraph"
+            },
+            {
+              label: "标题一",
+              value: "heading1"
+            },
+            {
+              label: "标题二",
+              value: "heading2"
+            },
+            {
+              label: "标题三",
+              value: "heading3"
+            },
+            {
+              label: "标题四",
+              value: "heading4"
+            },
+            {
+              label: "标题五",
+              value: "heading5"
+            },
+            {
+              label: "标题六",
+              value: "heading6"
+            }
+          ]
         }
       ],
       [
@@ -80,10 +132,7 @@ export default defineComponent({
               label: "15px",
               value: "15px"
             }
-          ],
-          handler: (size: string) => {
-            console.log(size);
-          }
+          ]
         },
         {
           type: "dropdown",

@@ -16,7 +16,7 @@
         :allow-create="menu.allowCreate"
         :placeholder="menu.placeholder"
         v-model="menu.value.value"
-        @change="menu.handler"
+        @change="menu.handler ? menu.handler : () => {}"
       >
         <el-option
           v-for="option in menu.options"
@@ -72,7 +72,7 @@
           show-alpha
           :predefine="menu.predefine"
           v-model="menu.value.value"
-          @change="menu.handler"
+          @change="menu.handler ? menu.handler : () => {}"
         />
       </el-button-group>
     </template>

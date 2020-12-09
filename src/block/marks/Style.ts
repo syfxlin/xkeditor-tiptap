@@ -107,6 +107,9 @@ export default class Style extends Mark {
       ],
       toDOM: mark => {
         const style = convertCss(mark.attrs);
+        if (style.length == 0) {
+          return ["span", 0];
+        }
         return ["span", { style }, 0];
       },
       parseMarkdown: [
@@ -177,14 +180,15 @@ export default class Style extends Mark {
                 options[name] = "";
               }
             }
-            dispatch(
-              state.tr.removeStoredMark(type).addStoredMark(
-                type.create({
-                  ...found.attrs,
-                  ...options
-                })
-              )
+            const tr = state.tr;
+            tr.removeStoredMark(type);
+            tr.addStoredMark(
+              type.create({
+                ...found.attrs,
+                ...options
+              })
             );
+            dispatch(tr);
           } else {
             dispatch(state.tr.addStoredMark(type.create(options)));
           }
@@ -210,17 +214,15 @@ export default class Style extends Mark {
                 }
               }
               tr.removeMark($from.pos, $to.pos, type);
-              if (Object.keys(options).length > 0) {
-                tr.addMark(
-                  $from.pos,
-                  $to.pos,
-                  type.create({
-                    // @ts-ignore
-                    ...found.attrs,
-                    ...options
-                  })
-                );
-              }
+              tr.addMark(
+                $from.pos,
+                $to.pos,
+                type.create({
+                  // @ts-ignore
+                  ...found.attrs,
+                  ...options
+                })
+              );
             } else {
               tr.addMark($from.pos, $to.pos, type.create(options));
             }
