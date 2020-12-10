@@ -124,7 +124,7 @@ export const actions = {
           }
         } else {
           if (state.ace) {
-            return allCommands[command].handler(attrs);
+            return allCommands[command].handler(attrs)(state.ace);
           }
         }
         throw new Error("Editor has not been created");

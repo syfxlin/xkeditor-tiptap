@@ -1,4 +1,4 @@
-import { Ace } from "ace-builds";
+import { Ace, Range } from "ace-builds";
 import { insertText } from "@/utils/ace";
 import { reactive } from "vue-demi";
 
@@ -82,8 +82,17 @@ const allCommands: MdCommands = reactive({
     handler: attrs => ace => insertText(ace, { replace: "\n---\n\n" }, 0, true)
   },
   heading: {
-    handler: attrs => ace =>
-      insertText(ace, { replace: `${"#".repeat(attrs.level || 1)} ` }, 0, true)
+    handler: attrs => ace => {
+      const row = ace.selection.getCursor().row;
+      const line = ace.session.getLine(row);
+      for (const ch of line) {
+        if (ch != "#" && ch != " ") {
+          break;
+        }
+        ace.session.remove(new Range(row, 0, row, 1));
+      }
+      insertText(ace, { replace: `${"#".repeat(attrs.level || 1)} ` }, 0, true);
+    }
   },
   image: {
     handler: attrs => ace =>
