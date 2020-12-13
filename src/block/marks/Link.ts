@@ -1,10 +1,10 @@
-import { CommandGetter, Mark } from "tiptap";
+import { CommandGetter, Editor as TipTapEditor, Mark } from "tiptap";
 import { pasteRule, removeMark, updateMark } from "tiptap-commands";
 import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
 import markInputRule from "@/utils/markInputRule";
-import LinkPlugin from "@/block/plugins/LinkPlugin";
 import { MdSpec } from "@/marked/MdSpec";
 import { Tokens } from "@/marked/MdLexer";
+import { defineComponent, ref } from "vue-demi";
 
 export default class Link extends Mark {
   get name() {
@@ -74,6 +74,37 @@ export default class Link extends Mark {
     };
   }
 
+  get view() {
+    return defineComponent({
+      name: "node_link",
+      props: {
+        node: Object,
+        updateAttrs: Function,
+        view: Object,
+        options: Object,
+        selected: Boolean,
+        editor: TipTapEditor,
+        getPos: Function,
+        decorations: Array
+      },
+      setup(props) {
+        const content = ref<HTMLElement>();
+        const popover = ref();
+
+        return { content, popover };
+      },
+      // language=Vue
+      template: `
+        <a :href="node.attrs.href" :title="node.attrs.title" :target="node.attrs.target" v-popover:popover>
+          <span ref="content"></span>
+          <el-popover contenteditable="false" ref="popover">
+            <p>这是一段内容这是一段内容确定删除吗？</p>
+          </el-popover>
+        </a>
+      `.replace(/>\s+</g, "><")
+    });
+  }
+
   commands({
     type,
     schema,
@@ -111,16 +142,6 @@ export default class Link extends Mark {
         /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z]{2,}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/gi,
         type,
         url => ({ href: url })
-      )
-    ];
-  }
-
-  get plugins() {
-    return [
-      LinkPlugin(
-        this.options.openOnClick,
-        s => s.marks.link,
-        attrs => window.open(attrs.href, attrs.target)
       )
     ];
   }

@@ -121,8 +121,14 @@ export default class Style extends Mark {
           getContent: token => (token as Tokens.Style).text
         }
       ],
-      toMarkdown: (node, serializer) => (content, mark) =>
-        `[${content}]{${convertCss(mark.attrs)}}`
+      toMarkdown: (node, serializer) => (content, mark) => {
+        const style = convertCss(mark.attrs);
+        if (style === "") {
+          return content;
+        } else {
+          return `[${content}]{${style}}`;
+        }
+      }
     };
   }
 

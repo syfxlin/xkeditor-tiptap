@@ -4,8 +4,8 @@
       <el-button
         v-if="menu.type === 'button'"
         :key="menu.id"
-        :class="menu.isActive(menu.options).value ? 'is-active' : ''"
-        @click="menu.handler(menu.options)"
+        :class="menu.command.isActive(menu.options).value ? 'is-active' : ''"
+        @click="menu.command.handler(menu.options)"
       >
         <icon :name="menu.icon" />
       </el-button>
@@ -16,7 +16,7 @@
         :allow-create="menu.allowCreate"
         :placeholder="menu.placeholder"
         v-model="menu.value.value"
-        @change="menu.handler ? menu.handler : () => {}"
+        @change="menu.command.handler ? menu.command.handler : () => {}"
       >
         <el-option
           v-for="option in menu.options"
@@ -28,7 +28,7 @@
       <el-dropdown
         v-if="menu.type === 'dropdown'"
         :key="menu.id"
-        @command="menu.handler"
+        @command="menu.command.handler"
         :split-button="menu.click !== undefined"
         @click="menu.click ? menu.click : () => {}"
       >
@@ -60,11 +60,11 @@
         v-if="menu.type === 'color'"
         :key="menu.id"
         class="el-color"
-        :class="menu.isActive(menu.options).value ? 'is-active' : ''"
+        :class="menu.command.isActive(menu.options).value ? 'is-active' : ''"
       >
         <el-button
           :style="{ color: menu.value.value }"
-          @click="menu.handler(menu.value.value)"
+          @click="menu.command.handler(menu.value.value)"
         >
           <icon :name="menu.icon" />
         </el-button>
@@ -72,7 +72,7 @@
           show-alpha
           :predefine="menu.predefine"
           v-model="menu.value.value"
-          @change="menu.handler ? menu.handler : () => {}"
+          @change="menu.command.handler ? menu.command.handler : () => {}"
         />
       </el-button-group>
     </template>

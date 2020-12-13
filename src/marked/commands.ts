@@ -86,12 +86,24 @@ const allCommands: MdCommands = reactive({
       const row = ace.selection.getCursor().row;
       const line = ace.session.getLine(row);
       for (const ch of line) {
-        if (ch != "#" && ch != " ") {
+        if (ch !== "#" && ch !== " ") {
           break;
         }
         ace.session.remove(new Range(row, 0, row, 1));
       }
       insertText(ace, { replace: `${"#".repeat(attrs.level || 1)} ` }, 0, true);
+    },
+    isActive: attrs => ace => {
+      const row = ace.selection.getCursor().row;
+      const line = ace.session.getLine(row);
+      let level = 0;
+      for (const ch of line) {
+        if (ch !== "#") {
+          break;
+        }
+        level++;
+      }
+      return attrs.level === level;
     }
   },
   image: {

@@ -42,8 +42,6 @@ export default defineComponent({
 
     const fontSize = ref("14px");
 
-    const boldCommand = actions.getCommand("bold");
-    const italicCommand = actions.getCommand("italic");
     const styleCommand = actions.getCommand("style");
     const headingCommand = actions.getCommand("heading");
 
@@ -54,23 +52,28 @@ export default defineComponent({
           name: "bold",
           icon: "bold",
           tooltip: "粗体\nCtrl+B",
-          handler: boldCommand.handler,
-          isActive: boldCommand.isActive
+          command: actions.getCommand("bold")
         },
         {
           type: "button",
           name: "italic",
           icon: "italic",
           tooltip: "斜体\nCtrl+I",
-          handler: italicCommand.handler,
-          isActive: italicCommand.isActive
+          command: actions.getCommand("italic")
+        },
+        {
+          type: "button",
+          name: "code",
+          icon: "code",
+          tooltip: "行内代码\nCtrl+`",
+          command: actions.getCommand("code")
         },
         {
           type: "select",
           name: "title",
           value: computed({
             get: () => {
-              for (let i = 0; i < 6; i++) {
+              for (let i = 1; i <= 6; i++) {
                 if (headingCommand.isActive({ level: i }).value) {
                   return `heading${i}`;
                 }
@@ -141,8 +144,10 @@ export default defineComponent({
           click: () => {
             console.log("Click");
           },
-          handler: (command: string) => {
-            console.log(command);
+          command: {
+            handler: (command: string) => {
+              console.log(command);
+            }
           },
           options: [
             {
@@ -156,12 +161,14 @@ export default defineComponent({
           name: "color",
           icon: "bold",
           value: ref(),
-          handler: (color: string) => {
-            styleCommand.handler({
-              color: color
-            });
+          command: {
+            handler: (color: string) => {
+              styleCommand.handler({
+                color: color
+              });
+            },
+            isActive: () => ref(false)
           },
-          isActive: () => ref(false),
           predefine: [
             "#ff4500",
             "#ff8c00",
@@ -184,12 +191,14 @@ export default defineComponent({
           name: "background",
           icon: "bold",
           value: ref(),
-          handler: (color: string) => {
-            styleCommand.handler({
-              background: color
-            });
+          command: {
+            handler: (color: string) => {
+              styleCommand.handler({
+                background: color
+              });
+            },
+            isActive: () => ref(false)
           },
-          isActive: () => ref(false),
           predefine: [
             "#ff4500",
             "#ff8c00",

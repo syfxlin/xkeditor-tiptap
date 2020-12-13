@@ -1,6 +1,5 @@
 import { Mark } from "tiptap";
 import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
-import LinkPlugin from "@/block/plugins/LinkPlugin";
 import markInputRule from "@/utils/markInputRule";
 import { MdSpec } from "@/marked/MdSpec";
 import { Tokens } from "@/marked/MdLexer";
@@ -107,16 +106,6 @@ export default class CardLink extends Mark {
   pasteRules({ type, schema }: { type: MarkType; schema: Schema }): Plugin[] {
     return [
       markPasteRule(/\[\[([^\]]+)]]/, type, getLinkContent, getLinkAttrs)
-    ];
-  }
-
-  get plugins() {
-    return [
-      LinkPlugin(
-        this.options.openOnClick,
-        s => s.marks.card_link,
-        this.options.open
-      )
     ];
   }
 }
