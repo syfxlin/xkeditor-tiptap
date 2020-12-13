@@ -19,13 +19,29 @@ export enum XkEditorMode {
   Markdown = "markdown"
 }
 
+export interface PopoverProps {
+  ref: Ref;
+  active: boolean;
+  command: null | string;
+  data: {
+    [key: string]: any;
+  };
+  submit: {
+    label: string;
+    handler: (props: PopoverProps) => void;
+  } | null;
+  cancel: {
+    label: string;
+    handler: (props: PopoverProps) => void;
+  } | null;
+}
+
 const initialState: {
   config: XkEditorConfig;
   tiptap: null | Tiptap;
   ace: null | AceEditor;
   mode: XkEditorMode;
-  popoverRef: Ref;
-  popoverShow: boolean;
+  popover: PopoverProps;
   [key: string]: any;
 } = {
   config: {
@@ -42,8 +58,14 @@ const initialState: {
   tiptap: null,
   ace: null,
   mode: XkEditorMode.RichText,
-  popoverRef: ref(),
-  popoverShow: false
+  popover: {
+    ref: ref(),
+    active: false,
+    command: null,
+    data: {},
+    submit: null,
+    cancel: null
+  }
 };
 
 export const state = createState(initialState);
