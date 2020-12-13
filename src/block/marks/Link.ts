@@ -1,10 +1,11 @@
-import { CommandGetter, Editor as TipTapEditor, Mark } from "tiptap";
+import { CommandGetter, Mark } from "tiptap";
 import { pasteRule, removeMark, updateMark } from "tiptap-commands";
 import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
 import markInputRule from "@/utils/markInputRule";
 import { MdSpec } from "@/marked/MdSpec";
 import { Tokens } from "@/marked/MdLexer";
 import { defineComponent, ref } from "vue-demi";
+import { useState } from "@/store";
 
 export default class Link extends Mark {
   get name() {
@@ -80,27 +81,20 @@ export default class Link extends Mark {
       props: {
         node: Object,
         updateAttrs: Function,
-        view: Object,
-        options: Object,
-        selected: Boolean,
-        editor: TipTapEditor,
-        getPos: Function,
-        decorations: Array
+        view: Object
       },
       setup(props) {
         const content = ref<HTMLElement>();
-        const popover = ref();
+        const popoverRef = useState("popoverRef");
+        const popoverShow = useState("popoverShow");
 
-        return { content, popover };
+        popoverRef.value = content;
+
+        return { content, popoverRef, popoverShow };
       },
       // language=Vue
       template: `
-        <a :href="node.attrs.href" :title="node.attrs.title" :target="node.attrs.target" v-popover:popover>
-          <span ref="content"></span>
-          <el-popover contenteditable="false" ref="popover">
-            <p>这是一段内容这是一段内容确定删除吗？</p>
-          </el-popover>
-        </a>
+        <a :href="node.attrs.href" :title="node.attrs.title" :target="node.attrs.target" ref="content" @click="popoverShow = !popoverShow"></a>
       `.replace(/>\s+</g, "><")
     });
   }

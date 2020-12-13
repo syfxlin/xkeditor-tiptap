@@ -12,11 +12,14 @@
       <tip-tap v-show="mode === XkEditorMode.RichText" />
       <md-editor v-show="mode === XkEditorMode.Markdown" />
     </div>
+    <el-popover :reference="popoverRef" v-model="popoverShow">
+      <p>测试 popover</p>
+    </el-popover>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue-demi";
+import { computed, defineComponent, Ref, ref } from "vue-demi";
 import TipTap from "@/components/TipTap.vue";
 import MdEditor from "@/components/MdEditor.vue";
 import { Actions, useAction, useState, useStore } from "@/store";
@@ -219,7 +222,10 @@ export default defineComponent({
       ]
     ];
 
-    return { mode, XkEditorMode, menus, fontSize };
+    const popoverRef = useState<Ref>("popoverRef");
+    const popoverShow = useState<boolean>("popoverShow");
+
+    return { mode, XkEditorMode, menus, fontSize, popoverRef, popoverShow };
   }
 });
 </script>

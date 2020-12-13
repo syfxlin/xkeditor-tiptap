@@ -29,7 +29,7 @@ export function useStore(name = "default") {
     throw new Error("Store not yet registered");
   }
   const store = stores.value[name];
-  return { state: computed(store.state), actions: store.actions };
+  return { state: store.state, actions: store.actions };
 }
 
 export function useState<R, S = any>(

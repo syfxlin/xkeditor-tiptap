@@ -1,6 +1,8 @@
 import { createState } from "@/store/hook";
 import { Editor as Tiptap, EditorOptions as TiptapConfig } from "tiptap";
 import { Ace } from "ace-builds";
+import { ref } from "@vue/composition-api";
+import { Ref } from "vue-demi";
 import AceConfig = Ace.EditorOptions;
 import AceEditor = Ace.Editor;
 
@@ -22,6 +24,9 @@ const initialState: {
   tiptap: null | Tiptap;
   ace: null | AceEditor;
   mode: XkEditorMode;
+  popoverRef: Ref;
+  popoverShow: boolean;
+  [key: string]: any;
 } = {
   config: {
     tiptap: {},
@@ -36,7 +41,9 @@ const initialState: {
   },
   tiptap: null,
   ace: null,
-  mode: XkEditorMode.RichText
+  mode: XkEditorMode.RichText,
+  popoverRef: ref(),
+  popoverShow: false
 };
 
 export const state = createState(initialState);
