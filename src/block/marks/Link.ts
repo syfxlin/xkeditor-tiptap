@@ -5,8 +5,7 @@ import markInputRule from "@/utils/markInputRule";
 import { MdSpec } from "@/marked/MdSpec";
 import { Tokens } from "@/marked/MdLexer";
 import { defineComponent, ref } from "vue-demi";
-import { useState } from "@/store";
-import { PopoverProps } from "@/store/state";
+import { Actions, useAction } from "@/store";
 
 export default class Link extends Mark {
   get name() {
@@ -86,28 +85,29 @@ export default class Link extends Mark {
       },
       setup(props) {
         const content = ref<HTMLElement>();
-        const popover = useState<PopoverProps>("popover");
+        const popover = useAction<Actions>().popover;
 
         const click = () => {
-          popover.value.ref = content;
-          popover.value.command = "link";
-          popover.value.active = !popover.value.active;
-          popover.value.submit = {
-            label: "确定",
-            handler: p => {
-              if (props.updateAttrs) {
-                props.updateAttrs({
-                  href: p.data.link
-                });
+          popover.show({
+            ref: content.value,
+            command: "link",
+            data: {
+              href: props.node?.attrs.href
+            },
+            submit: {
+              label: "确定",
+              handler: p => {
+                if (props.updateAttrs) {
+                  props.updateAttrs(p.data);
+                }
+                popover.hide();
               }
-              popover.value.active = false;
             }
-          };
+          });
         };
 
         return { content, click };
       },
-      // language=Vue
       template: `
         <a :href="node.attrs.href" :title="node.attrs.title" :target="node.attrs.target" ref="content" @click="click"></a>
       `.replace(/>\s+</g, "><")

@@ -1,4 +1,4 @@
-import { state, XkEditorConfig, XkEditorMode } from "./state";
+import { PopoverProps, state, XkEditorConfig, XkEditorMode } from "./state";
 import deepAssign from "@/utils/deepAssign";
 import { Editor as Tiptap, EditorOptions as TiptapConfig } from "tiptap";
 import { useExtensions } from "@/utils/tiptap";
@@ -151,6 +151,24 @@ export const actions = {
   },
   execCommand(command: string, options: any) {
     return this.getCommand(command).handler(options);
+  },
+  popover: {
+    show(props: PopoverProps) {
+      state.popover.ref = props.ref;
+      state.popover.active = true;
+      state.popover.command = props.command;
+      state.popover.data = props.data;
+      state.popover.submit = props.submit;
+      state.popover.cancel = props.cancel;
+    },
+    hide() {
+      state.popover.ref = null;
+      state.popover.active = false;
+      state.popover.command = null;
+      state.popover.data = {};
+      state.popover.submit = null;
+      state.popover.cancel = null;
+    }
   }
 };
 

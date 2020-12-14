@@ -47,6 +47,8 @@ export default defineComponent({
 
     const styleCommand = actions.getCommand("style");
     const headingCommand = actions.getCommand("heading");
+    const linkCommand = actions.getCommand("link");
+    const popover = actions.popover;
 
     const menus = [
       [
@@ -70,6 +72,31 @@ export default defineComponent({
           icon: "code",
           tooltip: "行内代码\nCtrl+`",
           command: actions.getCommand("code")
+        },
+        {
+          type: "button",
+          name: "link",
+          icon: "link",
+          tooltip: "链接",
+          command: {
+            isActive: linkCommand.isActive,
+            handler: () => {
+              popover.show({
+                ref: document.querySelector("#menu-item__link"),
+                command: "link",
+                data: {
+                  href: ""
+                },
+                submit: {
+                  label: "确定",
+                  handler: p => {
+                    linkCommand.handler(p.data);
+                    popover.hide();
+                  }
+                }
+              });
+            }
+          }
         },
         {
           type: "select",

@@ -1,8 +1,6 @@
 import { createState } from "@/store/hook";
 import { Editor as Tiptap, EditorOptions as TiptapConfig } from "tiptap";
 import { Ace } from "ace-builds";
-import { ref } from "@vue/composition-api";
-import { Ref } from "vue-demi";
 import AceConfig = Ace.EditorOptions;
 import AceEditor = Ace.Editor;
 
@@ -20,17 +18,17 @@ export enum XkEditorMode {
 }
 
 export interface PopoverProps {
-  ref: Ref;
-  active: boolean;
+  ref: null | undefined | Element;
+  active?: boolean;
   command: null | string;
-  data: {
+  data?: {
     [key: string]: any;
   };
-  submit: {
+  submit?: {
     label: string;
     handler: (props: PopoverProps) => void;
   } | null;
-  cancel: {
+  cancel?: {
     label: string;
     handler: (props: PopoverProps) => void;
   } | null;
@@ -59,7 +57,7 @@ const initialState: {
   ace: null,
   mode: XkEditorMode.RichText,
   popover: {
-    ref: ref(),
+    ref: null,
     active: false,
     command: null,
     data: {},

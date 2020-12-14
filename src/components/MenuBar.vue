@@ -4,6 +4,7 @@
       <el-button
         v-if="menu.type === 'button'"
         :key="menu.id"
+        :id="'menu-item__' + menu.name"
         :class="menu.command.isActive(menu.options).value ? 'is-active' : ''"
         @click="menu.command.handler(menu.options)"
       >
@@ -12,6 +13,7 @@
       <el-select
         v-if="menu.type === 'select'"
         :key="menu.id"
+        :id="'menu-item__' + menu.name"
         :filterable="menu.allowCreate"
         :allow-create="menu.allowCreate"
         :placeholder="menu.placeholder"
@@ -28,6 +30,7 @@
       <el-dropdown
         v-if="menu.type === 'dropdown'"
         :key="menu.id"
+        :id="'menu-item__' + menu.name"
         @command="menu.command.handler"
         :split-button="menu.click !== undefined"
         @click="menu.click ? menu.click : () => {}"
@@ -59,6 +62,7 @@
       <el-button-group
         v-if="menu.type === 'color'"
         :key="menu.id"
+        :id="'menu-item__' + menu.name"
         class="el-color"
         :class="menu.command.isActive(menu.options).value ? 'is-active' : ''"
       >
