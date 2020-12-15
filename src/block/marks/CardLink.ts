@@ -1,9 +1,12 @@
-import { Mark } from "tiptap";
+import { CommandGetter, Mark } from "tiptap";
 import { MarkSpec, MarkType, Plugin, Schema } from "@/utils/prosemirror";
 import markInputRule from "@/utils/markInputRule";
 import { MdSpec } from "@/marked/MdSpec";
 import { Tokens } from "@/marked/MdLexer";
 import markPasteRule from "@/utils/markPasteRule";
+import { defineComponent, ref } from "vue-demi";
+import { Actions, useAction } from "@/store";
+import { removeMark, updateMark } from "tiptap-commands";
 
 export function getLinkContent(match: string[]): string {
   const split = match[1].split(/\|| "|"/);
@@ -32,10 +35,6 @@ export default class CardLink extends Mark {
 
   get defaultOptions() {
     return {
-      openOnClick: false,
-      open: (attrs: { [p: string]: string }) => {
-        window.open(attrs.href);
-      },
       concatLink: (href: string) => href
     };
   }
@@ -48,6 +47,9 @@ export default class CardLink extends Mark {
         },
         title: {
           default: null
+        },
+        target: {
+          default: true
         }
       },
       inclusive: false,
@@ -58,7 +60,8 @@ export default class CardLink extends Mark {
             const dom = mark as HTMLElement;
             return {
               href: dom.getAttribute("href"),
-              title: dom.getAttribute("title")
+              title: dom.getAttribute("title"),
+              target: dom.getAttribute("target") === "_blank"
             };
           }
         }
@@ -67,7 +70,8 @@ export default class CardLink extends Mark {
         "a",
         {
           title: mark.attrs.title,
-          href: this.options.concatLink(mark.attrs.href)
+          href: this.options.concatLink(mark.attrs.href),
+          target: mark.attrs.target ? "_blank" : "_self"
         },
         0
       ],
@@ -94,6 +98,67 @@ export default class CardLink extends Mark {
         }
         return `${result}]]`;
       }
+    };
+  }
+
+  get view() {
+    return defineComponent({
+      name: "node_card_link",
+      props: {
+        node: Object,
+        updateAttrs: Function
+      },
+      setup(props) {
+        const content = ref<HTMLElement>();
+        const popover = useAction<Actions>().popover;
+
+        const click = () => {
+          popover.show({
+            ref: content.value,
+            command: "link",
+            data: {
+              href: props.node?.attrs.href,
+              title: props.node?.attrs.title,
+              target: props.node?.attrs.target
+            },
+            submit: {
+              label: "确定",
+              handler: p => {
+                if (props.updateAttrs) {
+                  props.updateAttrs(p.data);
+                }
+                popover.hide();
+              }
+            }
+          });
+        };
+
+        return { content, click };
+      },
+      template: `
+        <a :href="node.attrs.href" :title="node.attrs.title" :target="node.attrs.target ? '_blank' : '_self'" ref="content" @click="click"></a>
+      `.replace(/>\s+</g, "><")
+    });
+  }
+
+  commands({
+    type,
+    schema,
+    attrs
+  }: {
+    type: MarkType;
+    schema: Schema;
+    attrs: { [p: string]: string };
+  }): CommandGetter {
+    return attrs => {
+      if (attrs.href) {
+        return updateMark(type, {
+          ...attrs,
+          href: this.options.concatLink(attrs.href)
+        });
+      }
+
+      return removeMark(type);
     };
   }
 

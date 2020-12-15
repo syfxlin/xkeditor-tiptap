@@ -1,12 +1,29 @@
 <template>
   <el-popover :reference="popover.ref" v-model="popover.active" @hide="hide">
     <template v-if="popover.command === 'link'">
-      <el-input
-        type="url"
-        placeholder="链接"
-        size="small"
-        v-model="popover.data.href"
-      />
+      <div class="el-popover__item">
+        <el-input
+          type="url"
+          placeholder="链接"
+          size="small"
+          v-model="popover.data.href"
+        />
+      </div>
+      <div class="el-popover__item">
+        <el-input
+          type="text"
+          placeholder="悬停显示"
+          size="small"
+          v-model="popover.data.title"
+        />
+      </div>
+      <div class="el-popover__item">
+        <el-switch
+          active-text="新标签页打开"
+          inactive-color="当前页打开"
+          v-model="popover.data.target"
+        />
+      </div>
     </template>
     <div
       style="text-align: right; margin: 10px 0 0 0"
@@ -51,3 +68,11 @@ export default defineComponent({
   }
 });
 </script>
+
+<style lang="scss">
+.el-popover {
+  &__item {
+    margin-bottom: 7px;
+  }
+}
+</style>

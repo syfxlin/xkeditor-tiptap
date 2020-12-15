@@ -12,13 +12,6 @@ export default class Link extends Mark {
     return "link";
   }
 
-  get defaultOptions() {
-    return {
-      openOnClick: false,
-      target: null
-    };
-  }
-
   get schema(): MarkSpec & MdSpec {
     return {
       attrs: {
@@ -26,7 +19,7 @@ export default class Link extends Mark {
           default: null
         },
         target: {
-          default: null
+          default: true
         },
         title: {
           default: null
@@ -40,7 +33,7 @@ export default class Link extends Mark {
             const dom = mark as HTMLElement;
             return {
               href: dom.getAttribute("href"),
-              target: dom.getAttribute("target"),
+              target: dom.getAttribute("target") === "_blank",
               title: dom.getAttribute("title")
             };
           }
@@ -51,7 +44,7 @@ export default class Link extends Mark {
         {
           ...mark.attrs,
           rel: "noopener noreferrer nofollow",
-          target: this.options.target
+          target: mark.attrs.target ? "_blank" : "_self"
         },
         0
       ],
@@ -80,8 +73,7 @@ export default class Link extends Mark {
       name: "node_link",
       props: {
         node: Object,
-        updateAttrs: Function,
-        view: Object
+        updateAttrs: Function
       },
       setup(props) {
         const content = ref<HTMLElement>();
@@ -92,7 +84,9 @@ export default class Link extends Mark {
             ref: content.value,
             command: "link",
             data: {
-              href: props.node?.attrs.href
+              href: props.node?.attrs.href,
+              title: props.node?.attrs.title,
+              target: props.node?.attrs.target
             },
             submit: {
               label: "确定",
@@ -109,7 +103,7 @@ export default class Link extends Mark {
         return { content, click };
       },
       template: `
-        <a :href="node.attrs.href" :title="node.attrs.title" :target="node.attrs.target" ref="content" @click="click"></a>
+        <a :href="node.attrs.href" :title="node.attrs.title" :target="node.attrs.target ? '_blank' : '_self'" ref="content" @click="click"></a>
       `.replace(/>\s+</g, "><")
     });
   }

@@ -33,7 +33,7 @@ export default class Sub extends Mark {
     schema: MarkSpec;
   }): { [p: string]: CommandFunction } {
     return {
-      "Mod-Shift-p": toggleMark(type)
+      "Mod-Shift-b": toggleMark(type)
     };
   }
 

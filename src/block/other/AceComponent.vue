@@ -17,6 +17,7 @@ import { Ace } from "ace-builds";
 import { EditorView, Selection, undo } from "@/utils/prosemirror";
 import { aceRef, dirFocus, isAce } from "@/utils/ace";
 import { redo } from "prosemirror-history";
+import { convertToAce } from "@/utils/languages";
 import Editor = Ace.Editor;
 import CommandManager = Ace.CommandManager;
 
@@ -87,11 +88,20 @@ export default defineComponent({
     const options = ref({
       fontSize: "17px",
       theme: "ace/theme/solarized_light",
-      mode: `ace/mode/${props.node?.attrs.language || "markup"}`,
+      mode: `ace/mode/${convertToAce(props.node?.attrs.language)}`,
       tabSize: 4,
       wrap: true
     });
     const ace = ref<Editor>();
+
+    watch(
+      () => props.node?.attrs.language,
+      v => {
+        if (ace.value) {
+          ace.value?.setOption("mode", `ace/mode/${convertToAce(v)}`);
+        }
+      }
+    );
 
     // 将 editor 实例变量设置到 tiptap node 实例中
     watch(ace, () => {

@@ -22,6 +22,7 @@ import "prismjs/plugins/line-numbers/prism-line-numbers.css";
 import nodeListPasteRule, { Matched } from "@/utils/nodeListPasteRule";
 import { MdSpec } from "@/marked/MdSpec";
 import { Tokens } from "@/marked/MdLexer";
+import languages from "@/utils/languages";
 
 export default class CodeBlock extends Node {
   get name() {
@@ -119,7 +120,7 @@ export default class CodeBlock extends Node {
           }
         };
 
-        const blur = () => {
+        const preview = () => {
           if (props.updateAttrs) {
             props.updateAttrs({
               isEditing: false
@@ -140,6 +141,17 @@ export default class CodeBlock extends Node {
           }
         });
 
+        const lang = computed({
+          get: () => props.node?.attrs.language || "text",
+          set: v => {
+            if (props.updateAttrs) {
+              props.updateAttrs({
+                language: v
+              });
+            }
+          }
+        });
+
         onMounted(() => {
           if (props.node?.attrs.isEditing) {
             nextTick(() => {
@@ -148,20 +160,24 @@ export default class CodeBlock extends Node {
           }
         });
 
-        return { content, edit, blur, lines, code };
+        return { content, edit, preview, lines, code, languages, lang };
       },
       template: `
         <div contenteditable="false">
-          <ace-component
-              v-if="node.attrs.isEditing"
-              :node="node"
-              :update-attrs="updateAttrs"
-              :view="view"
-              :editor="editor"
-              :get-pos="getPos"
-              :code.sync="code"
-              @blur="blur"
-          />
+          <div v-if="node.attrs.isEditing">
+            <el-select v-model="lang" filterable>
+              <el-option v-for="(v, k) in languages" :key="k" :label="v.label" :value="k" />
+            </el-select>
+            <el-button @click="preview">预览</el-button>
+            <ace-component
+                :node="node"
+                :update-attrs="updateAttrs"
+                :view="view"
+                :editor="editor"
+                :get-pos="getPos"
+                :code.sync="code"
+            />
+          </div>
           <div class="code-toolbar">
             <pre class="line-numbers" v-show="!node.attrs.isEditing">
               <span aria-hidden="true" class="line-numbers-rows">
@@ -172,10 +188,10 @@ export default class CodeBlock extends Node {
             </pre>
             <div class="toolbar">
               <div class="toolbar-item">
-                <span>{{node.attrs.language}}</span>
+                <span>{{ languages[node.attrs.language || "text"].label }}</span>
               </div>
               <div class="toolbar-item toolbar-action">
-                <span @click="edit">Edit</span>
+                <span @click="edit">编辑</span>
               </div>
             </div>
           </div>

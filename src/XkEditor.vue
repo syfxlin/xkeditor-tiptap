@@ -48,6 +48,7 @@ export default defineComponent({
     const styleCommand = actions.getCommand("style");
     const headingCommand = actions.getCommand("heading");
     const linkCommand = actions.getCommand("link");
+    const cardLinkCommand = actions.getCommand("card_link");
     const popover = actions.popover;
 
     const menus = [
@@ -56,21 +57,21 @@ export default defineComponent({
           type: "button",
           name: "bold",
           icon: "bold",
-          tooltip: "粗体\nCtrl+B",
+          tooltip: "粗体 Ctrl+B",
           command: actions.getCommand("bold")
         },
         {
           type: "button",
           name: "italic",
           icon: "italic",
-          tooltip: "斜体\nCtrl+I",
+          tooltip: "斜体 Ctrl+I",
           command: actions.getCommand("italic")
         },
         {
           type: "button",
           name: "code",
           icon: "code",
-          tooltip: "行内代码\nCtrl+`",
+          tooltip: "行内代码 Ctrl+`",
           command: actions.getCommand("code")
         },
         {
@@ -97,6 +98,59 @@ export default defineComponent({
               });
             }
           }
+        },
+        {
+          type: "button",
+          name: "card_link",
+          icon: "link",
+          tooltip: "链接",
+          command: {
+            isActive: cardLinkCommand.isActive,
+            handler: () => {
+              popover.show({
+                ref: document.querySelector("#menu-item__card_link"),
+                command: "link",
+                data: {
+                  href: ""
+                },
+                submit: {
+                  label: "确定",
+                  handler: p => {
+                    cardLinkCommand.handler(p.data);
+                    popover.hide();
+                  }
+                }
+              });
+            }
+          }
+        },
+        {
+          type: "button",
+          name: "strike",
+          icon: "strikethrough",
+          tooltip: "删除线 Ctrl+D",
+          command: actions.getCommand("strike")
+        },
+        {
+          type: "button",
+          name: "sup",
+          icon: "superscript",
+          tooltip: "上标 Ctrl+Shift+P",
+          command: actions.getCommand("sup")
+        },
+        {
+          type: "button",
+          name: "sub",
+          icon: "subscript",
+          tooltip: "下标 Ctrl+Shift+B",
+          command: actions.getCommand("sub")
+        },
+        {
+          type: "button",
+          name: "underline",
+          icon: "underline",
+          tooltip: "下划线 Ctrl+U",
+          command: actions.getCommand("underline")
         },
         {
           type: "select",
@@ -151,41 +205,6 @@ export default defineComponent({
         }
       ],
       [
-        {
-          type: "select",
-          name: "font-size",
-          value: fontSize,
-          allowCreate: true,
-          options: [
-            {
-              label: "14px",
-              value: "14px"
-            },
-            {
-              label: "15px",
-              value: "15px"
-            }
-          ]
-        },
-        {
-          type: "dropdown",
-          name: "font-size",
-          label: "下拉",
-          click: () => {
-            console.log("Click");
-          },
-          command: {
-            handler: (command: string) => {
-              console.log(command);
-            }
-          },
-          options: [
-            {
-              label: "op1",
-              command: "op1"
-            }
-          ]
-        },
         {
           type: "color",
           name: "color",
@@ -245,6 +264,36 @@ export default defineComponent({
             "hsla(209, 100%, 56%, 0.73)",
             "#c7158577"
           ]
+        }
+      ],
+      [
+        {
+          type: "button",
+          name: "blockquote",
+          icon: "quote-left",
+          tooltip: "引用 Ctrl+>",
+          command: actions.getCommand("blockquote")
+        },
+        {
+          type: "button",
+          name: "bullet_list",
+          icon: "list-ul",
+          tooltip: "无序列表 Shift-Ctrl-8",
+          command: actions.getCommand("bullet_list")
+        },
+        {
+          type: "button",
+          name: "ordered_list",
+          icon: "list-ol",
+          tooltip: "有序列表 Shift-Ctrl-9",
+          command: actions.getCommand("ordered_list")
+        },
+        {
+          type: "button",
+          name: "code_block",
+          icon: "terminal",
+          tooltip: "代码块 Ctrl+Shift+\\",
+          command: actions.getCommand("code_block")
         }
       ]
     ];
