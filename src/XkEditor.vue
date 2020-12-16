@@ -82,20 +82,27 @@ export default defineComponent({
           command: {
             isActive: linkCommand.isActive,
             handler: () => {
-              popover.show({
-                ref: document.querySelector("#menu-item__link"),
-                command: "link",
-                data: {
-                  href: ""
-                },
-                submit: {
-                  label: "确定",
-                  handler: p => {
-                    linkCommand.handler(p.data);
-                    popover.hide();
-                  }
-                }
-              });
+              if (linkCommand.isActive().value) {
+                linkCommand.handler({ href: null });
+              } else {
+                popover.show({
+                  ref: document.querySelector("#menu-item__link"),
+                  command: "link",
+                  data: {
+                    href: ""
+                  },
+                  buttons: [
+                    {
+                      label: "确定",
+                      handler: p => {
+                        linkCommand.handler(p.data);
+                        popover.hide();
+                      },
+                      type: "primary"
+                    }
+                  ]
+                });
+              }
             }
           }
         },
@@ -113,13 +120,16 @@ export default defineComponent({
                 data: {
                   href: ""
                 },
-                submit: {
-                  label: "确定",
-                  handler: p => {
-                    cardLinkCommand.handler(p.data);
-                    popover.hide();
+                buttons: [
+                  {
+                    label: "确定",
+                    handler: p => {
+                      cardLinkCommand.handler(p.data);
+                      popover.hide();
+                    },
+                    type: "primary"
                   }
-                }
+                ]
               });
             }
           }

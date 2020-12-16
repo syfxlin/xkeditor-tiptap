@@ -24,14 +24,11 @@ export interface PopoverProps {
   data?: {
     [key: string]: any;
   };
-  submit?: {
+  buttons: {
     label: string;
     handler: (props: PopoverProps) => void;
-  } | null;
-  cancel?: {
-    label: string;
-    handler: (props: PopoverProps) => void;
-  } | null;
+    type: string;
+  }[];
 }
 
 const initialState: {
@@ -61,8 +58,7 @@ const initialState: {
     active: false,
     command: null,
     data: {},
-    submit: null,
-    cancel: null
+    buttons: []
   }
 };
 

@@ -158,16 +158,14 @@ export const actions = {
       state.popover.active = true;
       state.popover.command = props.command;
       state.popover.data = props.data;
-      state.popover.submit = props.submit;
-      state.popover.cancel = props.cancel;
+      state.popover.buttons = props.buttons;
     },
     hide() {
       state.popover.ref = null;
       state.popover.active = false;
       state.popover.command = null;
       state.popover.data = {};
-      state.popover.submit = null;
-      state.popover.cancel = null;
+      state.popover.buttons = [];
     }
   }
 };

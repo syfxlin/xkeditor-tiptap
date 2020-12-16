@@ -121,15 +121,28 @@ export default class CardLink extends Mark {
               title: props.node?.attrs.title,
               target: props.node?.attrs.target
             },
-            submit: {
-              label: "确定",
-              handler: p => {
-                if (props.updateAttrs) {
-                  props.updateAttrs(p.data);
-                }
-                popover.hide();
+            buttons: [
+              {
+                label: "打开链接",
+                handler: () => {
+                  window.open(
+                    props.node?.attrs.href,
+                    props.node?.attrs.target ? "_blank" : "_self"
+                  );
+                },
+                type: "text"
+              },
+              {
+                label: "确定",
+                handler: p => {
+                  if (props.updateAttrs) {
+                    props.updateAttrs(p.data);
+                  }
+                  popover.hide();
+                },
+                type: "primary"
               }
-            }
+            ]
           });
         };
 

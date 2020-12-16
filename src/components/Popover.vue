@@ -27,23 +27,16 @@
     </template>
     <div
       style="text-align: right; margin: 10px 0 0 0"
-      v-if="popover.submit || popover.cancel"
+      v-if="popover.buttons && popover.buttons.length > 0"
     >
       <el-button
+        v-for="item in popover.buttons"
+        :key="item.id"
         size="mini"
-        type="text"
-        v-if="popover.cancel"
-        @click="popover.cancel.handler(popover)"
+        :type="item.type"
+        @click="item.handler(popover)"
       >
-        {{ popover.cancel.label }}
-      </el-button>
-      <el-button
-        type="primary"
-        size="mini"
-        v-if="popover.submit"
-        @click="popover.submit.handler(popover)"
-      >
-        {{ popover.submit.label }}
+        {{ item.label }}
       </el-button>
     </div>
   </el-popover>
