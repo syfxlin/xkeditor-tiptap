@@ -7,9 +7,7 @@ import AceEditor = Ace.Editor;
 export interface XkEditorConfig {
   tiptap: TiptapConfig;
   ace: Partial<AceConfig>;
-  xk: {
-    [key: string]: any;
-  };
+  xk: XkConfig;
 }
 
 export enum XkEditorMode {
@@ -28,7 +26,13 @@ export interface PopoverProps {
     label: string;
     handler: (props: PopoverProps) => void;
     type: string;
+    loading?: boolean;
   }[];
+}
+
+export interface XkConfig {
+  uploadImage?: string;
+  [key: string]: any;
 }
 
 const initialState: {
@@ -48,7 +52,9 @@ const initialState: {
       tabSize: 4,
       wrap: true
     },
-    xk: {}
+    xk: {
+      uploadImage: "http://localhost/upload.php"
+    }
   },
   tiptap: null,
   ace: null,

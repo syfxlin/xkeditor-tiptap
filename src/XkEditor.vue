@@ -49,6 +49,7 @@ export default defineComponent({
     const headingCommand = actions.getCommand("heading");
     const linkCommand = actions.getCommand("link");
     const cardLinkCommand = actions.getCommand("card_link");
+    const imageCommand = actions.getCommand("image");
     const popover = actions.popover;
 
     const menus = [
@@ -114,23 +115,27 @@ export default defineComponent({
           command: {
             isActive: cardLinkCommand.isActive,
             handler: () => {
-              popover.show({
-                ref: document.querySelector("#menu-item__card_link"),
-                command: "link",
-                data: {
-                  href: ""
-                },
-                buttons: [
-                  {
-                    label: "确定",
-                    handler: p => {
-                      cardLinkCommand.handler(p.data);
-                      popover.hide();
-                    },
-                    type: "primary"
-                  }
-                ]
-              });
+              if (cardLinkCommand.isActive().value) {
+                cardLinkCommand.handler({ href: null });
+              } else {
+                popover.show({
+                  ref: document.querySelector("#menu-item__card_link"),
+                  command: "link",
+                  data: {
+                    href: ""
+                  },
+                  buttons: [
+                    {
+                      label: "确定",
+                      handler: p => {
+                        cardLinkCommand.handler(p.data);
+                        popover.hide();
+                      },
+                      type: "primary"
+                    }
+                  ]
+                });
+              }
             }
           }
         },
@@ -304,6 +309,45 @@ export default defineComponent({
           icon: "terminal",
           tooltip: "代码块 Ctrl+Shift+\\",
           command: actions.getCommand("code_block")
+        },
+        {
+          type: "button",
+          name: "horizontal_rule",
+          icon: "minus",
+          tooltip: "分割线",
+          command: actions.getCommand("horizontal_rule")
+        },
+        {
+          type: "button",
+          name: "image",
+          icon: "image",
+          tooltip: "图片",
+          command: {
+            isActive: imageCommand.isActive,
+            handler: () => {
+              if (imageCommand.isActive().value) {
+                imageCommand.handler();
+              } else {
+                popover.show({
+                  ref: document.querySelector("#menu-item__image"),
+                  command: "image",
+                  data: {
+                    src: ""
+                  },
+                  buttons: [
+                    {
+                      label: "确定",
+                      handler: p => {
+                        imageCommand.handler(p.data);
+                        popover.hide();
+                      },
+                      type: "primary"
+                    }
+                  ]
+                });
+              }
+            }
+          }
         }
       ]
     ];
