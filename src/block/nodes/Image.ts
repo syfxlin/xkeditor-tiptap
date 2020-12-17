@@ -10,6 +10,9 @@ import {
 import inlineNodePasteRule from "@/utils/inlineNodePasteRule";
 import { MdSpec } from "@/marked/MdSpec";
 import { Tokens } from "@/marked/MdLexer";
+import { Slice } from "prosemirror-model";
+import { upload } from "@/utils/req";
+import { state } from "@/store/state";
 
 /**
  * Matches following attributes in Markdown-typed image: [, alt, src, title]
@@ -171,6 +174,42 @@ export default class Image extends Node {
                 reader.readAsDataURL(image);
               });
             }
+          },
+          handlePaste: (
+            view: EditorView,
+            event: ClipboardEvent,
+            slice: Slice
+          ) => {
+            if (event.clipboardData && state.config.xk.uploadImage) {
+              const { schema } = view.state;
+              const coordinates = view.state.selection.$anchor;
+              for (const item of event.clipboardData.items) {
+                const file = item.getAsFile();
+                if (file)
+                  upload({
+                    file: file,
+                    filename: "file",
+                    action: state.config.xk.uploadImage,
+                    onSuccess: (res: {
+                      url: string;
+                      filename: string;
+                      key: string;
+                    }) => {
+                      const node = schema.nodes.image.create({
+                        src: res.url,
+                        alt: res.filename,
+                        title: res.key
+                      });
+                      const transaction = view.state.tr.insert(
+                        coordinates.pos,
+                        node
+                      );
+                      view.dispatch(transaction);
+                    }
+                  });
+              }
+            }
+            return false;
           }
         }
       })
