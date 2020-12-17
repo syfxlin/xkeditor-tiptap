@@ -51,7 +51,12 @@
         />
       </div>
       <div class="el-popover__item" v-if="xk.uploadImage">
-        <el-upload drag :action="xk.uploadImage" :on-success="uploadImage">
+        <el-upload
+          drag
+          :action="xk.uploadImage"
+          :on-success="uploadSuccess"
+          :http-request="upload"
+        >
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         </el-upload>
       </div>
@@ -79,6 +84,7 @@ import { defineComponent } from "vue-demi";
 import { Actions, useAction, useState } from "@/store";
 import { PopoverProps, XkConfig } from "@/store/state";
 import ElPopover from "@/components/ElPopover.vue";
+import { upload, UploadResponse } from "@/utils/req";
 
 export default defineComponent({
   name: "popover",
@@ -90,7 +96,7 @@ export default defineComponent({
     const hide = useAction<Actions>().popover.hide;
     const xk = useState<XkConfig>("config.xk");
 
-    const uploadImage = (res: any) => {
+    const uploadSuccess = (res: UploadResponse) => {
       if (!popover.value.data) {
         popover.value.data = {};
       }
@@ -99,7 +105,7 @@ export default defineComponent({
       popover.value.data.title = res.key;
     };
 
-    return { popover, hide, xk, uploadImage };
+    return { popover, hide, xk, uploadSuccess, upload };
   }
 });
 </script>

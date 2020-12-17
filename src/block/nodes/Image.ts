@@ -190,11 +190,7 @@ export default class Image extends Node {
                     file: file,
                     filename: "file",
                     action: state.config.xk.uploadImage,
-                    onSuccess: (res: {
-                      url: string;
-                      filename: string;
-                      key: string;
-                    }) => {
+                    onSuccess: res => {
                       const node = schema.nodes.image.create({
                         src: res.url,
                         alt: res.filename,

@@ -188,7 +188,7 @@ export default class CodeBlock extends Node {
             </pre>
             <div class="toolbar">
               <div class="toolbar-item">
-                <span>{{ languages[node.attrs.language || "text"].label }}</span>
+                <span>{{ languages[node.attrs.language] ? languages[node.attrs.language].label : "Text" }}</span>
               </div>
               <div class="toolbar-item toolbar-action">
                 <span @click="edit">编辑</span>

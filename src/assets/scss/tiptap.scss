@@ -12,12 +12,21 @@
     padding: 32px 60px 32px 60px;
     min-height: 100vh;
     position: relative;
+    display: flex;
+    flex-direction: column;
   }
 
   &__content {
     overflow-wrap: break-word;
     word-wrap: break-word;
     word-break: break-word;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    > .ProseMirror {
+      flex: 1;
+    }
 
     * {
       caret-color: currentColor;

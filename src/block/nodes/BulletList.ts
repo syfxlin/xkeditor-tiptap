@@ -72,11 +72,6 @@ export default class BulletList extends Node {
   }
 
   pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {
-    return listPlugin(
-      /^\s*([-+*])\s(?!\[[-+*xX ]\])/,
-      /^\s*([-+*])\s(?!\[[-+*xX ]\])/,
-      type,
-      schema
-    );
+    return listPlugin(/^\s*([-+*])\s(?!\[[-+*xX ]\])/, /[-+*]/, type, schema);
   }
 }

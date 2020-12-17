@@ -58,7 +58,12 @@ export default defineComponent({
       }
     ];
 
-    return { menus, editor };
+    const focus = () => {
+      console.log("focus");
+      editor.focus();
+    };
+
+    return { menus, editor, focus };
   }
 });
 </script>

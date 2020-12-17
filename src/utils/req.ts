@@ -39,8 +39,17 @@ export interface UploadOption {
   filename: string;
   action: string;
   onProgress?: (e: ProgressEvent) => void;
-  onSuccess: (res: any) => void;
+  onSuccess: (res: UploadResponse) => void;
   onError?: (err: Error | ProgressEvent) => any;
+}
+
+export interface UploadResponse {
+  extname: string;
+  filename: string;
+  key: string;
+  md5: string;
+  size: number;
+  url: string;
 }
 
 export function upload(option: UploadOption) {
