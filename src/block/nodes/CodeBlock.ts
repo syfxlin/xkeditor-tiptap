@@ -12,8 +12,8 @@ import {
   Plugin,
   Schema
 } from "@/utils/prosemirror";
-import { computed, defineComponent, nextTick, onMounted, ref } from "vue-demi";
-import { dirFocus, mergeNodeSpec, nodeKeys } from "@/utils/ace";
+import { computed, defineComponent, nextTick, onMounted } from "vue-demi";
+import { computeChange, dirFocus, mergeNodeSpec, nodeKeys } from "@/utils/ace";
 import HighlightComponent from "@/block/other/HighlightComponent.vue";
 import AceComponent from "@/block/other/AceComponent.vue";
 import "prismjs/themes/prism-okaidia.css";
@@ -108,7 +108,6 @@ export default class CodeBlock extends Node {
         decorations: Array
       },
       setup(props) {
-        const content = ref<HTMLElement>();
         const edit = () => {
           if (props.updateAttrs) {
             props.updateAttrs({
@@ -135,8 +134,17 @@ export default class CodeBlock extends Node {
         const code = computed({
           get: () => props.node?.textContent,
           set: v => {
-            if (content.value !== undefined) {
-              content.value.textContent = v === undefined ? "" : v;
+            if (props.node && props.getPos && props.view && v !== undefined) {
+              const change = computeChange(props.node?.textContent, v);
+              if (change) {
+                const start = props.getPos() + 1;
+                const tr = props.view.state.tr.replaceWith(
+                  start + change.from,
+                  start + change.to,
+                  change.text ? props.view.state.schema.text(change.text) : null
+                );
+                props.view.dispatch(tr);
+              }
             }
           }
         });
@@ -160,7 +168,7 @@ export default class CodeBlock extends Node {
           }
         });
 
-        return { content, edit, preview, lines, code, languages, lang };
+        return { edit, preview, lines, code, languages, lang };
       },
       template: `
         <div contenteditable="false">
@@ -184,7 +192,6 @@ export default class CodeBlock extends Node {
                 <span v-for="n in lines"></span>
               </span>
               <highlight-component :code="code" :language="node.attrs.language" />
-              <code ref="content" v-show="false"></code>
             </pre>
             <div class="toolbar">
               <div class="toolbar-item">

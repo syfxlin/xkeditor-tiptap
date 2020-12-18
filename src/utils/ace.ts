@@ -159,13 +159,21 @@ export function scEditor(
         Math.random()
           .toString(36)
           .slice(-8);
-      const content = ref<HTMLElement>();
       const htmlView = ref<string>("");
       const code = computed({
         get: () => props.node?.textContent,
         set: v => {
-          if (content.value !== undefined) {
-            content.value.textContent = v === undefined ? "" : v;
+          if (props.node && props.getPos && props.view && v !== undefined) {
+            const change = computeChange(props.node?.textContent, v);
+            if (change) {
+              const start = props.getPos() + 1;
+              const tr = props.view.state.tr.replaceWith(
+                start + change.from,
+                start + change.to,
+                change.text ? props.view.state.schema.text(change.text) : null
+              );
+              props.view.dispatch(tr);
+            }
           }
         }
       });
@@ -185,7 +193,7 @@ export function scEditor(
         });
       });
 
-      return { code, content, htmlView, ...result, attrs: viewAttrs || {}, id };
+      return { code, htmlView, ...result, attrs: viewAttrs || {}, id };
     },
     template: `
       <div class="sc-editor" contenteditable="false">
@@ -198,7 +206,6 @@ export function scEditor(
           :code.sync="code"
         />
         <div :class="attrs.class" :id="id" v-html="htmlView"></div>
-        <textarea hidden ref="content" />
       </div>
     `.replace(/>\s+</g, "><")
   });
@@ -232,4 +239,28 @@ export function insertText(
     ace.navigateLeft(insert.right.length);
   }
   ace.focus();
+}
+
+export function computeChange(oldVal: string, newVal: string) {
+  if (oldVal == newVal) {
+    return null;
+  }
+  let start = 0,
+    oldEnd = oldVal.length,
+    newEnd = newVal.length;
+  while (
+    start < oldEnd &&
+    oldVal.charCodeAt(start) == newVal.charCodeAt(start)
+  ) {
+    ++start;
+  }
+  while (
+    oldEnd > start &&
+    newEnd > start &&
+    oldVal.charCodeAt(oldEnd - 1) == newVal.charCodeAt(newEnd - 1)
+  ) {
+    oldEnd--;
+    newEnd--;
+  }
+  return { from: start, to: oldEnd, text: newVal.slice(start, newEnd) };
 }
