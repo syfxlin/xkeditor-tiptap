@@ -6,13 +6,14 @@ import {
   Plugin,
   Schema
 } from "@/utils/prosemirror";
-import { computed, defineComponent } from "vue-demi";
+import { computed, defineComponent, ref } from "vue-demi";
 import nodeInputRule from "@/utils/nodeInputRule";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import inlineNodePasteRule from "@/utils/inlineNodePasteRule";
 import { MdSpec } from "@/marked/MdSpec";
 import { Tokens } from "@/marked/MdLexer";
+import { Actions, useAction } from "@/store";
 
 export default class Katex extends Node {
   get name() {
@@ -23,21 +24,39 @@ export default class Katex extends Node {
     return {
       inline: true,
       group: "inline",
+      attrs: {
+        tex: {
+          default: null
+        }
+      },
       parseDOM: [
-        { tag: `[data-type=${this.name}]` },
+        {
+          tag: `[data-type=${this.name}]`,
+          getAttrs: node => ({
+            tex: (node as HTMLElement).textContent
+          })
+        },
         {
           tag: "span.katex",
-          contentElement: node => {
+          getAttrs: node => {
             const dom = node as HTMLElement;
             const tex = dom.querySelector(
               'annotation[encoding="application/x-tex"]'
             );
-            return tex || dom;
+            if (tex) {
+              return {
+                tex: tex.textContent
+              };
+            } else {
+              return {
+                tex: dom.textContent
+              };
+            }
           }
         }
       ],
       toDOM: node => {
-        return ["span", { "data-type": this.name }, 0];
+        return ["span", { "data-type": this.name }, node.textContent];
       },
       parseMarkdown: [
         {
@@ -58,23 +77,55 @@ export default class Katex extends Node {
       },
       setup(props) {
         const katexHtml = computed(() =>
-          katex.renderToString(props.node?.textContent || "", {
+          katex.renderToString(props.node?.attrs.tex || "", {
             throwOnError: false
           })
         );
-        return { katexHtml };
+        const element = ref<HTMLElement>();
+        const popover = useAction<Actions>().popover;
+        const click = () => {
+          popover.show({
+            ref: element.value,
+            command: "katex",
+            data: {
+              tex: props.node?.attrs.tex
+            },
+            buttons: [
+              {
+                label: "确定",
+                handler: p => {
+                  if (props.updateAttrs) {
+                    props.updateAttrs(p.data);
+                  }
+                  popover.hide();
+                },
+                type: "primary"
+              }
+            ]
+          });
+        };
+
+        return { katexHtml, click, element };
       },
       template: `
-        <span data-type="katex" v-html="katexHtml"></span>
+        <span data-type="katex" v-html="katexHtml" @click="click" ref="element"></span>
       `
     });
   }
 
   inputRules({ type, schema }: { type: NodeType; schema: Schema }): any[] {
-    return [nodeInputRule(/\$\$([^$]+)\$\$/, type, 1)];
+    return [
+      nodeInputRule(/\$\$([^$]+)\$\$/, type, 1, match => ({
+        tex: match[1]
+      }))
+    ];
   }
 
   pasteRules({ type, schema }: { type: NodeType; schema: Schema }): Plugin[] {
-    return [inlineNodePasteRule(/\$\$([^$]+)\$\$/, type, 1)];
+    return [
+      inlineNodePasteRule(/\$\$([^$]+)\$\$/, type, 1, match => ({
+        tex: match[1]
+      }))
+    ];
   }
 }

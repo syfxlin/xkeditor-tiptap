@@ -61,6 +61,16 @@
         </el-upload>
       </div>
     </template>
+    <template v-if="popover.command === 'katex'">
+      <div class="el-popover__item">
+        <el-input
+          type="textarea"
+          placeholder="公式"
+          size="small"
+          v-model="popover.data.tex"
+        />
+      </div>
+    </template>
     <div
       style="text-align: right; margin: 10px 0 0 0"
       v-if="popover.buttons && popover.buttons.length > 0"
