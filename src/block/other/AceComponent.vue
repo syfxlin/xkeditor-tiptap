@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import AceVue from "@/components/Ace.vue";
-import { Node as ProsemirrorNode } from "prosemirror-model";
+import { Node as ProseMirrorNode } from "prosemirror-model";
 import { Editor as TipTapEditor } from "tiptap";
 import { defineComponent, ref, watch } from "vue-demi";
 import { Ace } from "ace-builds";
@@ -28,7 +28,7 @@ export default defineComponent({
   },
   props: {
     code: String,
-    node: ProsemirrorNode,
+    node: ProseMirrorNode,
     view: Object,
     getPos: Function,
     updateAttrs: Function,

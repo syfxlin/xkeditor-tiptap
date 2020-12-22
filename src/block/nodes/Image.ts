@@ -13,6 +13,10 @@ import { Tokens } from "@/marked/MdLexer";
 import { Slice } from "prosemirror-model";
 import { upload } from "@/utils/req";
 import { state } from "@/store/state";
+// @ts-ignore
+import Message from "element-ui/packages/message";
+import { defineComponent, ref } from "vue-demi";
+import { Actions, useAction } from "@/store";
 
 /**
  * Matches following attributes in Markdown-typed image: [, alt, src, title]
@@ -75,6 +79,50 @@ export default class Image extends Node {
           node.attrs.title ? ` "${node.attrs.title}"` : ""
         })`
     };
+  }
+
+  get view() {
+    return defineComponent({
+      name: "node_image",
+      props: {
+        node: Object,
+        updateAttrs: Function,
+        selected: Boolean
+      },
+      setup(props) {
+        const image = ref<HTMLElement>();
+        const popover = useAction<Actions>().popover;
+
+        const click = () => {
+          popover.show({
+            ref: image.value,
+            command: "image",
+            data: {
+              src: props.node?.attrs.src,
+              title: props.node?.attrs.title,
+              alt: props.node?.attrs.alt
+            },
+            buttons: [
+              {
+                label: "确定",
+                handler: p => {
+                  if (props.updateAttrs) {
+                    props.updateAttrs(p.data);
+                  }
+                  popover.hide();
+                },
+                type: "primary"
+              }
+            ]
+          });
+        };
+
+        return { image, click };
+      },
+      template: `
+        <img :src="node.attrs.src" :title="node.attrs.title" :alt="node.attrs.alt" ref="image" @click="click" :class="selected ? 'is-selected' : ''" />
+      `.replace(/>\s+</g, "><")
+    });
   }
 
   commands({
@@ -185,24 +233,46 @@ export default class Image extends Node {
               const coordinates = view.state.selection.$anchor;
               for (const item of event.clipboardData.items) {
                 const file = item.getAsFile();
-                if (file)
+                if (file) {
+                  const loading = Message({
+                    message: "正在上传...",
+                    showClose: true,
+                    duration: 0
+                  });
                   upload({
                     file: file,
                     filename: "file",
                     action: state.config.xk.uploadImage,
                     onSuccess: res => {
+                      loading.close();
+                      Message({
+                        message: "上传成功",
+                        type: "success"
+                      });
                       const node = schema.nodes.image.create({
-                        src: res.url,
-                        alt: res.filename,
-                        title: res.key
+                        src: res.data.url,
+                        alt: res.data.filename,
+                        title: res.data.key
                       });
                       const transaction = view.state.tr.insert(
                         coordinates.pos,
                         node
                       );
                       view.dispatch(transaction);
+                    },
+                    onError: err => {
+                      loading.close();
+                      let message = "上传失败";
+                      if (err.res) {
+                        message = err.res.message;
+                      }
+                      Message({
+                        message,
+                        type: "error"
+                      });
                     }
                   });
+                }
               }
             }
             return false;

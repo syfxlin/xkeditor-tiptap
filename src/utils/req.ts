@@ -1,23 +1,3 @@
-function getError(action: string, option: UploadOption, xhr: XMLHttpRequest) {
-  let msg;
-  if (xhr.response) {
-    msg = `${xhr.response.error || xhr.response}`;
-  } else if (xhr.responseText) {
-    msg = `${xhr.responseText}`;
-  } else {
-    msg = `fail to post ${action} ${xhr.status}`;
-  }
-
-  const err = new Error(msg);
-  // @ts-ignore
-  err.status = xhr.status;
-  // @ts-ignore
-  err.method = "post";
-  // @ts-ignore
-  err.url = action;
-  return err;
-}
-
 function getBody(xhr: XMLHttpRequest) {
   const text = xhr.responseText || xhr.response;
   if (!text) {
@@ -40,16 +20,32 @@ export interface UploadOption {
   action: string;
   onProgress?: (e: ProgressEvent) => void;
   onSuccess: (res: UploadResponse) => void;
-  onError?: (err: Error | ProgressEvent) => any;
+  onError?: (err: UploadError) => any;
 }
 
 export interface UploadResponse {
-  extname: string;
-  filename: string;
-  key: string;
-  md5: string;
-  size: number;
-  url: string;
+  error: boolean;
+  message: string;
+  code: number;
+  data: {
+    extname: string;
+    filename: string;
+    key: string;
+    md5: string;
+    size: number;
+    url: string;
+  };
+}
+
+export interface UploadError {
+  status: number;
+  res?: {
+    error: boolean;
+    message: string;
+    code: number;
+    data: object;
+  };
+  error?: ProgressEvent;
 }
 
 export function upload(option: UploadOption) {
@@ -84,14 +80,20 @@ export function upload(option: UploadOption) {
 
   xhr.onerror = function error(e) {
     if (option.onError) {
-      option.onError(e);
+      option.onError({
+        status: 500,
+        error: e
+      });
     }
   };
 
   xhr.onload = function onload() {
     if (xhr.status < 200 || xhr.status >= 300) {
       if (option.onError) {
-        return option.onError(getError(action, option, xhr));
+        return option.onError({
+          status: xhr.status,
+          res: getBody(xhr)
+        });
       }
     }
 

@@ -28,6 +28,10 @@
       flex: 1;
     }
 
+    .is-selected {
+      outline: 2px solid #1890ff;
+    }
+
     * {
       caret-color: currentColor;
     }

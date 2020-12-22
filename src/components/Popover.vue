@@ -100,9 +100,9 @@ export default defineComponent({
       if (!popover.value.data) {
         popover.value.data = {};
       }
-      popover.value.data.src = res.url;
-      popover.value.data.alt = res.filename;
-      popover.value.data.title = res.key;
+      popover.value.data.src = res.data.url;
+      popover.value.data.alt = res.data.filename;
+      popover.value.data.title = res.data.key;
     };
 
     return { popover, hide, xk, uploadSuccess, upload };
