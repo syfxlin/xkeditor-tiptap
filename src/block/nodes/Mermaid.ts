@@ -48,18 +48,27 @@ export default class Mermaid extends Node {
   }
 
   get view() {
-    const convertFn = useDebounceFn((code: string, htmlView: Ref<string>) => {
-      try {
-        mermaid.parse(code);
-        mermaid.render(this.name, code, svgCode => {
-          htmlView.value = svgCode;
-        });
-      } catch (e) {
-        htmlView.value = errSvg;
-      }
-    }, 500);
-    return scEditor(this.name, (code, htmlView) => {
-      convertFn(code, htmlView);
+    const convertFn = useDebounceFn(
+      (code: string, element: Ref<HTMLElement>) => {
+        try {
+          mermaid.parse(code);
+          mermaid.render(
+            this.name,
+            code,
+            svgCode => {
+              element.value.innerHTML = svgCode;
+            },
+            // @ts-ignore
+            element.value
+          );
+        } catch (e) {
+          element.value.innerHTML = errSvg;
+        }
+      },
+      500
+    );
+    return scEditor(this.name, (code, element) => {
+      convertFn(code, element as Ref<HTMLElement>);
     });
   }
 

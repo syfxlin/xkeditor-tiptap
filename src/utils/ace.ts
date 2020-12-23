@@ -6,8 +6,7 @@ import {
   nextTick,
   onMounted,
   ref,
-  Ref,
-  watch
+  Ref
 } from "vue-demi";
 import { CommandFunction } from "tiptap-commands";
 import { MdSpec } from "@/marked/MdSpec";
@@ -131,7 +130,7 @@ export function mergeNodeSpec(spec: NodeSpec & MdSpec): NodeSpec {
 
 export function scEditor(
   name: string,
-  codeToView: (code: string, htmlView: Ref<string>, id: string) => void,
+  codeToView: (code: string, element: Ref<HTMLElement | undefined>) => void,
   viewAttrs?: {
     class: string;
   },
@@ -153,13 +152,7 @@ export function scEditor(
       decorations: Array
     },
     setup(props) {
-      const id =
-        name +
-        "-" +
-        Math.random()
-          .toString(36)
-          .slice(-8);
-      const htmlView = ref<string>("");
+      const isEditing = ref(true);
       const code = computed({
         get: () => props.node?.textContent,
         set: v => {
@@ -177,10 +170,7 @@ export function scEditor(
           }
         }
       });
-
-      watch(code, val => {
-        codeToView(val || "", htmlView, id);
-      });
+      const element = ref<HTMLElement>();
 
       let result = {};
       if (setup) {
@@ -193,10 +183,25 @@ export function scEditor(
         });
       });
 
-      return { code, htmlView, ...result, attrs: viewAttrs || {}, id };
+      const edit = () => {
+        isEditing.value = !isEditing.value;
+        if (!isEditing.value) {
+          codeToView(code.value || "", element);
+        }
+      };
+
+      return {
+        code,
+        isEditing,
+        ...result,
+        attrs: viewAttrs || {},
+        element,
+        edit
+      };
     },
     template: `
-      <div class="sc-editor" contenteditable="false">
+      <div class="sc-editor" contenteditable="false" :class="attrs.class">
+        <el-button @click="edit">切换</el-button>
         <ace-component
           :node="node"
           :update-attrs="updateAttrs"
@@ -204,8 +209,9 @@ export function scEditor(
           :editor="editor"
           :get-pos="getPos"
           :code.sync="code"
+          v-if="isEditing"
         />
-        <div :class="attrs.class" :id="id" v-html="htmlView"></div>
+        <div v-else ref="element"></div>
       </div>
     `.replace(/>\s+</g, "><")
   });

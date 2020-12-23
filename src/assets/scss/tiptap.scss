@@ -234,10 +234,7 @@
 
     .sc-editor {
       display: flex;
-    }
-
-    .sc-editor > div {
-      width: 50%;
+      flex-direction: column;
     }
   }
 }
